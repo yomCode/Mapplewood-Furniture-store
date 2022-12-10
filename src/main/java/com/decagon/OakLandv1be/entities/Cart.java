@@ -12,6 +12,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Table(name = "cart_tbl")
 public class Cart extends BaseEntity{
 
     @JsonIgnore
@@ -21,7 +22,6 @@ public class Cart extends BaseEntity{
     private Double total;
 
     @OneToOne(mappedBy = "cart", cascade = CascadeType.ALL)
-    @JoinColumn(name="customer_id")
     private Customer customer;
 
 }

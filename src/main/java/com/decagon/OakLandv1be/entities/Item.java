@@ -2,10 +2,7 @@ package com.decagon.OakLandv1be.entities;
 
 import lombok.*;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Entity
 @Getter
@@ -13,6 +10,7 @@ import javax.persistence.ManyToOne;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Table(name = "item_tbl")
 public class Item extends BaseEntity{
 
     private String productName;
@@ -26,6 +24,7 @@ public class Item extends BaseEntity{
     private Cart cart;
 
     @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "order_id")
     private Order order;
 
 

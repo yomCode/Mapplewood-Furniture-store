@@ -1,10 +1,8 @@
 package com.decagon.OakLandv1be.entities;
 
 import lombok.*;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+
+import javax.persistence.*;
 
 @Entity
 @AllArgsConstructor
@@ -12,6 +10,7 @@ import javax.persistence.OneToOne;
 @Getter
 @Setter
 @Builder
+@Table(name = "customer_tbl")
 public class Customer extends BaseEntity{
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -19,12 +18,15 @@ public class Customer extends BaseEntity{
     private Person person;
 
     @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="cart_id")
     private Cart cart;
 
     @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "wallet_id")
     private Wallet wallet;
 
     @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "order_id")
     private Order order;
 
 

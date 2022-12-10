@@ -13,6 +13,7 @@ import java.util.Set;
 @Setter
 @Getter
 @Builder
+@Table(name = "wallet_tbl")
 public class Wallet extends BaseEntity{
 
     private Double accountBalance;
@@ -26,7 +27,6 @@ public class Wallet extends BaseEntity{
 
 
     @OneToOne(mappedBy = "wallet", cascade = CascadeType.ALL)
-    @JoinColumn(name = "customer_id")
     private Customer customer;
 
 

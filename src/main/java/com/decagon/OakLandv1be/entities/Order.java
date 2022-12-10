@@ -15,10 +15,10 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Table(name = "order_tbl")
 public class Order extends BaseEntity{
 
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
-    @JoinColumn(name = "modeOfPayment_id")
     private ModeOfPayment modeOfPayment;
 
     @JsonIgnore
@@ -42,7 +42,10 @@ public class Order extends BaseEntity{
     private Address address;
 
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
-    @JoinColumn(name = "customer_id")
     private Customer customer;
+
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
+    private Transaction transaction;
+
 
 }

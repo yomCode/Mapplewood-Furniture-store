@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Entity
 @Getter
@@ -11,11 +12,13 @@ import javax.persistence.Entity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Table(name = "pickupCenter_tbl")
 public class PickupCenter extends BaseEntity{
 
     private String name;
     @Embedded
     private Address address;
+
     private String phone;
 
 }

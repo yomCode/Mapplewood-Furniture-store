@@ -12,6 +12,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Table(name = "transaction_tbl")
 public class Transaction extends BaseEntity{
 
     @ManyToOne(cascade = CascadeType.ALL)
@@ -21,7 +22,8 @@ public class Transaction extends BaseEntity{
     @Enumerated(EnumType.STRING)
     private TransactionStatus status;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "order_id")
     private Order order;
 
 }

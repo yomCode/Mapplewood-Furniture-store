@@ -14,6 +14,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Table(name = "delivery_tbl")
 public class Delivery extends BaseEntity{
 
     @JsonIgnore

@@ -2,9 +2,7 @@ package com.decagon.OakLandv1be.entities;
 
 import lombok.*;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 
 @Entity
 @Getter
@@ -12,6 +10,7 @@ import javax.persistence.OneToOne;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Table(name = "modeOfPayment_tbl")
 public class ModeOfPayment extends BaseEntity{
 
     private String name;
@@ -19,5 +18,6 @@ public class ModeOfPayment extends BaseEntity{
     private String provider;
 
     @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "order_id")
     private Order order;
 }
