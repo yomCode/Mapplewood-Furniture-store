@@ -68,6 +68,7 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<finalName>OakLand-v1-be</finalName>
 	</build>
 
 </project>
