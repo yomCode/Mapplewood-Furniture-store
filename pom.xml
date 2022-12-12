@@ -75,7 +75,7 @@
 				</configuration>
 			</plugin>
 		</plugins>
-		<finalName>OakLand-v1-be</finalName>
+		<finalName>oakLand-v1-be</finalName>
 	</build>
 
 </project>

@@ -1,0 +1,29 @@
+version: '3.8'
+services:
+  API:
+    image: "oakLand-v1-be.jar"
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgresdb:
+        condition: service_healthy
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresdb:5432/oakLandDB
+      - SPRING_DATASOURCE_USERNAME=oakland2022
+      - SPRING_DATASOURCE_PASSWORD=projectoakland
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+
+  postgresdb:
+    image: postgres:13.3-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=projectoakland
+      - POSTGRES_USER=oakland2022
+      - POSTGRES_DB=oakLandDB
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
