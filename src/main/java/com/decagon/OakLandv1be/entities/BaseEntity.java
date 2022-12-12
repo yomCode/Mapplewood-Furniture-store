@@ -18,7 +18,7 @@ public abstract class BaseEntity {
     private Long id;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "createdAt", nullable = false)
+    @Column(name = "createdAt")
     private Date createdAt;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -28,11 +28,13 @@ public abstract class BaseEntity {
 
     @PrePersist
     public void createdAt(){
+
         this.createdAt = new Date();
     }
 
     @PreUpdate
     public void updatedAt(){
+
         this.updatedAt = new Date();
     }
 
