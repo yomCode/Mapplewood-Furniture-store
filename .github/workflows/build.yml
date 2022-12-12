@@ -31,6 +31,8 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           java-version: ${{ env.JAVA_VERSION }}
+          distribution: 'temurin'
+          cache: maven
       - name: Maven Clean Package
         run: |
           ./mvnw --no-transfer-progress clean package
