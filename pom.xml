@@ -71,7 +71,6 @@
 			<plugin>
 			<artifactId>maven-surefire-plugin</artifactId>
 			<!-- latest version does not work well with JUnit5 -->
-			<version>2.19.1</version>
 			<dependencies>
 				<dependency>
 					<groupId>org.junit.platform</groupId>
