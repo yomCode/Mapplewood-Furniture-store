@@ -1,38 +1,19 @@
-name: Oakland-CI
-
+name: Java CI with Maven
 on:
+  push:
+    branches: [ main, develop ]
   pull_request:
-    branches: [ develop ]
-
-  workflow_dispatch:
-
-env:
-  POSTGRESQL_VERSION: 13.1
-  POSTGRESQL_DB: oakLandDB
-  POSTGRESQL_USER: oakland2022
-  POSTGRESQL_PASSWORD: projectoakland
-  JAVA_VERSION: 11
-
+    branches: [ main, develop ]
 jobs:
   build:
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:13.1
-        env:
-          POSTGRES_DB: ${{ env.POSTGRESQL_DB }}
-          POSTGRES_USER: ${{ env.POSTGRESQL_USER }}
-          POSTGRES_PASSWORD: ${{ env.POSTGRESQL_PASSWORD }}
-        ports:
-          - 5432:5432
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - uses: actions/checkout@v2
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
         with:
-          java-version: ${{ env.JAVA_VERSION }}
-          distribution: 'temurin'
+          java-version: '11'
+          distribution: 'adopt'
           cache: maven
-      - name: Build with Maven
+      - name: Build and test with Maven
         run: mvn -B package --file pom.xml
-
