@@ -1,7 +1,6 @@
 package com.decagon.OakLandv1be.entities;
 
 
-import com.decagon.OakLandv1be.enums.DeliveryStatus;
 import com.decagon.OakLandv1be.enums.ModeOfDelivery;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
@@ -38,10 +37,12 @@ public class Order extends BaseEntity{
 
     private Double discount;
 
-    @Embedded
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "address_id")
     private Address address;
 
-    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "customer_id")
     private Customer customer;
 
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
