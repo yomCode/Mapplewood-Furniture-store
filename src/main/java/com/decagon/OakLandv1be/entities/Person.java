@@ -18,7 +18,7 @@ public class Person extends BaseEntity{
 
     private String firstName;
     private String lastName;
-    private String Email;
+    private String email;
 
     @Enumerated(EnumType.STRING)
     private Gender gender;
@@ -30,9 +30,6 @@ public class Person extends BaseEntity{
 
     @Enumerated(EnumType.STRING)
     private Role role;
-
-    @Embedded
-    private Address address;
 
     @OneToOne(mappedBy = "person", cascade = CascadeType.ALL)
     private Admin admin;

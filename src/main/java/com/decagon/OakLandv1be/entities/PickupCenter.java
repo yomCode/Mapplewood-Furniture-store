@@ -16,8 +16,8 @@ import javax.persistence.Table;
 public class PickupCenter extends BaseEntity{
 
     private String name;
-    @Embedded
-    private Address address;
+
+    private String address;
 
     private String phone;
 
