@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   API:
-    image: "oakLand-v1-be.jar"
+    image: "oakland-v1-be.jar"
     ports:
       - "8080:8080"
     depends_on:
