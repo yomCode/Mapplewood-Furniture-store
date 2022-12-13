@@ -17,8 +17,8 @@ jobs:
           - "5432:5432"
         env:
           POSTGRES_HOST: "localhost"
-          POSTGRES_USER:
-          POSTGRES_PASSWORD:
+          POSTGRES_USER: ""
+          POSTGRES_PASSWORD: ""
           POSTGRES_DB: "oaklanddb"
         # Set Health Checks to wait until postgress has started
         options: >-
