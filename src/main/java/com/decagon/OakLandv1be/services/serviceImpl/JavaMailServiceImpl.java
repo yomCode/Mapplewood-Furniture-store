@@ -3,6 +3,7 @@ package com.decagon.OakLandv1be.services.serviceImpl;
 import com.decagon.OakLandv1be.OakLandV1BeApplication;
 import com.decagon.OakLandv1be.services.JavaMailService;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
@@ -24,7 +25,7 @@ import java.util.Hashtable;
 import java.util.regex.Pattern;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class JavaMailServiceImpl implements JavaMailService {
     private final JavaMailSender javaMailSender;
     private static final Logger LOGGER = LoggerFactory.getLogger(OakLandV1BeApplication.class);
@@ -81,24 +82,5 @@ public class JavaMailServiceImpl implements JavaMailService {
         if( attr == null ) return( 0 );
         return( attr.size() );
     }
-//        Email from = new Email("furnituroakland@gmail.com");
-//        String subject = "The subject";
-//        Email to = new Email("ilemonamustapha@gmail.com");
-//        Content content = new Content("text/plain", "This is a test email");
-//        Mail mail = new Mail(from, subject, to, content);
-//
-//        SendGrid sg = new SendGrid(
-//                "SG.K2kb8Y9ARjuhbrJu-ze71A.meo6mp9xte8ruLEaZb2aFX50REIz8CMGYRaz41TVaToSG.K2kb8Y9ARjuhbrJu-ze71A.meo6mp9xte8ruLEaZb2aFX50REIz8CMGYRaz41TVaTo");
-//        Request request = new Request();
-//        try {
-//            request.setMethod(Method.POST);
-//            request.setEndpoint("mail/send");
-//            request.setBody(mail.build());
-//            Response response = sg.api(request);
-//            LOGGER.info(response.getBody());
-//            return new ResponseEntity<>(response.getBody(), HttpStatus.OK);
-//        } catch (IOException ex) {
-//            throw ex;
-//        }
-    }
+}
 

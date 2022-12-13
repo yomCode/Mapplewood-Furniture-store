@@ -2,6 +2,7 @@ package com.decagon.OakLandv1be.controllers;
 
 import com.decagon.OakLandv1be.services.JavaMailService;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/api")
-@AllArgsConstructor
+@RequestMapping("/api/v1/auth")
+@RequiredArgsConstructor
 public class JavaMailController {
     private final JavaMailService javaMailService;
     @PostMapping("/send/{email}")
