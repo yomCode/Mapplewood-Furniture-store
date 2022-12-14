@@ -2,6 +2,7 @@ package com.decagon.OakLandv1be.entities;
 
 import com.decagon.OakLandv1be.enums.Gender;
 import com.decagon.OakLandv1be.enums.Role;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -47,9 +48,11 @@ public class Person extends BaseEntity{
     @Column(nullable = false)
     private Role role;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "person", cascade = CascadeType.ALL)
     private Admin admin;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "person", cascade = CascadeType.ALL)
     private Customer customer;
 

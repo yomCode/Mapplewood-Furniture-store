@@ -25,7 +25,7 @@ public class Wallet extends BaseEntity{
     @OneToMany(mappedBy = "wallet", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Transaction> transactions;
 
-
+    @JsonIgnore
     @OneToOne(mappedBy = "wallet", cascade = CascadeType.ALL)
     private Customer customer;
 
