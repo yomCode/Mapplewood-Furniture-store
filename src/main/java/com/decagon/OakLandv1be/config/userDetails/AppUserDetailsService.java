@@ -18,11 +18,8 @@ public class AppUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        System.out.println("USERNAME: " + email);
         Person dbUser = personRepository.findByEmail(email).orElseThrow(
                 () -> new UsernameNotFoundException("Not Found"));
-        System.out.println("USERNAME: " + dbUser);
-
         return AppUserDetails.builder()
                 .username(dbUser.getEmail())
                 .password(passwordEncoder.encode(dbUser.getPassword()))
