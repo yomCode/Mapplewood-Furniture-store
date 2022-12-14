@@ -47,9 +47,6 @@ public class Person extends BaseEntity{
     @Column(nullable = false)
     private Role role;
 
-    @Embedded
-    private Address address;
-
     @OneToOne(mappedBy = "person", cascade = CascadeType.ALL)
     private Admin admin;
 
