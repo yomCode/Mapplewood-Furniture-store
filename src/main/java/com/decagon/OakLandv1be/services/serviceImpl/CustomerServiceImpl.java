@@ -3,30 +3,33 @@ package com.decagon.OakLandv1be.services.serviceImpl;
 import com.decagon.OakLandv1be.dto.SignupRequestDto;
 import com.decagon.OakLandv1be.dto.SignupResponseDto;
 import com.decagon.OakLandv1be.entities.*;
+import com.decagon.OakLandv1be.enums.BaseCurrency;
+import com.decagon.OakLandv1be.enums.Gender;
 import com.decagon.OakLandv1be.enums.Role;
 import com.decagon.OakLandv1be.exceptions.AlreadyExistsException;
 import com.decagon.OakLandv1be.repositries.CustomerRepository;
 import com.decagon.OakLandv1be.repositries.PersonRepository;
+import com.decagon.OakLandv1be.repositries.WalletRepository;
 import com.decagon.OakLandv1be.services.CustomerService;
-import com.decagon.OakLandv1be.utils.ApiResponse;
 import com.decagon.OakLandv1be.utils.ResponseManager;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.springframework.beans.BeanUtils;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.util.HashSet;
+import java.util.Set;
 
 @Service
 @Data
 @AllArgsConstructor
 public class CustomerServiceImpl implements CustomerService {
     private final CustomerRepository customerRepository;
-    private final ResponseManager responseManager;
     private final PersonRepository personRepository;
+    private  final WalletRepository walletRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
-    public ApiResponse<SignupResponseDto> saveCustomer(SignupRequestDto signupRequestDto) throws AlreadyExistsException {
+    public SignupResponseDto saveCustomer(SignupRequestDto signupRequestDto) throws AlreadyExistsException {
         // Checking database if email already exist
         boolean emailExist = personRepository.existsByEmail(signupRequestDto.getEmail());
 
@@ -35,6 +38,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         Customer customer = new Customer();
 
+        Set<Address> addresses = new HashSet<>();
         Address address = Address.builder()
                 .fullName(signupRequestDto.getFirstName() + " "+ signupRequestDto.getLastName())
                 .emailAddress(signupRequestDto.getEmail())
@@ -42,35 +46,48 @@ public class CustomerServiceImpl implements CustomerService {
                 .country(signupRequestDto.getCountry())
                 .street(signupRequestDto.getStreet())
                 .build();
+        addresses.add(address);
 
         Person person = Person.builder()
                 .role(Role.CUSTOMER)
                 .verificationStatus(false)
-                .address(address)
                 .customer(customer)
                 .email(signupRequestDto.getEmail())
                 .firstName(signupRequestDto.getFirstName())
                 .lastName(signupRequestDto.getLastName())
                 .phone(signupRequestDto.getPhoneNumber())
-                .gender(signupRequestDto.getGender())
-                .password(signupRequestDto.getPassword())
+                .gender(Gender.valueOf(signupRequestDto.getGender().toUpperCase()))
+                .password(passwordEncoder.encode(signupRequestDto.getPassword()))
                 .date_of_birth(signupRequestDto.getDate_of_birth())
-                .build();
-        customer.setPerson(person);
-
-        Cart cart = Cart.builder()
                 .customer(customer)
-                .total(0.00)
-                .items(new HashSet<>())
                 .build();
-        customer.setCart(cart);
 
+        Wallet wallet = Wallet.builder()
+                .baseCurrency(BaseCurrency.NAIRA)
+                .accountBalance(0.00)
+                .customer(customer)
+                .build();
+        customer.setWallet(wallet);
+
+        customer.setPerson(person);
+        customer.setAddressBook(addresses);
+
+        personRepository.save(person);
+        walletRepository.save(wallet);
         customerRepository.save(customer);
 
-        // use the user object to create UserResponseDto Object
-        SignupResponseDto signupResponseDto = new SignupResponseDto();
-        BeanUtils.copyProperties(customer, signupResponseDto);
 
-        return responseManager.success(signupResponseDto);
+        // use the user object to create UserResponseDto Object
+      return SignupResponseDto.builder()
+                .firstName(person.getFirstName())
+                .lastName(person.getLastName())
+                .email(person.getEmail())
+                .gender(person.getGender())
+                .date_of_birth(person.getDate_of_birth())
+                .phone(person.getPhone())
+                .verificationStatus(person.getVerificationStatus())
+                .address(address)
+                .build();
+
     }
 }

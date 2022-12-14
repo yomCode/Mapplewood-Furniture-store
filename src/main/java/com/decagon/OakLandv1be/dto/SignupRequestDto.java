@@ -23,7 +23,7 @@ public class SignupRequestDto {
     @Email
     private String email;
 
-    private Gender gender;
+    private String gender;
 
     @NotBlank(message = "Date of birth is mandatory")
     private String date_of_birth;
