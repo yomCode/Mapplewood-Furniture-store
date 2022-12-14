@@ -15,7 +15,9 @@ import java.io.IOException;
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class JavaMailController {
+
     private final JavaMailService javaMailService;
+
     @PostMapping("/send/{email}")
     public ResponseEntity<String> sendMail(@PathVariable String email) throws IOException {
         return javaMailService.sendMail(email);
