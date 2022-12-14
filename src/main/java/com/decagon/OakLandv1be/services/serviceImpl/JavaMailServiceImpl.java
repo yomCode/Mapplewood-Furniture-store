@@ -31,7 +31,7 @@ public class JavaMailServiceImpl implements JavaMailService {
     private static final Logger LOGGER = LoggerFactory.getLogger(OakLandV1BeApplication.class);
     private static final Marker IMPORTANT = MarkerFactory.getMarker("IMPORTANT");
     @Override
-    public ResponseEntity<String> sendMail(String receiverEmail) throws IOException {
+    public ResponseEntity<String> sendMail(String receiverEmail, String subject, String text) throws IOException {
 
 
         if (!isValidEmail(receiverEmail))
@@ -43,7 +43,7 @@ public class JavaMailServiceImpl implements JavaMailService {
         message.setFrom("funitureoakland@gmail.com");
         message.setTo(receiverEmail);
         message.setSentDate(new Date());
-        message.setSubject("A test subject");
+        message.setSubject(subject);
         message.setText("Hurray! you just received a mail ");
 
         try {

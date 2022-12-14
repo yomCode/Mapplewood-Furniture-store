@@ -15,6 +15,7 @@ import org.springframework.mail.SimpleMailMessage;
 import java.io.IOException;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 
 @ExtendWith(MockitoExtension.class)
 public class JavaMailServiceImplTest {
@@ -23,13 +24,11 @@ public class JavaMailServiceImplTest {
 
     @Test
     void sendEmail() throws IOException {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo("ilemonamustapha@gmail.com");
-        message.setSubject("A test subject");
-        message.setText("Hurray! you just received a mail ");
-        Mockito.when(javaMailServiceImpl.sendMail(any())).thenReturn(new ResponseEntity<>("sent", HttpStatus.OK));
+        Mockito.when(javaMailServiceImpl.sendMail(anyString(), anyString(), anyString()))
+                .thenReturn(new ResponseEntity<>("sent", HttpStatus.OK));
 
-        ResponseEntity<String> responseEntity = javaMailServiceImpl.sendMail("ilemonamustapha@gmail.com");
+        ResponseEntity<String> responseEntity =
+                javaMailServiceImpl.sendMail("ilemonamustapha@gmail.com", "A random subject", "A random body");
 
                 Assertions.assertThat(responseEntity.getBody().equals("sent"));
         Assertions.assertThat(responseEntity.getStatusCode().equals(HttpStatus.OK));
