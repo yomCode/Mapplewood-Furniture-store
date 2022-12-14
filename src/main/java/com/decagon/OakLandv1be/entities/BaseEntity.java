@@ -2,7 +2,9 @@ package com.decagon.OakLandv1be.entities;
 
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -10,6 +12,8 @@ import java.util.Date;
 @MappedSuperclass
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public abstract class BaseEntity {
 
     @Id
@@ -18,7 +22,7 @@ public abstract class BaseEntity {
     private Long id;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "createdAt", nullable = false)
+    @Column(name = "createdAt")
     private Date createdAt;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -28,11 +32,13 @@ public abstract class BaseEntity {
 
     @PrePersist
     public void createdAt(){
+
         this.createdAt = new Date();
     }
 
     @PreUpdate
     public void updatedAt(){
+
         this.updatedAt = new Date();
     }
 
