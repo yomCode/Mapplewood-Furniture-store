@@ -18,7 +18,7 @@ import java.util.Set;
 public class Delivery extends BaseEntity{
 
     @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Order> orders;
 
     @Enumerated(EnumType.STRING)

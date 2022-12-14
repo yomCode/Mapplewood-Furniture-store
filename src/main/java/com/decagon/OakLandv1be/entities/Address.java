@@ -1,17 +1,19 @@
 package com.decagon.OakLandv1be.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
-import javax.persistence.Embeddable;
-import javax.persistence.Table;
+import javax.persistence.*;
 
-@Embeddable
-@Getter
-@Setter
+
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 @Builder
-public class Address {
+@Entity
+@Table(name = "address_tbl")
+public class Address extends BaseEntity{
 
     private String fullName;
     private String emailAddress;
@@ -19,4 +21,11 @@ public class Address {
     private String state;
     private String country;
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="customer_id")
+    private Customer customer;
+
+    @JsonIgnore
+    @OneToOne(mappedBy = "address", cascade = CascadeType.ALL)
+    private Order order;
 }
