@@ -1,15 +1,10 @@
 package com.decagon.OakLandv1be.dto;
 
-import com.decagon.OakLandv1be.entities.Address;
-import com.decagon.OakLandv1be.entities.Admin;
-import com.decagon.OakLandv1be.entities.Customer;
 import com.decagon.OakLandv1be.enums.Gender;
-import com.decagon.OakLandv1be.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -35,7 +30,7 @@ public class SignupRequestDto {
 
     @NotBlank(message = "Phone number is mandatory")
     @Size(min = 11, max = 14)
-    private String phone;
+    private String phoneNumber;
 
     @NotBlank(message = "Street number is mandatory")
     private String street;
