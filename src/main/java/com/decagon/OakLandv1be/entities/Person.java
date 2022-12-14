@@ -18,7 +18,7 @@ public class Person extends BaseEntity{
 
     private String firstName;
     private String lastName;
-    private String Email;
+    private String email;
 
     @Enumerated(EnumType.STRING)
     private Gender gender;

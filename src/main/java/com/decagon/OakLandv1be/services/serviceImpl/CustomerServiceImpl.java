@@ -6,6 +6,7 @@ import com.decagon.OakLandv1be.entities.*;
 import com.decagon.OakLandv1be.enums.Role;
 import com.decagon.OakLandv1be.exceptions.AlreadyExistsException;
 import com.decagon.OakLandv1be.repositries.CustomerRepository;
+import com.decagon.OakLandv1be.repositries.PersonRepository;
 import com.decagon.OakLandv1be.services.CustomerService;
 import com.decagon.OakLandv1be.utils.ApiResponse;
 import com.decagon.OakLandv1be.utils.ResponseManager;
@@ -22,11 +23,13 @@ import java.util.HashSet;
 public class CustomerServiceImpl implements CustomerService {
     private final CustomerRepository customerRepository;
     private final ResponseManager responseManager;
+    private final PersonRepository personRepository;
 
     @Override
     public ApiResponse<SignupResponseDto> saveCustomer(SignupRequestDto signupRequestDto) throws AlreadyExistsException {
         // Checking database if email already exist
-        boolean emailExist = customerRepository.existsByEmail(signupRequestDto.getEmail());
+        boolean emailExist = personRepository.existsByEmail(signupRequestDto.getEmail());
+
         if(emailExist)
             throw new AlreadyExistsException("This Email address already exists");
 
@@ -45,6 +48,13 @@ public class CustomerServiceImpl implements CustomerService {
                 .verificationStatus(false)
                 .address(address)
                 .customer(customer)
+                .email(signupRequestDto.getEmail())
+                .firstName(signupRequestDto.getFirstName())
+                .lastName(signupRequestDto.getLastName())
+                .phone(signupRequestDto.getPhoneNumber())
+                .gender(signupRequestDto.getGender())
+                .password(signupRequestDto.getPassword())
+                .date_of_birth(signupRequestDto.getDate_of_birth())
                 .build();
         customer.setPerson(person);
 

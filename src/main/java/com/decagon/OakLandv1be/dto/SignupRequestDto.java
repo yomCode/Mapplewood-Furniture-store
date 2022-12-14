@@ -21,7 +21,7 @@ public class SignupRequestDto {
 
     @NotBlank(message = "Email address is mandatory")
     @Email
-    private String Email;
+    private String email;
 
     private Gender gender;
 
