@@ -1,5 +1,6 @@
 package com.decagon.OakLandv1be.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -24,6 +25,7 @@ public class Address extends BaseEntity{
     @JoinColumn(name="customer_id")
     private Customer customer;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "address", cascade = CascadeType.ALL)
     private Order order;
 }

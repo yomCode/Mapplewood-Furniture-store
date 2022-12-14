@@ -45,6 +45,7 @@ public class Order extends BaseEntity{
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
     private Transaction transaction;
 
