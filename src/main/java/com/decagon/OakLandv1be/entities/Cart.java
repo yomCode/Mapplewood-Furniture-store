@@ -16,11 +16,12 @@ import java.util.Set;
 public class Cart extends BaseEntity{
 
     @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "cart" ,cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Item> items;
 
     private Double total;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "cart", cascade = CascadeType.ALL)
     private Customer customer;
 

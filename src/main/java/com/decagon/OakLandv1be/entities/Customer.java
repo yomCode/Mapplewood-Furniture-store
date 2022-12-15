@@ -1,8 +1,10 @@
 package com.decagon.OakLandv1be.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @AllArgsConstructor
@@ -25,9 +27,16 @@ public class Customer extends BaseEntity{
     @JoinColumn(name = "wallet_id")
     private Wallet wallet;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "order_id")
-    private Order order;
+    @JsonIgnore
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<Order> orders;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<Product> favorites;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<Address> addressBook;
 
 }
