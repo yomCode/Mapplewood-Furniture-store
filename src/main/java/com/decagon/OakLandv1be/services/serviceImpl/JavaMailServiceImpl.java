@@ -27,9 +27,13 @@ import java.util.regex.Pattern;
 @Service
 @RequiredArgsConstructor
 public class JavaMailServiceImpl implements JavaMailService {
+
     private final JavaMailSender javaMailSender;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(OakLandV1BeApplication.class);
+
     private static final Marker IMPORTANT = MarkerFactory.getMarker("IMPORTANT");
+
     @Override
     public ResponseEntity<String> sendMail(String receiverEmail, String subject, String text) throws IOException {
 
