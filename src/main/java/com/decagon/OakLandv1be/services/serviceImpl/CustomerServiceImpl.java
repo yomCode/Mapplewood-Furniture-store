@@ -27,7 +27,6 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public ApiResponse<SignupResponseDto> saveCustomer(SignupRequestDto signupRequestDto) throws AlreadyExistsException {
-        // Checking database if email already exist
         boolean emailExist = personRepository.existsByEmail(signupRequestDto.getEmail());
 
         if(emailExist)
@@ -46,7 +45,7 @@ public class CustomerServiceImpl implements CustomerService {
         Person person = Person.builder()
                 .role(Role.CUSTOMER)
                 .verificationStatus(false)
-                .address(address)
+                .address(String.valueOf(address))
                 .customer(customer)
                 .email(signupRequestDto.getEmail())
                 .firstName(signupRequestDto.getFirstName())
@@ -66,8 +65,6 @@ public class CustomerServiceImpl implements CustomerService {
         customer.setCart(cart);
 
         customerRepository.save(customer);
-
-        // use the user object to create UserResponseDto Object
         SignupResponseDto signupResponseDto = new SignupResponseDto();
         BeanUtils.copyProperties(customer, signupResponseDto);
 

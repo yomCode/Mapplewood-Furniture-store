@@ -25,6 +25,7 @@ public class JWTCoder {
         return NimbusJwtDecoder.withPublicKey(rsaKeys.getPublicKey()).build();
     }
 
+
     @Bean
     JwtEncoder jwtEncoder() {
         JWK jwk = new RSAKey.Builder(rsaKeys.getPublicKey()).privateKey(rsaKeys.getPrivateKey()).build();

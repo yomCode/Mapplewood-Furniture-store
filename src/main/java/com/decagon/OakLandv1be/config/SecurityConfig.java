@@ -8,6 +8,7 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
+
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -25,7 +26,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import java.util.Collection;
 
 import static com.decagon.OakLandv1be.enums.Role.*;
-import static org.springframework.security.config.Customizer.withDefaults;
 
 
 @Configuration
@@ -45,10 +45,10 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((auth) -> {
-                auth.antMatchers(WHITE_LISTED_URLS).permitAll()
-                            .antMatchers("/api/v1/super-admin/**").hasRole(SUPERADMIN.name())
-                            .antMatchers("/api/v1/admin/**").hasAnyRole(ADMIN.name(), SUPERADMIN.name())
-                            .antMatchers("/api/v1/customer/**").hasAnyRole(CUSTOMER.name())
+                auth.requestMatchers(WHITE_LISTED_URLS).permitAll()
+                            .requestMatchers("/api/v1/super-admin/**").hasRole(SUPERADMIN.name())
+                            .requestMatchers("/api/v1/admin/**").hasAnyRole(ADMIN.name(), SUPERADMIN.name())
+                            .requestMatchers("/api/v1/customer/**").hasAnyRole(CUSTOMER.name())
                             .anyRequest().authenticated();
                 })
                 .oauth2ResourceServer(oauth2ResourceServer ->

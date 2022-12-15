@@ -1,20 +1,20 @@
 package com.decagon.OakLandv1be.exceptions;
 
-
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class UserAlreadyExistsException extends RuntimeException{
+public class UserNotFoundException extends RuntimeException{
     private String debugMessage;
 
-    public UserAlreadyExistsException(String message) {
+    public UserNotFoundException(String message) {
 
         super(message);
     }
 
-    public UserAlreadyExistsException(String message, String debugMessage) {
+    public UserNotFoundException(String message, String debugMessage) {
+
         super(message);
         this.debugMessage = debugMessage;
     }
