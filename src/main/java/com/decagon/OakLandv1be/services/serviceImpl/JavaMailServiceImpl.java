@@ -44,7 +44,7 @@ public class JavaMailServiceImpl implements JavaMailService {
         message.setTo(receiverEmail);
         message.setSentDate(new Date());
         message.setSubject(subject);
-        message.setText("Hurray! you just received a mail ");
+        message.setText(text);
 
         try {
             LOGGER.info("Beginning of log *********");
