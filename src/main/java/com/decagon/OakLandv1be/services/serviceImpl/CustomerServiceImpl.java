@@ -1,5 +1,6 @@
 package com.decagon.OakLandv1be.services.serviceImpl;
 
+import com.decagon.OakLandv1be.config.tokens.TokenService;
 import com.decagon.OakLandv1be.dto.SignupRequestDto;
 import com.decagon.OakLandv1be.dto.SignupResponseDto;
 import com.decagon.OakLandv1be.entities.*;
@@ -9,6 +10,7 @@ import com.decagon.OakLandv1be.enums.Role;
 import com.decagon.OakLandv1be.exceptions.AlreadyExistsException;
 import com.decagon.OakLandv1be.repositries.CustomerRepository;
 import com.decagon.OakLandv1be.repositries.PersonRepository;
+import com.decagon.OakLandv1be.repositries.TokenRepository;
 import com.decagon.OakLandv1be.repositries.WalletRepository;
 import com.decagon.OakLandv1be.services.CustomerService;
 import com.decagon.OakLandv1be.services.JavaMailService;
@@ -29,6 +31,9 @@ public class CustomerServiceImpl implements CustomerService {
     private final WalletRepository walletRepository;
     private final PasswordEncoder passwordEncoder;
     private final JavaMailService javaMailService;
+
+    private final TokenService tokenService;
+    private final TokenRepository tokenRepository;
 
 
     @Override
@@ -80,10 +85,17 @@ public class CustomerServiceImpl implements CustomerService {
             walletRepository.save(wallet);
             customerRepository.save(customer);
 
+            String validToken = tokenService.generateVerificationToken(signupRequestDto.getEmail());
+            Token token = new Token();
+            token.setToken(validToken);
+            token.setPerson(person);
+
+            tokenRepository.save(token);
+
             javaMailService.sendMail(signupRequestDto.getEmail(),
                     "Verify your email address",
                     "Hi " + person.getFirstName() + " " + person.getLastName() + ", Thank you for your interest in joining Oakland." +
-                            "To complete your registration, we need you to verify your email address");
+                            "To complete your registration, we need you to verify your email address" + token);
 
             // use the user object to create UserResponseDto Object
             return SignupResponseDto.builder()
