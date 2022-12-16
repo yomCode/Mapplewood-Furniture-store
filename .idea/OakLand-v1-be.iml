@@ -163,7 +163,7 @@
     <orderEntry type="library" scope="TEST" name="Maven: org.springframework:spring-test:5.3.15" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.xmlunit:xmlunit-core:2.8.4" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.springframework.security:spring-security-test:5.5.4" level="project" />
-    <orderEntry type="library" name="Maven: org.springframework.security:spring-security-config:6.0.0" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.security:spring-security-config:5.5.4" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-beans:5.3.15" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-context:5.3.15" level="project" />
   </component>

@@ -18,6 +18,5 @@ public class Admin extends BaseEntity{
     @JoinColumn(name = "person_id")
     private Person person;
 
-    private String address;
 
 }

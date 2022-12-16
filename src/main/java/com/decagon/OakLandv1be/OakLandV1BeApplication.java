@@ -11,6 +11,7 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication
+@EnableConfigurationProperties(RSAKeyProperties.class)
 @EnableSwagger2
 @EnableConfigurationProperties(RSAKeyProperties.class)
 public class OakLandV1BeApplication {

@@ -8,9 +8,9 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
+
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -25,13 +25,11 @@ import org.springframework.security.web.SecurityFilterChain;
 import java.util.Collection;
 
 import static com.decagon.OakLandv1be.enums.Role.*;
-import static org.springframework.security.config.Customizer.withDefaults;
 
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-@EnableMethodSecurity
 public class SecurityConfig {
     private final String[] WHITE_LISTED_URLS = { "/", "/home", "index", "/css/*", "/js/*", "/api/v1/auth/**"};
     private final AppUserDetailsService appUserDetailsService;

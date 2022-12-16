@@ -34,71 +34,68 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public SignupResponseDto saveCustomer(SignupRequestDto signupRequestDto) throws AlreadyExistsException, IOException {
         // Checking database if email already exist
-        boolean emailExist = personRepository.existsByEmail(signupRequestDto.getEmail());
+            boolean emailExist = personRepository.existsByEmail(signupRequestDto.getEmail());
 
-        if(emailExist)
-            throw new AlreadyExistsException("This Email address already exists");
+            if (emailExist)
+                throw new AlreadyExistsException("This Email address already exists");
 
-        Customer customer = new Customer();
+            Customer customer = new Customer();
 
-        Set<Address> addresses = new HashSet<>();
-        Address address = Address.builder()
-                .fullName(signupRequestDto.getFirstName() + " " + signupRequestDto.getLastName())
-                .emailAddress(signupRequestDto.getEmail())
-                .state(signupRequestDto.getState())
-                .country(signupRequestDto.getCountry())
-                .street(signupRequestDto.getStreet())
-                .build();
-        addresses.add(address);
+            Set<Address> addresses = new HashSet<>();
+            Address address = Address.builder()
+                    .fullName(signupRequestDto.getFirstName() + " " + signupRequestDto.getLastName())
+                    .emailAddress(signupRequestDto.getEmail())
+                    .state(signupRequestDto.getState())
+                    .country(signupRequestDto.getCountry())
+                    .street(signupRequestDto.getStreet())
+                    .build();
+            addresses.add(address);
 
-        Person person = Person.builder()
-                .role(Role.CUSTOMER)
-                .verificationStatus(false)
-                .customer(customer)
-                .email(signupRequestDto.getEmail())
-                .firstName(signupRequestDto.getFirstName())
-                .lastName(signupRequestDto.getLastName())
-                .phone(signupRequestDto.getPhoneNumber())
-                .gender(Gender.valueOf(signupRequestDto.getGender().toUpperCase()))
-                .password(passwordEncoder.encode(signupRequestDto.getPassword()))
-                .date_of_birth(signupRequestDto.getDate_of_birth())
-                .customer(customer)
-                .build();
+            Person person = Person.builder()
+                    .role(Role.CUSTOMER)
+                    .verificationStatus(false)
+                    .address(String.valueOf(address))
+                    .customer(customer)
+                    .email(signupRequestDto.getEmail())
+                    .firstName(signupRequestDto.getFirstName())
+                    .lastName(signupRequestDto.getLastName())
+                    .phone(signupRequestDto.getPhoneNumber())
+                    .gender(Gender.valueOf(signupRequestDto.getGender().toUpperCase()))
+                    .password(passwordEncoder.encode(signupRequestDto.getPassword()))
+                    .date_of_birth(signupRequestDto.getDate_of_birth())
+                    .customer(customer)
+                    .build();
 
-        Wallet wallet = Wallet.builder()
-                .baseCurrency(BaseCurrency.NAIRA)
-                .accountBalance(0.00)
-                .customer(customer)
-                .build();
-        customer.setWallet(wallet);
+            Wallet wallet = Wallet.builder()
+                    .baseCurrency(BaseCurrency.NAIRA)
+                    .accountBalance(0.00)
+                    .customer(customer)
+                    .build();
+            customer.setWallet(wallet);
 
-        customer.setPerson(person);
-        customer.setAddressBook(addresses);
+            customer.setPerson(person);
+            customer.setAddressBook(addresses);
 
-        personRepository.save(person);
-        walletRepository.save(wallet);
-        customerRepository.save(customer);
+            personRepository.save(person);
+            walletRepository.save(wallet);
+            customerRepository.save(customer);
 
-
-
-
-
-        javaMailService.sendMail(signupRequestDto.getEmail(),
+            javaMailService.sendMail(signupRequestDto.getEmail(),
                     "Verify your email address",
-                    "Hi "+ person.getFirstName()+ " " + person.getLastName() + ", Thank you for your interest in joining Oakland." +
+                    "Hi " + person.getFirstName() + " " + person.getLastName() + ", Thank you for your interest in joining Oakland." +
                             "To complete your registration, we need you to verify your email address");
 
-        // use the user object to create UserResponseDto Object
-      return SignupResponseDto.builder()
-                .firstName(person.getFirstName())
-                .lastName(person.getLastName())
-                .email(person.getEmail())
-                .gender(person.getGender())
-                .date_of_birth(person.getDate_of_birth())
-                .phone(person.getPhone())
-                .verificationStatus(person.getVerificationStatus())
-                .address(address)
-                .build();
+            // use the user object to create UserResponseDto Object
+            return SignupResponseDto.builder()
+                    .firstName(person.getFirstName())
+                    .lastName(person.getLastName())
+                    .email(person.getEmail())
+                    .gender(person.getGender())
+                    .date_of_birth(person.getDate_of_birth())
+                    .phone(person.getPhone())
+                    .verificationStatus(person.getVerificationStatus())
+                    .address(address)
+                    .build();
 
     }
 }
