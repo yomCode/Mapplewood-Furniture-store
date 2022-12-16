@@ -11,11 +11,12 @@ import com.decagon.OakLandv1be.repositries.CustomerRepository;
 import com.decagon.OakLandv1be.repositries.PersonRepository;
 import com.decagon.OakLandv1be.repositries.WalletRepository;
 import com.decagon.OakLandv1be.services.CustomerService;
-import com.decagon.OakLandv1be.utils.ResponseManager;
+import com.decagon.OakLandv1be.services.JavaMailService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -25,11 +26,13 @@ import java.util.Set;
 public class CustomerServiceImpl implements CustomerService {
     private final CustomerRepository customerRepository;
     private final PersonRepository personRepository;
-    private  final WalletRepository walletRepository;
+    private final WalletRepository walletRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JavaMailService javaMailService;
+
 
     @Override
-    public SignupResponseDto saveCustomer(SignupRequestDto signupRequestDto) throws AlreadyExistsException {
+    public SignupResponseDto saveCustomer(SignupRequestDto signupRequestDto) throws AlreadyExistsException, IOException {
         // Checking database if email already exist
         boolean emailExist = personRepository.existsByEmail(signupRequestDto.getEmail());
 
@@ -40,7 +43,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         Set<Address> addresses = new HashSet<>();
         Address address = Address.builder()
-                .fullName(signupRequestDto.getFirstName() + " "+ signupRequestDto.getLastName())
+                .fullName(signupRequestDto.getFirstName() + " " + signupRequestDto.getLastName())
                 .emailAddress(signupRequestDto.getEmail())
                 .state(signupRequestDto.getState())
                 .country(signupRequestDto.getCountry())
@@ -76,6 +79,14 @@ public class CustomerServiceImpl implements CustomerService {
         walletRepository.save(wallet);
         customerRepository.save(customer);
 
+
+
+
+
+        javaMailService.sendMail(signupRequestDto.getEmail(),
+                    "Verify your email address",
+                    "Hi "+ person.getFirstName()+ " " + person.getLastName() + ", Thank you for your interest in joining Oakland." +
+                            "To complete your registration, we need you to verify your email address");
 
         // use the user object to create UserResponseDto Object
       return SignupResponseDto.builder()

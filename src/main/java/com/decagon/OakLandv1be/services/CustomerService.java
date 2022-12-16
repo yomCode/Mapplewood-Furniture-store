@@ -7,6 +7,8 @@ import com.decagon.OakLandv1be.utils.ApiResponse;
 import com.decagon.OakLandv1be.utils.ResponseManager;
 import org.springframework.http.ResponseEntity;
 
+import java.io.IOException;
+
 public interface CustomerService {
-    SignupResponseDto saveCustomer(SignupRequestDto signupRequestDto) throws AlreadyExistsException;
+    SignupResponseDto saveCustomer(SignupRequestDto signupRequestDto) throws AlreadyExistsException, IOException;
 }

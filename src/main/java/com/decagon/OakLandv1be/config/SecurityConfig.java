@@ -45,10 +45,10 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((auth) -> {
-                auth.antMatchers(WHITE_LISTED_URLS).permitAll()
-                            .antMatchers("/api/v1/super-admin/**").hasRole(SUPERADMIN.name())
-                            .antMatchers("/api/v1/admin/**").hasAnyRole(ADMIN.name(), SUPERADMIN.name())
-                            .antMatchers("/api/v1/customer/**").hasAnyRole(CUSTOMER.name())
+                auth.requestMatchers(WHITE_LISTED_URLS).permitAll()
+                            .requestMatchers("/api/v1/super-admin/**").hasRole(SUPERADMIN.name())
+                            .requestMatchers("/api/v1/admin/**").hasAnyRole(ADMIN.name(), SUPERADMIN.name())
+                            .requestMatchers("/api/v1/customer/**").hasAnyRole(CUSTOMER.name())
                             .anyRequest().authenticated();
                 })
                 .oauth2ResourceServer(oauth2ResourceServer ->
