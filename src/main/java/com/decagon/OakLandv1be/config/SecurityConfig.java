@@ -11,7 +11,6 @@ import org.springframework.security.authentication.AuthenticationProvider;
 
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -31,7 +30,6 @@ import static com.decagon.OakLandv1be.enums.Role.*;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-@EnableMethodSecurity
 public class SecurityConfig {
     private final String[] WHITE_LISTED_URLS = { "/", "/home", "index", "/css/*", "/js/*", "/api/v1/auth/**"};
     private final AppUserDetailsService appUserDetailsService;
@@ -45,10 +43,10 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((auth) -> {
-                auth.requestMatchers(WHITE_LISTED_URLS).permitAll()
-                            .requestMatchers("/api/v1/super-admin/**").hasRole(SUPERADMIN.name())
-                            .requestMatchers("/api/v1/admin/**").hasAnyRole(ADMIN.name(), SUPERADMIN.name())
-                            .requestMatchers("/api/v1/customer/**").hasAnyRole(CUSTOMER.name())
+                auth.antMatchers(WHITE_LISTED_URLS).permitAll()
+                            .antMatchers("/api/v1/super-admin/**").hasRole(SUPERADMIN.name())
+                            .antMatchers("/api/v1/admin/**").hasAnyRole(ADMIN.name(), SUPERADMIN.name())
+                            .antMatchers("/api/v1/customer/**").hasAnyRole(CUSTOMER.name())
                             .anyRequest().authenticated();
                 })
                 .oauth2ResourceServer(oauth2ResourceServer ->
