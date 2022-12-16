@@ -31,7 +31,6 @@ public class CustomerServiceImpl implements CustomerService {
     private final WalletRepository walletRepository;
     private final PasswordEncoder passwordEncoder;
     private final JavaMailService javaMailService;
-
     private final TokenService tokenService;
     private final TokenRepository tokenRepository;
 
