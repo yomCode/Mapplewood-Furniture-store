@@ -119,7 +119,8 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public ResponseEntity<ApiResponse> verifyRegistration(String token){
 
-        Token verificationToken = tokenRepository.findByToken(token).orElseThrow(()-> new InvalidTokenException("Token Not Found"));
+        Token verificationToken = tokenRepository.findByToken(token).orElseThrow(
+                ()-> new InvalidTokenException("Token Not Found"));
 
         if(verificationToken.getTokenStatus().equals(EXPIRED))
             throw new InvalidTokenException("Token already used");
