@@ -37,5 +37,10 @@ public class SwaggerConfig implements WebMvcConfigurer {
         authorizationScopes[0] = authorizationScope;
         return List.of(new SecurityReference("Bearer", authorizationScopes));
     }
+    private SecurityContext securityContext() {
+        return SecurityContext.builder()
+                .securityReferences(defaultAuth())
+                .build();
+    }
 
 }
