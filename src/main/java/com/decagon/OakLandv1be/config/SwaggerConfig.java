@@ -30,5 +30,12 @@ public class SwaggerConfig implements WebMvcConfigurer {
     private ApiKey apiKey() {
         return new ApiKey("Bearer", AUTHORIZATION_HEADER, "header");
     }
+    private List<SecurityReference> defaultAuth() {
+        AuthorizationScope authorizationScope
+                = new AuthorizationScope("global", "accessEverything");
+        AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
+        authorizationScopes[0] = authorizationScope;
+        return List.of(new SecurityReference("Bearer", authorizationScopes));
+    }
 
 }
