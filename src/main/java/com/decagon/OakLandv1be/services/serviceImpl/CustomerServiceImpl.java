@@ -53,21 +53,10 @@ public class CustomerServiceImpl implements CustomerService {
 
             Customer customer = new Customer();
 
-            Set<Address> addresses = new HashSet<>();
-            Address address = Address.builder()
-                    .fullName(signupRequestDto.getFirstName() + " " + signupRequestDto.getLastName())
-                    .emailAddress(signupRequestDto.getEmail())
-                    .state(signupRequestDto.getState())
-                    .country(signupRequestDto.getCountry())
-                    .street(signupRequestDto.getStreet())
-                    .build();
-            addresses.add(address);
-
             Person person = Person.builder()
                     .role(Role.CUSTOMER)
                     .verificationStatus(false)
-                    .address(String.valueOf(address))
-                    .customer(customer)
+                    .address(signupRequestDto.getAddress())
                     .email(signupRequestDto.getEmail())
                     .firstName(signupRequestDto.getFirstName())
                     .lastName(signupRequestDto.getLastName())
@@ -86,7 +75,6 @@ public class CustomerServiceImpl implements CustomerService {
 
             customer.setWallet(wallet);
             customer.setPerson(person);
-            customer.setAddressBook(addresses);
 
             personRepository.save(person);
             walletRepository.save(wallet);
@@ -113,7 +101,7 @@ public class CustomerServiceImpl implements CustomerService {
                     .date_of_birth(person.getDate_of_birth())
                     .phone(person.getPhone())
                     .verificationStatus(person.getVerificationStatus())
-                    .address(address)
+                    .address(person.getAddress())
                     .build();
     }
     @Override

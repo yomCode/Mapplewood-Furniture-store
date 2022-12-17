@@ -32,14 +32,8 @@ public class SignupRequestDto {
     @Size(min = 11, max = 14)
     private String phoneNumber;
 
-    @NotBlank(message = "Street number is mandatory")
-    private String street;
-
-    @NotBlank(message = "State is mandatory")
-    private String state;
-
-    @NotBlank(message = "Country is mandatory")
-    private String country;
+    @NotBlank(message = "Address is mandatory")
+    private String address;
 
     @NotBlank(message = "Password is mandatory")
     private String password;
