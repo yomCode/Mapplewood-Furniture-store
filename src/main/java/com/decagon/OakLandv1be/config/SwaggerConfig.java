@@ -27,4 +27,8 @@ public class SwaggerConfig implements WebMvcConfigurer {
                 Collections.emptyList());
     }
 
+    private ApiKey apiKey() {
+        return new ApiKey("Bearer", AUTHORIZATION_HEADER, "header");
+    }
+
 }
