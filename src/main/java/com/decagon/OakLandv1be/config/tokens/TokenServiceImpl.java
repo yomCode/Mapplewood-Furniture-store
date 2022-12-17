@@ -56,7 +56,7 @@ public class TokenServiceImpl implements TokenService {
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("self")
                 .issuedAt(now)
-                .expiresAt(now.plus(15, ChronoUnit.MINUTES))
+                .expiresAt(now.plus(2, ChronoUnit.MINUTES))
                 .subject(email)
                 .build();
         return this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();

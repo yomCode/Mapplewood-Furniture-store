@@ -34,7 +34,7 @@ import static com.decagon.OakLandv1be.enums.Role.*;
 public class SecurityConfig {
     private final String[] WHITE_LISTED_URLS = { "/", "/home", "index", "/css/*", "/js/*",
             "/api/v1/auth/**","/v2/api-docs/**", "/v3/api-docs/**","/configuration/**",
-            "/swagger*/**","/swagger-ui/**","/webjars/**", "/swagger-ui.hmtl"
+            "/swagger*/**","/swagger-ui/**","/webjars/**", "/swagger-ui.html"
     };
     private final AppUserDetailsService appUserDetailsService;
     private static final String AUTHORITY_PREFIX = "ROLE_";

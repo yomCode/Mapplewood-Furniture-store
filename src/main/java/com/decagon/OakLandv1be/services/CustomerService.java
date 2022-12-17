@@ -11,4 +11,6 @@ import java.io.IOException;
 
 public interface CustomerService {
     SignupResponseDto saveCustomer(SignupRequestDto signupRequestDto) throws AlreadyExistsException, IOException;
+
+    ResponseEntity<ApiResponse> verifyRegistration(String token);
 }
