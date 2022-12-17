@@ -26,7 +26,6 @@ public class SwaggerConfig implements WebMvcConfigurer {
                 "www.oaklandfurniture.com",
                 Collections.emptyList());
     }
-
     private ApiKey apiKey() {
         return new ApiKey("Bearer", AUTHORIZATION_HEADER, "header");
     }
@@ -43,4 +42,15 @@ public class SwaggerConfig implements WebMvcConfigurer {
                 .build();
     }
 
+    @Bean
+    public Docket appApi () {
+        return new Docket(DocumentationType.SWAGGER_2)
+                .apiInfo(apiInfo())
+                .securityContexts(Collections.singletonList(securityContext()))
+                .securitySchemes(List.of(apiKey()))
+                .select()
+                .apis(RequestHandlerSelectors.any())
+                .paths(PathSelectors.any())
+                .build();
+    }
 }
