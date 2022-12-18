@@ -13,6 +13,7 @@ import javax.persistence.*;
 @Builder
 @Table(name = "modeOfPayment_tbl")
 public class ModeOfPayment extends BaseEntity{
+
     private String name;
 
     private String provider;
