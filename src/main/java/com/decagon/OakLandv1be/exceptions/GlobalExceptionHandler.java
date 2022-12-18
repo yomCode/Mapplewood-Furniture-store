@@ -45,10 +45,19 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(NotAvailableException.class)
-    public ResponseEntity<ErrorResponse> notAvailable(NotAvailableException ne){
+    public ResponseEntity<ErrorResponse> notAvailable(NotAvailableException ne) {
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setMessage(ne.getMessage());
         errorResponse.setDebugMessage("Not Available");
+        errorResponse.setStatus(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(InvalidTokenException.class)
+    public ResponseEntity<ErrorResponse> tokenNotFound(InvalidTokenException ne){
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setMessage(ne.getMessage());
+        errorResponse.setDebugMessage("Token not found");
         errorResponse.setStatus(HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
@@ -61,5 +70,4 @@ public class GlobalExceptionHandler {
         errorResponse.setStatus(HttpStatus.UNAUTHORIZED);
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
-
 }
