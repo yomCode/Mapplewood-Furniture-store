@@ -3,8 +3,10 @@ package com.decagon.OakLandv1be.controllers;
 
 import com.decagon.OakLandv1be.dto.FundWalletRequest;
 import com.decagon.OakLandv1be.services.WalletService;
+import com.decagon.OakLandv1be.utils.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +21,7 @@ public class WalletController {
     private WalletService walletService;
 
     @PostMapping("/fund-wallet")
-    public String fundWallet(@RequestBody FundWalletRequest request){
+    public ResponseEntity<ApiResponse<Object>> fundWallet(@RequestBody FundWalletRequest request){
         return walletService.fundWallet(request);
     }
 }

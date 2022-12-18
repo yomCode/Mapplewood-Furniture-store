@@ -5,12 +5,18 @@ import com.decagon.OakLandv1be.entities.Person;
 import com.decagon.OakLandv1be.entities.Transaction;
 import com.decagon.OakLandv1be.entities.Wallet;
 import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
+import com.decagon.OakLandv1be.exceptions.UnauthorizedUserException;
 import com.decagon.OakLandv1be.repositries.PersonRepository;
 import com.decagon.OakLandv1be.repositries.TransactionRepository;
 import com.decagon.OakLandv1be.repositries.WalletRepository;
 import com.decagon.OakLandv1be.services.WalletService;
+import com.decagon.OakLandv1be.utils.ApiResponse;
+import com.decagon.OakLandv1be.utils.ResponseManager;
+import com.mysql.cj.exceptions.UnableToConnectException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,16 +34,18 @@ public class WalletServiceImpl implements WalletService {
 
     private final TransactionRepository transactionRepository;
 
+    private final ResponseManager responseManager;
+
 
     @Override
-    public String fundWallet(FundWalletRequest request){
+    public ResponseEntity<ApiResponse<Object>> fundWallet(FundWalletRequest request){
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
         if(!(authentication instanceof AnonymousAuthenticationToken)){
             String email = authentication.getName();
 
-            Person person = personRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("Person not found"));
+            Person person = personRepository.findByEmail(email)
+                    .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
 
             Wallet wallet = person.getCustomer().getWallet();
             wallet.setAccountBalance(wallet.getAccountBalance() + request.getAmount());
@@ -50,9 +58,9 @@ public class WalletServiceImpl implements WalletService {
             wallet.getTransactions().add(transaction);
             walletRepository.save(wallet);
 
-            return "Wallet funded successfully";
+            return new ResponseEntity<>(responseManager.success("Wallet funded successfully"), HttpStatus.OK);
         }
-        return "Invalid user";
+        throw new UnauthorizedUserException("Login to carry out this operation");
     }
 
 
