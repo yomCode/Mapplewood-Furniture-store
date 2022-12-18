@@ -23,7 +23,7 @@ public class WalletController {
     private final WalletService walletService;
 
     @PostMapping("/fund-wallet")
-    public ResponseEntity<ApiResponse<Object>> fundWallet(@RequestBody FundWalletRequest request) throws IOException {
+    public ResponseEntity<ApiResponse<Object>> fundWallet(@RequestBody FundWalletRequest request) {
         return walletService.fundWallet(request);
     }
 }

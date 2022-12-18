@@ -38,7 +38,7 @@ public class WalletServiceImpl implements WalletService {
     private final JavaMailService mailService;
 
     @Override
-    public ResponseEntity<ApiResponse<Object>> fundWallet(FundWalletRequest request) throws IOException {
+    public ResponseEntity<ApiResponse<Object>> fundWallet(FundWalletRequest request) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(!(authentication instanceof AnonymousAuthenticationToken)){
@@ -58,8 +58,12 @@ public class WalletServiceImpl implements WalletService {
             wallet.getTransactions().add(transaction);
             walletRepository.save(wallet);
 
-            mailService.sendMail(person.getEmail(), "Wallet deposit", "Your wallet has been credited with "
-                    + request.getAmount() + ". Your new balance is now " + wallet.getAccountBalance());
+            try {
+                mailService.sendMail(person.getEmail(), "Wallet deposit", "Your wallet has been credited with "
+                        + request.getAmount() + ". Your new balance is now " + wallet.getAccountBalance());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
 
 
             return new ResponseEntity<>(responseManager.success("Wallet funded successfully"), HttpStatus.OK);
