@@ -1,5 +1,6 @@
 package com.decagon.OakLandv1be.config;
 
+import com.decagon.OakLandv1be.config.jwt.JWTCoder;
 import com.decagon.OakLandv1be.config.userDetails.AppUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -19,6 +20,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationProvider;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -41,6 +43,7 @@ public class SecurityConfig {
     private static final String AUTHORITY_PREFIX = "ROLE_";
     private static final String CLAIM_ROLES = "roles";
     private final PasswordEncoder passwordEncoder;
+    private final JWTCoder jwtCoder;
 
 
     @Bean
@@ -88,5 +91,12 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
+    }
+
+    @Bean
+    JwtAuthenticationProvider jwtTokenAuthProvider() {
+        JwtAuthenticationProvider provider = new JwtAuthenticationProvider(jwtCoder.jwtDecoder());
+        provider.setJwtAuthenticationConverter(getJwtAuthenticationConverter());
+        return provider;
     }
 }
