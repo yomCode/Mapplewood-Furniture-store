@@ -1,5 +1,7 @@
 package com.decagon.OakLandv1be.services;
 
+import com.decagon.OakLandv1be.dto.ProductCustResponseDto;
+import com.decagon.OakLandv1be.dto.ProductResponseDto;
 import com.decagon.OakLandv1be.dto.SignupRequestDto;
 import com.decagon.OakLandv1be.dto.SignupResponseDto;
 import com.decagon.OakLandv1be.exceptions.AlreadyExistsException;
@@ -10,7 +12,9 @@ import org.springframework.http.ResponseEntity;
 import java.io.IOException;
 
 public interface CustomerService {
+
     SignupResponseDto saveCustomer(SignupRequestDto signupRequestDto) throws AlreadyExistsException, IOException;
 
     ResponseEntity<ApiResponse> verifyRegistration(String token);
+
 }
