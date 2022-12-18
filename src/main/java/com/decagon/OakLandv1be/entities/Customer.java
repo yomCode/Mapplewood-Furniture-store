@@ -32,7 +32,7 @@ public class Customer extends BaseEntity{
     private Set<Order> orders;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Product> favorites;
 
     @JsonIgnore

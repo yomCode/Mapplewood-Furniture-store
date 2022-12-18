@@ -10,6 +10,7 @@ import com.decagon.OakLandv1be.repositries.TransactionRepository;
 import com.decagon.OakLandv1be.repositries.WalletRepository;
 import com.decagon.OakLandv1be.services.WalletService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -36,7 +37,7 @@ public class WalletServiceImpl implements WalletService {
         if(!(authentication instanceof AnonymousAuthenticationToken)){
             String email = authentication.getName();
 
-            Person person = personRepository.findByEmail(email).orElseThrow(()-> new ResourceNotFoundException("Person not found"));
+            Person person = personRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("Person not found"));
 
             Wallet wallet = person.getCustomer().getWallet();
             wallet.setAccountBalance(wallet.getAccountBalance() + request.getAmount());
@@ -49,6 +50,7 @@ public class WalletServiceImpl implements WalletService {
             wallet.getTransactions().add(transaction);
             walletRepository.save(wallet);
 
+            return "Wallet funded successfully";
         }
         return "Invalid user";
     }

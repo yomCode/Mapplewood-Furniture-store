@@ -16,7 +16,7 @@ import javax.persistence.*;
 public class Transaction extends BaseEntity{
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "transaction_id")
+    @JoinColumn(name = "wallet_id")
     private Wallet wallet;
 
     @Enumerated(EnumType.STRING)
