@@ -12,16 +12,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
+
 @RestController
-//@RequiredArgsConstructor
+@RequiredArgsConstructor
 @RequestMapping("/api/v1/auth")
 public class WalletController {
 
-    @Autowired
-    private WalletService walletService;
+
+    private final WalletService walletService;
 
     @PostMapping("/fund-wallet")
-    public ResponseEntity<ApiResponse<Object>> fundWallet(@RequestBody FundWalletRequest request){
+    public ResponseEntity<ApiResponse<Object>> fundWallet(@RequestBody FundWalletRequest request) throws IOException {
         return walletService.fundWallet(request);
     }
 }

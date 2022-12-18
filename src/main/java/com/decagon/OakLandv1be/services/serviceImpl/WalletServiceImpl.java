@@ -9,6 +9,7 @@ import com.decagon.OakLandv1be.exceptions.UnauthorizedUserException;
 import com.decagon.OakLandv1be.repositries.PersonRepository;
 import com.decagon.OakLandv1be.repositries.TransactionRepository;
 import com.decagon.OakLandv1be.repositries.WalletRepository;
+import com.decagon.OakLandv1be.services.JavaMailService;
 import com.decagon.OakLandv1be.services.WalletService;
 import com.decagon.OakLandv1be.utils.ApiResponse;
 import com.decagon.OakLandv1be.utils.ResponseManager;
@@ -22,23 +23,22 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+
 import static com.decagon.OakLandv1be.enums.TransactionStatus.SUCCESSFUL;
 
 @Service
 @RequiredArgsConstructor
 public class WalletServiceImpl implements WalletService {
-
     private final PersonRepository personRepository;
-
     private final WalletRepository walletRepository;
-
     private final TransactionRepository transactionRepository;
-
     private final ResponseManager responseManager;
 
+    private final JavaMailService mailService;
 
     @Override
-    public ResponseEntity<ApiResponse<Object>> fundWallet(FundWalletRequest request){
+    public ResponseEntity<ApiResponse<Object>> fundWallet(FundWalletRequest request) throws IOException {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(!(authentication instanceof AnonymousAuthenticationToken)){
@@ -58,10 +58,13 @@ public class WalletServiceImpl implements WalletService {
             wallet.getTransactions().add(transaction);
             walletRepository.save(wallet);
 
+            mailService.sendMail(person.getEmail(), "Wallet deposit", "Your wallet has been credited with "
+                    + request.getAmount() + ". Your new balance is now " + wallet.getAccountBalance());
+
+
             return new ResponseEntity<>(responseManager.success("Wallet funded successfully"), HttpStatus.OK);
         }
         throw new UnauthorizedUserException("Login to carry out this operation");
     }
-
 
 }

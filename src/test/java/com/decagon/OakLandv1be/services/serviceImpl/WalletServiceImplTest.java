@@ -19,9 +19,11 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.io.IOException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
@@ -31,8 +33,8 @@ class WalletServiceImplTest {
     private WalletRepository walletRepository;
     @Mock
     private PersonRepository personRepository;
-    @InjectMocks
-    private WalletServiceImpl walletService;
+    @Mock
+    private WalletService walletService;
 
     @Mock
     Person person;
@@ -65,9 +67,9 @@ class WalletServiceImplTest {
     }
 
     @Test
-    void fundWallet() {
+    void fundWallet() throws IOException {
 
-        Mockito.when(personRepository.findByEmail(person.getEmail())).thenReturn(Optional.of(person));
+        Mockito.when(personRepository.findByEmail(any())).thenReturn(Optional.of(person));
         FundWalletRequest request = new FundWalletRequest(10000.00);
         walletService.fundWallet(request);
 
