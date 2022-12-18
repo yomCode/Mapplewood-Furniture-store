@@ -1,0 +1,2 @@
+google:
+	www.google.com
