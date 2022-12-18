@@ -1,5 +1,6 @@
 package com.decagon.OakLandv1be.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -33,4 +34,7 @@ public class Product extends BaseEntity{
 
     private String description;
 
+    @JsonIgnore
+    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL)
+    private Item item;
 }
