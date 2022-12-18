@@ -8,9 +8,9 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
-
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -30,8 +30,13 @@ import static com.decagon.OakLandv1be.enums.Role.*;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
-    private final String[] WHITE_LISTED_URLS = { "/", "/home", "index", "/css/*", "/js/*", "/api/v1/auth/**", "api/v1/products/**"};
+
+    private final String[] WHITE_LISTED_URLS = { "/", "/home", "index", "/css/*", "/js/*", "api/v1/products/**",
+            "/api/v1/auth/**","/v2/api-docs/**", "/v3/api-docs/**","/configuration/**",
+            "/swagger*/**","/swagger-ui/**","/webjars/**", "/swagger-ui.html"
+    };
     private final AppUserDetailsService appUserDetailsService;
     private static final String AUTHORITY_PREFIX = "ROLE_";
     private static final String CLAIM_ROLES = "roles";

@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 public class ResponseManager<T> {
 
     public ApiResponse<T> success(T data){
-
         return new ApiResponse<>("Request Successful", true, data);
     }
 
