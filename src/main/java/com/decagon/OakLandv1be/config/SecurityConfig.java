@@ -32,7 +32,8 @@ import static com.decagon.OakLandv1be.enums.Role.*;
 @RequiredArgsConstructor
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
-    private final String[] WHITE_LISTED_URLS = { "/", "/home", "index", "/css/*", "/js/*",
+
+    private final String[] WHITE_LISTED_URLS = { "/", "/home", "index", "/css/*", "/js/*", "api/v1/products/**",
             "/api/v1/auth/**","/v2/api-docs/**", "/v3/api-docs/**","/configuration/**",
             "/swagger*/**","/swagger-ui/**","/webjars/**", "/swagger-ui.html"
     };

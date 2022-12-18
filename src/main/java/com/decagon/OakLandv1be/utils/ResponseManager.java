@@ -7,10 +7,9 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class ResponseManager {
 
-    public ApiResponse<Object> success(Object data){
+    public ApiResponse<T> success(T data){
+        return new ApiResponse<>("Request Successful", true, data);
 
-        return new ApiResponse<>("Operation Successful", true, data);
-    }
 
     public ApiResponse<Object> error(String errorMessage){
 
