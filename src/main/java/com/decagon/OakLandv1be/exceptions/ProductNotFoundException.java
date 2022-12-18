@@ -5,21 +5,16 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class AlreadyExistsException extends RuntimeException{
-
+public class ProductNotFoundException extends RuntimeException{
     private String debugMessage;
 
-    public AlreadyExistsException(String message) {
+    public ProductNotFoundException(String message) {
 
         super(message);
     }
 
-    public AlreadyExistsException(String message, String debugMessage) {
+    public ProductNotFoundException(String message, String debugMessage) {
         super(message);
         this.debugMessage = debugMessage;
     }
-
-
-
 }
-

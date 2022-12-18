@@ -5,21 +5,16 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class AlreadyExistsException extends RuntimeException{
-
+public class InvalidTokenException extends RuntimeException{
     private String debugMessage;
 
-    public AlreadyExistsException(String message) {
+    public InvalidTokenException(String message) {
 
         super(message);
     }
 
-    public AlreadyExistsException(String message, String debugMessage) {
+    public InvalidTokenException(String message, String debugMessage) {
         super(message);
         this.debugMessage = debugMessage;
     }
-
-
-
 }
-

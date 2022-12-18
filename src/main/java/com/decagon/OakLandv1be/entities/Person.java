@@ -39,9 +39,8 @@ public class Person extends BaseEntity{
     private String phone;
     private Boolean verificationStatus;
 
-    @NotNull(message="Password is required")
+
     @Column(nullable = false)
-    @Size(min = 8, max=25, message="Password must be equal to or greater than 8 character and less than 25 characters")
     private String password;
     private String address;
 
