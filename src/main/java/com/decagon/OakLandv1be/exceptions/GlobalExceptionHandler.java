@@ -63,4 +63,18 @@ public class GlobalExceptionHandler {
 
     }
 
+
+    @ExceptionHandler(UnauthorizedUserException.class)
+    public ResponseEntity<ErrorResponse> handleUnauthorizedUserException(UnauthorizedUserException ex){
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .debugMessage("Customer is not logged in")
+                .message(ex.getMessage())
+                .status(HttpStatus.UNAUTHORIZED)
+                .build();
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
+
+    }
+
 }

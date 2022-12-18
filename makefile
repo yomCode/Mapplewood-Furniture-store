@@ -1,2 +1,2 @@
-google:
-	www.google.com
+swagger-link:
+	http://localhost:8080/swagger-ui/#/
