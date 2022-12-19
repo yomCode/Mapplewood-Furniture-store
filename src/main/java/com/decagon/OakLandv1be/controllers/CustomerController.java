@@ -1,11 +1,13 @@
 package com.decagon.OakLandv1be.controllers;
 
+import com.decagon.OakLandv1be.dto.EditProfileRequestDto;
 import com.decagon.OakLandv1be.dto.ProductCustResponseDto;
 import com.decagon.OakLandv1be.dto.SignupRequestDto;
 import com.decagon.OakLandv1be.dto.SignupResponseDto;
 import com.decagon.OakLandv1be.exceptions.AlreadyExistsException;
 import com.decagon.OakLandv1be.services.CustomerService;
 import com.decagon.OakLandv1be.utils.ApiResponse;
+import com.decagon.OakLandv1be.utils.ResponseManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +31,9 @@ public class CustomerController {
         return customerService.verifyRegistration(token);
     }
 
-
-
+    @PutMapping("/edit-profile")
+    public ResponseEntity<String> editProfile(@Valid @RequestBody EditProfileRequestDto editProfileRequestDto){
+        customerService.editProfile(editProfileRequestDto);
+        return new ResponseEntity<>("Profile Updated Successfully", HttpStatus.OK);
+    }
 }

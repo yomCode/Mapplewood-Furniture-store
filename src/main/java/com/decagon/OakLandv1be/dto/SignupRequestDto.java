@@ -1,6 +1,6 @@
 package com.decagon.OakLandv1be.dto;
 
-import com.decagon.OakLandv1be.enums.Gender;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -36,5 +36,6 @@ public class SignupRequestDto {
     private String address;
 
     @NotBlank(message = "Password is mandatory")
+    @Size(min = 8, max=25, message="Password must be equal to or greater than 8 character and less than 25 characters")
     private String password;
 }

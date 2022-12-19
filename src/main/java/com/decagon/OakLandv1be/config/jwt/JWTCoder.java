@@ -20,7 +20,7 @@ public class JWTCoder {
     private final RSAKeyProperties rsaKeys;
 
     @Bean
-    JwtDecoder jwtDecoder() {
+    public JwtDecoder jwtDecoder() {
 
         return NimbusJwtDecoder.withPublicKey(rsaKeys.getPublicKey()).build();
     }
