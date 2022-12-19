@@ -8,8 +8,11 @@ import com.decagon.OakLandv1be.enums.BaseCurrency;
 import com.decagon.OakLandv1be.enums.Gender;
 import com.decagon.OakLandv1be.enums.Role;
 import com.decagon.OakLandv1be.repositries.PersonRepository;
+import com.decagon.OakLandv1be.repositries.TransactionRepository;
 import com.decagon.OakLandv1be.repositries.WalletRepository;
+import com.decagon.OakLandv1be.services.JavaMailService;
 import com.decagon.OakLandv1be.services.WalletService;
+import com.decagon.OakLandv1be.utils.ResponseManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,12 +32,24 @@ import static org.mockito.ArgumentMatchers.any;
 @ExtendWith(MockitoExtension.class)
 class WalletServiceImplTest {
 
-    @Mock
-    private WalletRepository walletRepository;
+//    @Mock
+//    private WalletRepository walletRepository;
+//    @Mock
+//    private PersonRepository personRepository;
+    @InjectMocks
+    private WalletServiceImpl walletService;
+
     @Mock
     private PersonRepository personRepository;
     @Mock
-    private WalletService walletService;
+    private WalletRepository walletRepository;
+    @Mock
+    private TransactionRepository transactionRepository;
+    @Mock
+    private ResponseManager responseManager;
+
+    @Mock
+    private JavaMailService mailService;
 
     @Mock
     Person person;
@@ -67,7 +82,7 @@ class WalletServiceImplTest {
     }
 
     @Test
-    void fundWallet() throws IOException {
+    void fundWallet() {
 
         Mockito.when(personRepository.findByEmail(any())).thenReturn(Optional.of(person));
         FundWalletRequest request = new FundWalletRequest(10000.00);

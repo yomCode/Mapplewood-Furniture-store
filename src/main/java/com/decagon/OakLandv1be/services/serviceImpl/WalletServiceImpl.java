@@ -49,14 +49,12 @@ public class WalletServiceImpl implements WalletService {
 
             Wallet wallet = person.getCustomer().getWallet();
             wallet.setAccountBalance(wallet.getAccountBalance() + request.getAmount());
+            walletRepository.save(wallet);
 
             Transaction transaction = Transaction.builder()
                             .wallet(wallet)
                                     .status(SUCCESSFUL).build();
             transactionRepository.save(transaction);
-
-            wallet.getTransactions().add(transaction);
-            walletRepository.save(wallet);
 
             try {
                 mailService.sendMail(person.getEmail(), "Wallet deposit", "Your wallet has been credited with "
@@ -64,8 +62,6 @@ public class WalletServiceImpl implements WalletService {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-
-
             return new ResponseEntity<>(responseManager.success("Wallet funded successfully"), HttpStatus.OK);
         }
         throw new UnauthorizedUserException("Login to carry out this operation");
