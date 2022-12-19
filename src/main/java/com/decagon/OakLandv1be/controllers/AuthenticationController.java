@@ -5,6 +5,7 @@ import com.decagon.OakLandv1be.config.userDetails.AppUserDetailsService;
 import com.decagon.OakLandv1be.dto.LoginDto;
 import com.decagon.OakLandv1be.dto.ForgotPasswordRequestDto;
 import com.decagon.OakLandv1be.dto.PasswordResetDto;
+import com.decagon.OakLandv1be.services.PersonService;
 import com.decagon.OakLandv1be.services.serviceImpl.PersonServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -28,20 +29,13 @@ public class AuthenticationController {
     private final AuthenticationManager authenticationManager;
     private final AppUserDetailsService userDetailsService;
 
-    private final PersonServiceImpl personService;
-
-    public ResponseEntity<String> loginPerson(@RequestBody LoginDto loginDto) {
-
-        return new ResponseEntity<>("", OK);
-    }
+    private final PersonService personService;
 
     @PostMapping("/login")
     public ResponseEntity<String> authenticate(@Valid @RequestBody LoginDto loginRequest) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
-
         UserDetails user = userDetailsService.loadUserByUsername(loginRequest.getEmail());
-
         if (user != null)
             return ResponseEntity.ok(tokenService.generateToken(user));
         else

@@ -1,6 +1,8 @@
 package com.decagon.OakLandv1be.services.serviceImpl;
 
+
 import com.decagon.OakLandv1be.config.tokens.TokenService;
+import com.decagon.OakLandv1be.dto.EditProfileRequestDto;
 import com.decagon.OakLandv1be.dto.SignupRequestDto;
 import com.decagon.OakLandv1be.dto.SignupResponseDto;
 import com.decagon.OakLandv1be.entities.*;
@@ -9,6 +11,7 @@ import com.decagon.OakLandv1be.enums.Gender;
 import com.decagon.OakLandv1be.enums.Role;
 import com.decagon.OakLandv1be.exceptions.AlreadyExistsException;
 import com.decagon.OakLandv1be.exceptions.InvalidTokenException;
+import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
 import com.decagon.OakLandv1be.repositries.CustomerRepository;
 import com.decagon.OakLandv1be.repositries.PersonRepository;
 import com.decagon.OakLandv1be.repositries.TokenRepository;
@@ -16,9 +19,11 @@ import com.decagon.OakLandv1be.repositries.WalletRepository;
 import com.decagon.OakLandv1be.services.CustomerService;
 import com.decagon.OakLandv1be.services.JavaMailService;
 import com.decagon.OakLandv1be.utils.ApiResponse;
+import com.decagon.OakLandv1be.utils.JwtUtils;
 import com.decagon.OakLandv1be.utils.ResponseManager;
-import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,8 +35,7 @@ import static com.decagon.OakLandv1be.enums.TokenStatus.ACTIVE;
 import static com.decagon.OakLandv1be.enums.TokenStatus.EXPIRED;
 
 @Service
-@Data
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class CustomerServiceImpl implements CustomerService {
     private final CustomerRepository customerRepository;
     private final PersonRepository personRepository;
@@ -41,6 +45,7 @@ public class CustomerServiceImpl implements CustomerService {
     private final TokenService tokenService;
     private final TokenRepository tokenRepository;
     private final ResponseManager responseManager;
+    private final JwtUtils jwtUtils;
 
 
     @Override
@@ -118,6 +123,17 @@ public class CustomerServiceImpl implements CustomerService {
         tokenRepository.save(verificationToken);
         return new ResponseEntity<>(responseManager.success("Account verification successful"), HttpStatus.OK);
 
+    }
+
+    @Override
+    public void editProfile(EditProfileRequestDto editProfileRequestDto) {
+
+        String email = jwtUtils.extractUsername(editProfileRequestDto.getToken());
+
+        Person customer = personRepository.findByEmail(email)
+                .orElseThrow(()-> new ResourceNotFoundException("Not found"));
+        BeanUtils.copyProperties(editProfileRequestDto, customer);
+        personRepository.save(customer);
     }
 
 

@@ -1,12 +1,14 @@
 package com.decagon.OakLandv1be.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Getter
-@Setter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class FundWalletRequest {
 
     private Double amount;

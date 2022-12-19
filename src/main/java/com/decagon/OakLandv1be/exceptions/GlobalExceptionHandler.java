@@ -44,6 +44,15 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(ProductNotFoundException.class)
+    public ResponseEntity<ErrorResponse> productNotFound(ProductNotFoundException ne){
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setMessage(ne.getMessage());
+        errorResponse.setDebugMessage("Product not found");
+        errorResponse.setStatus(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+     }
+        
     @ExceptionHandler(InvalidTokenException.class)
     public ResponseEntity<ErrorResponse> tokenNotFound(InvalidTokenException ne){
         ErrorResponse errorResponse = new ErrorResponse();
@@ -51,20 +60,17 @@ public class GlobalExceptionHandler {
         errorResponse.setDebugMessage("Token not found");
         errorResponse.setStatus(HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+
     }
 
-
-    @ExceptionHandler(UnauthorizedUserException.class)
+    @ExceptionHandler({UnauthorizedUserException.class})
     public ResponseEntity<ErrorResponse> handleUnauthorizedUserException(UnauthorizedUserException ex){
-
         ErrorResponse errorResponse = ErrorResponse.builder()
-                .debugMessage("Customer is not logged in")
                 .message(ex.getMessage())
-                .status(HttpStatus.UNAUTHORIZED)
-                .build();
+                .debugMessage("User does not have the right access")
+                .status(HttpStatus.UNAUTHORIZED).build();
 
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
-
     }
 
 }
