@@ -2,15 +2,14 @@ package com.decagon.OakLandv1be.services.serviceImpl;
 
 import com.decagon.OakLandv1be.dto.ProductResponseDto;
 
+import com.decagon.OakLandv1be.entities.Customer;
 import com.decagon.OakLandv1be.entities.Person;
 import com.decagon.OakLandv1be.entities.Product;
 import com.decagon.OakLandv1be.entities.SubCategory;
 import com.decagon.OakLandv1be.exceptions.ProductNotFoundException;
 import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
-import com.decagon.OakLandv1be.repositries.AdminRepository;
-import com.decagon.OakLandv1be.repositries.PersonRepository;
-import com.decagon.OakLandv1be.repositries.ProductRepository;
-import com.decagon.OakLandv1be.repositries.SubCategoryRepository;
+import com.decagon.OakLandv1be.exceptions.UserNotFoundException;
+import com.decagon.OakLandv1be.repositries.*;
 import com.decagon.OakLandv1be.services.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -24,6 +23,7 @@ public class AdminServiceImpl implements AdminService {
 
     private final ProductRepository productRepository;
     private final PersonRepository personRepository;
+    private final CustomerRepository customerRepository;
 
     @Override
     public ProductResponseDto fetchASingleProduct(Long product_id) {
@@ -45,4 +45,21 @@ public class AdminServiceImpl implements AdminService {
                     .description(product.getDescription())
                     .build();
         }
+
+    @Override
+    public void deactivateUser(Long customerId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if ((authentication instanceof AnonymousAuthenticationToken))
+            throw new ResourceNotFoundException("Please Login");
+        String email = authentication.getName();
+        personRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Admin not found"));
+
+        Customer customer = customerRepository.findById(customerId)
+                .orElseThrow(()-> new UserNotFoundException("User not found"));
+
+        customer.setActive(false);
+        customerRepository.save(customer);
     }
+
+}

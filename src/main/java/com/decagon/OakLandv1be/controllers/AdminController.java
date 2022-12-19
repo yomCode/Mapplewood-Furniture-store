@@ -18,5 +18,10 @@ public class AdminController {
         return new ResponseEntity<>(adminService.fetchASingleProduct(product_id), HttpStatus.OK);
 
     }
+    @PutMapping("/deactivate-user/{userId}")
+    public ResponseEntity<String> deactivateUser(@PathVariable Long userId){
+        adminService.deactivateUser(userId);
+        return new ResponseEntity<>("Account deactivated", HttpStatus.OK);
+    }
 
 }
