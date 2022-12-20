@@ -5,7 +5,6 @@ import com.decagon.OakLandv1be.dto.ForgotPasswordRequestDto;
 import com.decagon.OakLandv1be.dto.PasswordResetDto;
 import com.decagon.OakLandv1be.entities.Person;
 import com.decagon.OakLandv1be.entities.Token;
-import com.decagon.OakLandv1be.enums.TokenStatus;
 import com.decagon.OakLandv1be.exceptions.InputMismatchException;
 import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
 import com.decagon.OakLandv1be.exceptions.UserNotFoundException;
@@ -14,6 +13,7 @@ import com.decagon.OakLandv1be.repositries.TokenRepository;
 import com.decagon.OakLandv1be.services.PersonService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -71,4 +71,6 @@ public class PersonServiceImpl implements PersonService {
 
         return "Password reset done successfully!";
     }
+
+
 }

@@ -10,6 +10,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Builder
+@ToString
 @Table(name = "product_tbl")
 public class Product extends BaseEntity{
 
