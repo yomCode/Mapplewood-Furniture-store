@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/products")
 @RequiredArgsConstructor
@@ -19,6 +21,12 @@ public class ProductController {
     @GetMapping("/view/{product_id}")
     public ResponseEntity<ProductCustResponseDto> viewASingleProduct(@PathVariable("product_id") Long product_id){
         return new ResponseEntity<>(productService.fetchASingleProduct(product_id), HttpStatus.OK);
+
+    }
+    @GetMapping("/view-all-products")
+    public ResponseEntity<List<ProductCustResponseDto>> viewAllProducts(){
+        List<ProductCustResponseDto> productCustResponseDtos = productService.fetchAllProducts();
+        return new ResponseEntity<>(productCustResponseDtos, HttpStatus.OK);
 
     }
 }

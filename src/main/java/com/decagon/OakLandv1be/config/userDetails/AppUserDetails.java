@@ -17,8 +17,7 @@ import java.util.Set;
 @Setter
 public class AppUserDetails implements UserDetails {
 
-    private final Person person;
-
+    private Person person;
 
     @Override
         public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -59,7 +58,6 @@ public class AppUserDetails implements UserDetails {
 
         @Override
         public boolean isEnabled() {
-
         return true;
         }
     }

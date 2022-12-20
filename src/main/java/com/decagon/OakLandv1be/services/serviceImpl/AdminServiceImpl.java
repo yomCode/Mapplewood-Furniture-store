@@ -10,6 +10,7 @@ import com.decagon.OakLandv1be.services.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,12 +18,11 @@ import org.springframework.stereotype.Service;
 public class AdminServiceImpl implements AdminService {
 
     private final ProductRepository productRepository;
+    private final PersonRepository personRepository;
 
     @Override
     public ProductResponseDto fetchASingleProduct(Long product_id) {
 //        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        if ((authentication instanceof AnonymousAuthenticationToken))
-//            throw new ResourceNotFoundException("You need to login carry ut this operation");
 //            String email = authentication.getName();
 //            personRepository.findByEmail(email)
 //                    .orElseThrow(() -> new ResourceNotFoundException("Admin User not found"));
@@ -41,8 +41,8 @@ public class AdminServiceImpl implements AdminService {
 
     public ResponseEntity<Product> addNewProduct(NewProductRequestDto newProductRequestDto) {
         if(productRepository.existsByName(newProductRequestDto.getName()))
-            throw new AlreadyExistsException("Product with name: " +
-                    newProductRequestDto.getName() + " already exists");
+            throw new AlreadyExistsException("Product with name '" +
+                    newProductRequestDto.getName() + "' already exists");
 
         Product product = Product.builder()
                 .name(newProductRequestDto.getName())
