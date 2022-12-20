@@ -8,7 +8,6 @@ import com.decagon.OakLandv1be.repositries.*;
 import com.decagon.OakLandv1be.services.CartService;
 import com.decagon.OakLandv1be.services.CustomerService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
