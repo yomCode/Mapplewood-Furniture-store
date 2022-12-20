@@ -6,7 +6,6 @@ import com.decagon.OakLandv1be.dto.LoginDto;
 import com.decagon.OakLandv1be.dto.ForgotPasswordRequestDto;
 import com.decagon.OakLandv1be.dto.PasswordResetDto;
 import com.decagon.OakLandv1be.services.PersonService;
-import com.decagon.OakLandv1be.services.serviceImpl.PersonServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 import java.io.IOException;
-
-import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequiredArgsConstructor
