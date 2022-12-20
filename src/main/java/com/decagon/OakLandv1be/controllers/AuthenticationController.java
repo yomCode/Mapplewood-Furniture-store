@@ -2,12 +2,13 @@ package com.decagon.OakLandv1be.controllers;
 
 import com.decagon.OakLandv1be.config.tokens.TokenService;
 import com.decagon.OakLandv1be.config.userDetails.AppUserDetailsService;
-import com.decagon.OakLandv1be.dto.LoginDto;
 import com.decagon.OakLandv1be.dto.ForgotPasswordRequestDto;
+import com.decagon.OakLandv1be.dto.LoginDto;
 import com.decagon.OakLandv1be.dto.PasswordResetDto;
 import com.decagon.OakLandv1be.entities.Person;
 import com.decagon.OakLandv1be.repositries.PersonRepository;
 import com.decagon.OakLandv1be.services.PersonService;
+import com.decagon.OakLandv1be.services.serviceImpl.PersonServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +31,7 @@ public class AuthenticationController {
 
     private final PersonRepository personRepository;
 
-    private final PersonService personService;
+    private final PersonServiceImpl personService;
 
     @PostMapping("/login")
     public ResponseEntity<String> authenticate(@Valid @RequestBody LoginDto loginRequest) {
@@ -48,7 +49,6 @@ public class AuthenticationController {
         else
             return ResponseEntity.status(400).body("Some error has occurred");
     }
-
 
     @PostMapping("/forgot-password-request")
     public ResponseEntity<String> passwordRequestReset(@Valid @RequestBody ForgotPasswordRequestDto requestDto) throws IOException {

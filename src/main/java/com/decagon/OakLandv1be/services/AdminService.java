@@ -9,8 +9,7 @@ import javax.validation.Valid;
 
 public interface AdminService {
     ProductResponseDto fetchASingleProduct(Long product_id);
+    void deactivateUser(Long customerId);
 
     ResponseEntity<Product> addNewProduct(@Valid NewProductRequestDto productDto);
-    public void deactivateUser(Long customerId);
-
 }

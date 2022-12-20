@@ -2,6 +2,8 @@ package com.decagon.OakLandv1be.services.serviceImpl;
 
 import com.decagon.OakLandv1be.dto.NewProductRequestDto;
 import com.decagon.OakLandv1be.dto.ProductResponseDto;
+
+import com.decagon.OakLandv1be.entities.Customer;
 import com.decagon.OakLandv1be.entities.Person;
 import com.decagon.OakLandv1be.entities.Product;
 import com.decagon.OakLandv1be.exceptions.AlreadyExistsException;
@@ -10,6 +12,7 @@ import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
 import com.decagon.OakLandv1be.exceptions.UserNotFoundException;
 import com.decagon.OakLandv1be.repositries.PersonRepository;
 import com.decagon.OakLandv1be.repositries.ProductRepository;
+import com.decagon.OakLandv1be.repositries.*;
 import com.decagon.OakLandv1be.services.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,6 +29,7 @@ public class AdminServiceImpl implements AdminService {
 
     private final ProductRepository productRepository;
     private final PersonRepository personRepository;
+    private final CustomerRepository customerRepository;
 
     @Override
     public ProductResponseDto fetchASingleProduct(Long product_id) {
