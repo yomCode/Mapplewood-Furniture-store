@@ -28,4 +28,10 @@ public class AdminController {
         return adminService.addNewProduct(productDto);
     }
 
+    @PutMapping("/deactivate-user/{userId}")
+    public ResponseEntity<String> deactivateUser(@PathVariable Long userId){
+        adminService.deactivateUser(userId);
+        return new ResponseEntity<>("Account deactivated", HttpStatus.OK);
+    }
+
 }

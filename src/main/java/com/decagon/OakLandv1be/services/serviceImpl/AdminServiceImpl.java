@@ -2,9 +2,12 @@ package com.decagon.OakLandv1be.services.serviceImpl;
 
 import com.decagon.OakLandv1be.dto.NewProductRequestDto;
 import com.decagon.OakLandv1be.dto.ProductResponseDto;
+import com.decagon.OakLandv1be.entities.Person;
 import com.decagon.OakLandv1be.entities.Product;
 import com.decagon.OakLandv1be.exceptions.AlreadyExistsException;
 import com.decagon.OakLandv1be.exceptions.ProductNotFoundException;
+import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
+import com.decagon.OakLandv1be.exceptions.UserNotFoundException;
 import com.decagon.OakLandv1be.repositries.PersonRepository;
 import com.decagon.OakLandv1be.repositries.ProductRepository;
 import com.decagon.OakLandv1be.services.AdminService;
@@ -12,6 +15,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -59,5 +65,21 @@ public class AdminServiceImpl implements AdminService {
 
 
         return new ResponseEntity<>(newProduct, HttpStatus.CREATED);
+    }
+
+    @Override
+    public void deactivateUser(Long customerId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if ((authentication instanceof AnonymousAuthenticationToken))
+            throw new ResourceNotFoundException("Please Login");
+        String email = authentication.getName();
+        personRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Admin not found"));
+
+        Person customer = personRepository.findById(customerId)
+                .orElseThrow(()-> new UserNotFoundException("User not found"));
+
+        customer.setActive(false);
+        personRepository.save(customer);
     }
 }

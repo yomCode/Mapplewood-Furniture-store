@@ -11,5 +11,6 @@ public interface AdminService {
     ProductResponseDto fetchASingleProduct(Long product_id);
 
     ResponseEntity<Product> addNewProduct(@Valid NewProductRequestDto productDto);
+    public void deactivateUser(Long customerId);
 
 }
