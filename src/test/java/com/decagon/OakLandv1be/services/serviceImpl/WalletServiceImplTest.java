@@ -29,12 +29,11 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 
-@SpringBootTest
+//@SpringBootTest
 @ExtendWith(MockitoExtension.class)
 class WalletServiceImplTest {
 
-    @InjectMocks
-    private WalletServiceImpl walletService;
+
 
     @Mock
     private PersonRepository personRepository;
@@ -48,8 +47,11 @@ class WalletServiceImplTest {
     @Mock
     private JavaMailService mailService;
 
-    @Mock
+//    @Mock
     Person person;
+
+    @InjectMocks
+    private WalletServiceImpl walletService;
 
     @BeforeEach
     void setUp() {
