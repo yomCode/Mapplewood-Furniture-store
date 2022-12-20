@@ -4,7 +4,6 @@ import com.decagon.OakLandv1be.dto.NewProductRequestDto;
 import com.decagon.OakLandv1be.dto.ProductResponseDto;
 import com.decagon.OakLandv1be.entities.Product;
 import com.decagon.OakLandv1be.services.AdminService;
-import com.decagon.OakLandv1be.services.serviceImpl.AdminServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
