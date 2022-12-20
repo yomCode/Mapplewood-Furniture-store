@@ -52,9 +52,9 @@ public class GlobalExceptionHandler {
         errorResponse.setStatus(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
      }
-        
+
     @ExceptionHandler(InvalidTokenException.class)
-    public ResponseEntity<ErrorResponse> tokenNotFound(InvalidTokenException ne){
+    public ResponseEntity<ErrorResponse>tokenNotFound (InvalidTokenException ne){
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setMessage(ne.getMessage());
         errorResponse.setDebugMessage("Token not found");
@@ -72,5 +72,17 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
+
+    @ExceptionHandler(InvalidAttributeException.class)
+    public ResponseEntity<ErrorResponse>invalidProductAttributes (InvalidAttributeException ie){
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setMessage(ie.getMessage());
+        errorResponse.setDebugMessage("Attribute not valid or does not exist");
+        errorResponse.setStatus(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+
+    }
+
+
 
 }
