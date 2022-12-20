@@ -5,6 +5,7 @@ import com.decagon.OakLandv1be.config.userDetails.AppUserDetailsService;
 import com.decagon.OakLandv1be.dto.LoginDto;
 import com.decagon.OakLandv1be.dto.ForgotPasswordRequestDto;
 import com.decagon.OakLandv1be.dto.PasswordResetDto;
+import com.decagon.OakLandv1be.dto.UpdatePasswordDto;
 import com.decagon.OakLandv1be.services.serviceImpl.PersonServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -58,6 +59,12 @@ public class AuthenticationController {
     public ResponseEntity<String> passwordReset(@PathVariable String token, @Valid @RequestBody PasswordResetDto passwordResetDto){
         String result = personService.resetPassword(token, passwordResetDto);
         return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @PutMapping("/update-password/{email}")
+    public ResponseEntity<String> updatePassword(@Valid @PathVariable String email ,  @RequestBody UpdatePasswordDto updatePasswordDto){
+        personService.updatePassword( email ,updatePasswordDto);
+        return new ResponseEntity<>("Password changed successfully", HttpStatus.OK);
     }
 
 }

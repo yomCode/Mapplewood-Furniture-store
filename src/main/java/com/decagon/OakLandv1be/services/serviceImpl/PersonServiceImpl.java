@@ -3,9 +3,12 @@ package com.decagon.OakLandv1be.services.serviceImpl;
 import com.decagon.OakLandv1be.config.tokens.TokenService;
 import com.decagon.OakLandv1be.dto.ForgotPasswordRequestDto;
 import com.decagon.OakLandv1be.dto.PasswordResetDto;
+import com.decagon.OakLandv1be.dto.UpdatePasswordDto;
 import com.decagon.OakLandv1be.entities.Person;
 import com.decagon.OakLandv1be.entities.Token;
+import com.decagon.OakLandv1be.enums.TokenStatus;
 import com.decagon.OakLandv1be.exceptions.InputMismatchException;
+import com.decagon.OakLandv1be.exceptions.PasswordMisMatchException;
 import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
 import com.decagon.OakLandv1be.exceptions.UserNotFoundException;
 import com.decagon.OakLandv1be.repositries.PersonRepository;
@@ -72,5 +75,29 @@ public class PersonServiceImpl implements PersonService {
         return "Password reset done successfully!";
     }
 
+//    @Override
+//    public ResponseEntity<String> updatePassword(String email, UpdatePasswordDto updatePasswordDto) {
+//        Person person = personRepository.findByEmailAndPassword(email,updatePasswordDto.getOldPassword())
+//                .orElseThrow(()-> new UserNotFoundException("This user does not exist"));
+//        person.setPassword(passwordEncoder.encode(updatePasswordDto.getNewPassword()));
+//        personRepository.save(person);
+//        return new ResponseEntity<>("Password updated successfully", HttpStatus.OK);
+//    }
 
+    @Override
+    public ResponseEntity<String> updatePassword(String email, UpdatePasswordDto updatePasswordDto) {
+        String oldPassword = updatePasswordDto.getOldPassword();
+        String newPassword = updatePasswordDto.getNewPassword();
+
+        Person person = personRepository.findByEmail(email)
+                .orElseThrow(()-> new UserNotFoundException("This user does not exist"));
+
+        String dbPassword = person.getPassword();
+        if(!passwordEncoder.matches(oldPassword, dbPassword))
+            throw new PasswordMisMatchException("Passwords do not match!");
+
+        person.setPassword(passwordEncoder.encode(newPassword));
+        personRepository.save(person);
+        return new ResponseEntity<>("Password updated successfully", HttpStatus.OK);
+    }
 }
