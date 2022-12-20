@@ -45,11 +45,11 @@ public class AuthenticationController {
                 new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
         UserDetails user = userDetailsService.loadUserByUsername(loginRequest.getEmail());
         if (user != null){
-            String email = user.getUsername();
-            Person person = personRepository.findByEmail(email).get();
-            if (!person.getCustomer().isActive()){
-                return ResponseEntity.status(400).body("This account has been deactivated");
-            }
+//            String email = user.getUsername();
+//            Person person = personRepository.findByEmail(email).get();
+//            if (!person.getCustomer().isActive()){
+//                return ResponseEntity.status(400).body("This account has been deactivated");
+//            }
             return ResponseEntity.ok(tokenService.generateToken(user));
         }
         else
