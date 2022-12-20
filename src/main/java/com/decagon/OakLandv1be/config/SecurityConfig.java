@@ -2,7 +2,12 @@ package com.decagon.OakLandv1be.config;
 
 import com.decagon.OakLandv1be.config.jwt.JWTCoder;
 import com.decagon.OakLandv1be.config.userDetails.AppUserDetailsService;
+import com.decagon.OakLandv1be.entities.Person;
+import com.decagon.OakLandv1be.enums.Gender;
+import com.decagon.OakLandv1be.enums.Role;
+import com.decagon.OakLandv1be.repositries.PersonRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
@@ -35,7 +40,7 @@ import static com.decagon.OakLandv1be.enums.Role.*;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
-    private final String[] WHITE_LISTED_URLS = { "/", "/home", "index", "/css/*", "/js/*", "api/v1/products/**",
+    private final String[] WHITE_LISTED_URLS = { "/", "/home", "index", "/css/*", "/js/*", "/api/v1/products/**",
             "/api/v1/auth/**","/v2/api-docs/**", "/v3/api-docs/**","/configuration/**",
             "/swagger*/**","/swagger-ui/**","/webjars/**", "/swagger-ui.html"
     };
@@ -81,6 +86,7 @@ public class SecurityConfig {
         return converter;
     }
 
+    @Bean
     public AuthenticationProvider authenticationProvider() {
         final DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setUserDetailsService(appUserDetailsService);
@@ -99,4 +105,5 @@ public class SecurityConfig {
         provider.setJwtAuthenticationConverter(getJwtAuthenticationConverter());
         return provider;
     }
+
 }

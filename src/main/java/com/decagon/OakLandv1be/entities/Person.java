@@ -37,11 +37,13 @@ public class Person extends BaseEntity{
     private String date_of_birth;
 
     private String phone;
+
     private Boolean verificationStatus;
 
 
     @Column(nullable = false)
     private String password;
+
     private String address;
 
     @Enumerated(EnumType.STRING)
