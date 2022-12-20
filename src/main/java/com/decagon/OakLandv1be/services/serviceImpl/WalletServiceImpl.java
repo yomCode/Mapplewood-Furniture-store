@@ -46,6 +46,7 @@ public class WalletServiceImpl implements WalletService {
                     .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
 
             Wallet wallet = person.getCustomer().getWallet();
+
             wallet.setAccountBalance(wallet.getAccountBalance() + request.getAmount());
             walletRepository.save(wallet);
 

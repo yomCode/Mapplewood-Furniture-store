@@ -50,28 +50,19 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public SignupResponseDto saveCustomer(SignupRequestDto signupRequestDto) throws AlreadyExistsException, IOException {
-        // Checking database if email already exist
             boolean emailExist = personRepository.existsByEmail(signupRequestDto.getEmail());
-
             if (emailExist)
                 throw new AlreadyExistsException("This Email address already exists");
 
             Customer customer = new Customer();
 
-            Person person = Person.builder()
-                    .role(Role.CUSTOMER)
-                    .verificationStatus(false)
-                    .address(signupRequestDto.getAddress())
-                    .email(signupRequestDto.getEmail())
-                    .firstName(signupRequestDto.getFirstName())
-                    .lastName(signupRequestDto.getLastName())
-                    .phone(signupRequestDto.getPhoneNumber())
-                    .gender(Gender.valueOf(signupRequestDto.getGender().toUpperCase()))
-                    .password(passwordEncoder.encode(signupRequestDto.getPassword()))
-                    .date_of_birth(signupRequestDto.getDate_of_birth())
-                    .customer(customer)
-                    .build();
-
+            Person person = new Person();
+        BeanUtils.copyProperties(signupRequestDto, person);
+        person.setCustomer(customer);
+        person.setRole(Role.CUSTOMER);
+        person.setVerificationStatus(false);
+        person.setGender(Gender.valueOf(signupRequestDto.getGender().toUpperCase()));
+        person.setPassword(passwordEncoder.encode(signupRequestDto.getPassword()));
             Wallet wallet = Wallet.builder()
                     .baseCurrency(BaseCurrency.NAIRA)
                     .accountBalance(0.00)
@@ -98,16 +89,9 @@ public class CustomerServiceImpl implements CustomerService {
                             "To complete your registration, we need you to verify your email address " + "http://localhost:8080/api/v1/auth/customer/verifyRegistration/" + validToken);
 
             // use the user object to create UserResponseDto Object
-            return SignupResponseDto.builder()
-                    .firstName(person.getFirstName())
-                    .lastName(person.getLastName())
-                    .email(person.getEmail())
-                    .gender(person.getGender())
-                    .date_of_birth(person.getDate_of_birth())
-                    .phone(person.getPhone())
-                    .verificationStatus(person.getVerificationStatus())
-                    .address(person.getAddress())
-                    .build();
+             SignupResponseDto signupResponseDto = new SignupResponseDto();
+        BeanUtils.copyProperties(signupResponseDto, person);
+                    return  signupResponseDto;
     }
     @Override
     public ResponseEntity<ApiResponse> verifyRegistration(String token){

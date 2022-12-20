@@ -19,6 +19,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -32,10 +33,6 @@ import static org.mockito.ArgumentMatchers.any;
 @ExtendWith(MockitoExtension.class)
 class WalletServiceImplTest {
 
-//    @Mock
-//    private WalletRepository walletRepository;
-//    @Mock
-//    private PersonRepository personRepository;
     @InjectMocks
     private WalletServiceImpl walletService;
 
@@ -56,6 +53,7 @@ class WalletServiceImplTest {
 
     @BeforeEach
     void setUp() {
+        MockitoAnnotations.openMocks(this);
 
         Wallet wallet = new Wallet();
         Customer customer = new Customer();
@@ -63,7 +61,7 @@ class WalletServiceImplTest {
         wallet.setCustomer(customer);
         wallet.setBaseCurrency(BaseCurrency.DOLLAR);
 
-        Person.builder()
+        person = Person.builder()
                 .customer(customer)
                 .email("abc@gmail.com")
                 .address("lagos")
@@ -76,17 +74,15 @@ class WalletServiceImplTest {
                 .verificationStatus(true)
                 .role(Role.CUSTOMER)
                 .build();
-
+        Mockito.when(personRepository.findByEmail(any())).thenReturn(Optional.of(person));
+        FundWalletRequest request = new FundWalletRequest(10000.00);
+        walletService.fundWallet(request);
 
 
     }
 
     @Test
     void fundWallet() {
-
-        Mockito.when(personRepository.findByEmail(any())).thenReturn(Optional.of(person));
-        FundWalletRequest request = new FundWalletRequest(10000.00);
-        walletService.fundWallet(request);
 
         assertEquals(10000.00, person.getCustomer().getWallet().getAccountBalance());
 
