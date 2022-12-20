@@ -1,6 +1,5 @@
 package com.decagon.OakLandv1be.dto;
 
-import com.decagon.OakLandv1be.entities.SubCategory;
 import lombok.Builder;
 import lombok.Data;
 

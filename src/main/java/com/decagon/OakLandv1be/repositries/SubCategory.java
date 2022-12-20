@@ -1,5 +1,8 @@
-package com.decagon.OakLandv1be.entities;
+package com.decagon.OakLandv1be.repositries;
 
+import com.decagon.OakLandv1be.entities.BaseEntity;
+import com.decagon.OakLandv1be.entities.Category;
+import com.decagon.OakLandv1be.entities.Product;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
@@ -13,7 +16,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Builder
 @Table(name = "sub_category_tbl")
-public class SubCategory extends BaseEntity{
+public class SubCategory extends BaseEntity {
 
     private String name;
 

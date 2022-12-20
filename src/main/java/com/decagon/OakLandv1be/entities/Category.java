@@ -1,5 +1,6 @@
 package com.decagon.OakLandv1be.entities;
 
+import com.decagon.OakLandv1be.repositries.SubCategory;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 

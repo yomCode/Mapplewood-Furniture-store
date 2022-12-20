@@ -73,4 +73,14 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
 
+    @ExceptionHandler(InvalidPaymentMethodException.class)
+    public ResponseEntity<ErrorResponse> paymentMethodNotFound(UnauthorizedUserException ex){
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .message(ex.getMessage())
+                .debugMessage("This payment method is invalid")
+                .status(HttpStatus.UNAUTHORIZED).build();
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
+    }
+
 }
