@@ -2,13 +2,7 @@ package com.decagon.OakLandv1be.config;
 
 import com.decagon.OakLandv1be.config.jwt.JWTCoder;
 import com.decagon.OakLandv1be.config.userDetails.AppUserDetailsService;
-import com.decagon.OakLandv1be.config.userDetails.PasswordService;
-import com.decagon.OakLandv1be.entities.Person;
-import com.decagon.OakLandv1be.enums.Gender;
-import com.decagon.OakLandv1be.enums.Role;
-import com.decagon.OakLandv1be.repositries.PersonRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;

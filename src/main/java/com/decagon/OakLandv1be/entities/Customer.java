@@ -39,7 +39,4 @@ public class Customer extends BaseEntity{
     @JsonIgnore
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Address> addressBook;
-
-
-
 }

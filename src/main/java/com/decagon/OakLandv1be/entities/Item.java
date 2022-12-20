@@ -27,5 +27,7 @@ public class Item extends BaseEntity{
     @JoinColumn(name = "order_id")
     private Order order;
 
-
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.DETACH})
+    @JoinColumn(name = "product_id")
+    private Product product;
 }
