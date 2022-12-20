@@ -17,6 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.Set;
 
 
@@ -26,6 +27,7 @@ import java.util.Set;
 public class CartServiceImpl implements CartService {
     private final ItemRepository itemRepository;
     private final PersonRepository personRepository;
+    private final CartRepository cartRepository;
 
     @Override
     public String removeItem(Long itemToRemoveId) {
@@ -40,11 +42,16 @@ public class CartServiceImpl implements CartService {
                     .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
 
             Cart cart = person.getCustomer().getCart();
+            if( cart == null) throw new ResourceNotFoundException("cart is empty");
             Set<Item> itemsInCart = cart.getItems();
-
+            System.out.println(itemsInCart.toString());
             for (Item item : itemsInCart) {
                 if (item.getId() == itemToRemoveId) {
                     itemsInCart.remove(item);
+
+
+                    cart.setItems(itemsInCart);
+                    cartRepository.save(cart);
                     personRepository.save(person);
                     return "Item successfully deleted";
                 }
