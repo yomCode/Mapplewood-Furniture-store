@@ -3,8 +3,6 @@ package com.decagon.OakLandv1be.entities;
 import com.decagon.OakLandv1be.enums.TokenStatus;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.validator.constraints.Length;
-
 import javax.persistence.*;
 
 @Entity

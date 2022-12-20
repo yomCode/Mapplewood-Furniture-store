@@ -1,5 +1,6 @@
 package com.decagon.OakLandv1be.config.userDetails;
 
+import com.decagon.OakLandv1be.entities.Person;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
@@ -11,28 +12,24 @@ import java.util.Set;
 @Data
 @Builder
 public class AppUserDetails implements UserDetails {
-
-    private final String username;
-    private final String password;
-    private final Set<? extends GrantedAuthority> grantedAuthorities;
-
+    private Person person;
 
     @Override
         public Collection<? extends GrantedAuthority> getAuthorities() {
 
-        return grantedAuthorities;
+        return person.getRole().getGrantedAuthorities();
         }
 
         @Override
         public String getPassword() {
 
-        return password;
+        return person.getPassword();
         }
 
         @Override
         public String getUsername() {
 
-        return username;
+        return person.getEmail();
         }
 
         @Override
@@ -56,7 +53,6 @@ public class AppUserDetails implements UserDetails {
 
         @Override
         public boolean isEnabled() {
-
         return true;
         }
     }

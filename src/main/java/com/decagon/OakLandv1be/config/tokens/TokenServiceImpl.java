@@ -48,7 +48,6 @@ public class TokenServiceImpl implements TokenService {
 
     }
 
-
     @Override
     public String generateVerificationToken(String email){
         Instant now = Instant.now();
