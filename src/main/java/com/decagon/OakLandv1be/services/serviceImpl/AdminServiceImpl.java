@@ -7,6 +7,7 @@ import com.decagon.OakLandv1be.repositries.PersonRepository;
 import com.decagon.OakLandv1be.repositries.ProductRepository;
 import com.decagon.OakLandv1be.services.AdminService;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,12 +15,11 @@ import org.springframework.stereotype.Service;
 public class AdminServiceImpl implements AdminService {
 
     private final ProductRepository productRepository;
+    private final PersonRepository personRepository;
 
     @Override
     public ProductResponseDto fetchASingleProduct(Long product_id) {
 //        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        if ((authentication instanceof AnonymousAuthenticationToken))
-//            throw new ResourceNotFoundException("You need to login carry ut this operation");
 //            String email = authentication.getName();
 //            personRepository.findByEmail(email)
 //                    .orElseThrow(() -> new ResourceNotFoundException("Admin User not found"));
