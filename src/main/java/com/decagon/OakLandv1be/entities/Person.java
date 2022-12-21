@@ -46,6 +46,8 @@ public class Person extends BaseEntity{
 
     private String address;
 
+    private boolean isActive = true;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;

@@ -38,6 +38,11 @@ public class AdminController {
     ResponseEntity<Product> addNewProduct(@Valid @RequestBody NewProductRequestDto productDto) {
         return adminService.addNewProduct(productDto);
     }
-
+    
+    @PutMapping("/deactivate-user/{userId}")
+    public ResponseEntity<String> deactivateUser(@PathVariable Long userId){
+        adminService.deactivateUser(userId);
+        return new ResponseEntity<>("Account deactivated", HttpStatus.OK);
+    }
 
 }
