@@ -9,6 +9,10 @@ public class UnauthorizedUserException extends RuntimeException{
 
     private String debugMsg;
 
+
+public class UnauthorizedUserException extends RuntimeException{
+    private String debugMsg;
+
     public UnauthorizedUserException(String message) {
         super(message);
     }

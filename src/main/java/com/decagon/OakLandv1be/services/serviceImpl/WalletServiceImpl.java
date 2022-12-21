@@ -1,5 +1,6 @@
 package com.decagon.OakLandv1be.services.serviceImpl;
 
+
 import com.decagon.OakLandv1be.dto.WithdrawDto;
 import com.decagon.OakLandv1be.entities.Person;
 import com.decagon.OakLandv1be.entities.Transaction;
@@ -8,11 +9,24 @@ import com.decagon.OakLandv1be.exceptions.InsufficientBalanceInWalletException;
 import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
 import com.decagon.OakLandv1be.exceptions.UnauthorizedUserException;
 import com.decagon.OakLandv1be.exceptions.WalletIdDoesNotExistException;
+
+import com.decagon.OakLandv1be.dto.FundWalletRequest;
+import com.decagon.OakLandv1be.entities.Person;
+import com.decagon.OakLandv1be.entities.Transaction;
+import com.decagon.OakLandv1be.entities.Wallet;
+import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
+import com.decagon.OakLandv1be.exceptions.UnauthorizedUserException;
+
 import com.decagon.OakLandv1be.repositries.PersonRepository;
 import com.decagon.OakLandv1be.repositries.TransactionRepository;
 import com.decagon.OakLandv1be.repositries.WalletRepository;
 import com.decagon.OakLandv1be.services.JavaMailService;
 import com.decagon.OakLandv1be.services.WalletService;
+
+
+import com.decagon.OakLandv1be.utils.ApiResponse;
+import com.decagon.OakLandv1be.utils.ResponseManager;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +44,7 @@ import static com.decagon.OakLandv1be.enums.TransactionStatus.SUCCESSFUL;
 public class WalletServiceImpl implements WalletService {
     private final PersonRepository personRepository;
     private final WalletRepository walletRepository;
+
     private final JavaMailService mailService;
 
     private final TransactionRepository transactionRepository;
@@ -39,10 +54,23 @@ public class WalletServiceImpl implements WalletService {
     public ResponseEntity<String> withdrawalFromWallet(WithdrawDto withdrawDto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
+
+    private final TransactionRepository transactionRepository;
+    private final ResponseManager responseManager;
+
+    private final JavaMailService mailService;
+
+    @Override
+    public ResponseEntity<ApiResponse<Object>> fundWallet(FundWalletRequest request) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(!(authentication instanceof AnonymousAuthenticationToken)){
+
             String email = authentication.getName();
 
             Person person = personRepository.findByEmail(email)
                     .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
+
             Long walletId = person.getCustomer().getWallet().getId();
 
             Wallet wallet = walletRepository.findById(walletId).orElseThrow(() -> new WalletIdDoesNotExistException(walletId));
@@ -77,65 +105,26 @@ public class WalletServiceImpl implements WalletService {
 
 
 
+            Wallet wallet = person.getCustomer().getWallet();
 
+            wallet.setAccountBalance(wallet.getAccountBalance() + request.getAmount());
+            walletRepository.save(wallet);
 
+            Transaction transaction = Transaction.builder()
+                            .wallet(wallet)
+                                    .status(SUCCESSFUL).build();
+            transactionRepository.save(transaction);
 
+            try {
+                mailService.sendMail(person.getEmail(), "Wallet deposit", "Your wallet has been credited with "
+                        + request.getAmount() + ". Your new balance is now " + wallet.getAccountBalance());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            return new ResponseEntity<>(responseManager.success("Wallet funded successfully"), HttpStatus.OK);
+        }
+        throw new UnauthorizedUserException("Login to carry out this operation");
+    }
 
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//
-//    @Override
-//    public Wallet withdrwalFromWallet(Integer accountId, Double amount, String type) {
-//        return null;
-
-
-
-        //   @Override
-//    public Wallet withdrwalFromWallet(Integer accountId, Double amount) {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        if (!(authentication instanceof AnonymousAuthenticationToken)) {
-//            String email = authentication.getName();
-//
-////            Person person = personRepository.findByEmail(email)
-////                    .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
-//
-//
-//            Wallet wallet = walletRepository.findWalletById(walletId).getCustomer().getWallet();
-//            if (wallet == null) {
-//                throw new WalletIdDoesNotExistException(walletId);
-//            }
-//            if (wallet.getAccountBalance() < amount) {
-//                throw new InsufficientBalanceInWalletException();
-//            }
-//            Double currentBalance = wallet.getAccountBalance();
-//            wallet.setAccountBalance(currentBalance - amount);
-//
-//             walletRepository.save(wallet);
-//            Transaction transaction =
-
-
-        // Wallet wallet1 = walletRepository.findWalletById(walletId);
-//        Wallet wallet = walletRepository.findWalletById(walletId);
-//        if(wallet==null){
-//            throw new WalletIdDoesNotExistException(walletId);
-//        }
-//        if(wallet.get(0))
-//       return null;
-//    }
-//}
-//

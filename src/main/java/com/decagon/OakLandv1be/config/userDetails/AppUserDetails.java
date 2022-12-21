@@ -3,6 +3,8 @@ package com.decagon.OakLandv1be.config.userDetails;
 import com.decagon.OakLandv1be.entities.Person;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -10,6 +12,8 @@ import java.util.Collection;
 
 @Data
 @Builder
+@Getter
+@Setter
 public class AppUserDetails implements UserDetails {
 
     private Person person;
@@ -54,7 +58,6 @@ public class AppUserDetails implements UserDetails {
 
         @Override
         public boolean isEnabled() {
-
         return true;
         }
     }

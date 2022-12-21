@@ -1,11 +1,20 @@
 package com.decagon.OakLandv1be.utils;
 
+
 import com.decagon.OakLandv1be.entities.*;
 import com.decagon.OakLandv1be.enums.BaseCurrency;
 import com.decagon.OakLandv1be.enums.Gender;
 import com.decagon.OakLandv1be.enums.Role;
 import com.decagon.OakLandv1be.repositries.CustomerRepository;
 import com.decagon.OakLandv1be.repositries.PersonRepository;
+
+import com.decagon.OakLandv1be.entities.Person;
+import com.decagon.OakLandv1be.entities.Product;
+import com.decagon.OakLandv1be.enums.Gender;
+import com.decagon.OakLandv1be.enums.Role;
+import com.decagon.OakLandv1be.repositries.PersonRepository;
+import com.decagon.OakLandv1be.repositries.ProductRepository;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -16,7 +25,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @RequiredArgsConstructor
 public class FakeData {
     private final PasswordEncoder passwordEncoder;
-//    private final CustomerRepository customerRepository;
+
+
 
     @Bean
     public CommandLineRunner commandLineRunner(PersonRepository personRepository,CustomerRepository customerRepository) {
@@ -46,6 +56,39 @@ public class FakeData {
 
             personRepository.save(person);
             customerRepository.save(customer);
+
+    @Bean
+    public CommandLineRunner commandLineRunner(PersonRepository personRepository, ProductRepository productRepository) {
+        return argument -> {
+            if(!personRepository.existsByEmail("benson@gmail.com")) {
+                Person person = Person.builder()
+                        .firstName("Benson")
+                        .lastName("Malik")
+                        .email("benson@gmail.com")
+                        .gender(Gender.MALE)
+                        .date_of_birth("13-08-1990")
+                        .phone("9859595959")
+                        .verificationStatus(true)
+                        .password(passwordEncoder.encode("password123"))
+                        .address("No Address")
+                        .role(Role.ADMIN)
+                        .build();
+                personRepository.save(person);
+            }
+
+            if(productRepository.existsById(1L)) {
+                Product product = Product.builder()
+                        .name("Oppola")
+                        .price(40000.00)
+                        .imageUrl("www.google.com")
+                        .color("yellow")
+                        .description("lovely fur")
+                        .build();
+
+                product.setId(1L);
+                productRepository.save(product);
+            }
+
 
         };
     }

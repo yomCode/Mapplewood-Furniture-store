@@ -2,6 +2,7 @@ package com.decagon.OakLandv1be.services.serviceImpl;
 
 
 import com.decagon.OakLandv1be.config.tokens.TokenService;
+import com.decagon.OakLandv1be.dto.EditProfileRequestDto;
 import com.decagon.OakLandv1be.dto.SignupRequestDto;
 import com.decagon.OakLandv1be.dto.SignupResponseDto;
 import com.decagon.OakLandv1be.entities.*;
@@ -10,6 +11,7 @@ import com.decagon.OakLandv1be.enums.Gender;
 import com.decagon.OakLandv1be.enums.Role;
 import com.decagon.OakLandv1be.exceptions.AlreadyExistsException;
 import com.decagon.OakLandv1be.exceptions.InvalidTokenException;
+import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
 import com.decagon.OakLandv1be.repositries.CustomerRepository;
 import com.decagon.OakLandv1be.repositries.PersonRepository;
 import com.decagon.OakLandv1be.repositries.TokenRepository;
@@ -17,6 +19,7 @@ import com.decagon.OakLandv1be.repositries.WalletRepository;
 import com.decagon.OakLandv1be.services.CustomerService;
 import com.decagon.OakLandv1be.services.JavaMailService;
 import com.decagon.OakLandv1be.utils.ApiResponse;
+import com.decagon.OakLandv1be.utils.JwtUtils;
 import com.decagon.OakLandv1be.utils.ResponseManager;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -42,32 +45,24 @@ public class CustomerServiceImpl implements CustomerService {
     private final TokenService tokenService;
     private final TokenRepository tokenRepository;
     private final ResponseManager responseManager;
+    private final JwtUtils jwtUtils;
 
 
     @Override
     public SignupResponseDto saveCustomer(SignupRequestDto signupRequestDto) throws AlreadyExistsException, IOException {
-        // Checking database if email already exist
             boolean emailExist = personRepository.existsByEmail(signupRequestDto.getEmail());
-
             if (emailExist)
                 throw new AlreadyExistsException("This Email address already exists");
 
             Customer customer = new Customer();
 
-            Person person = Person.builder()
-                    .role(Role.CUSTOMER)
-                    .verificationStatus(false)
-                    .address(signupRequestDto.getAddress())
-                    .email(signupRequestDto.getEmail())
-                    .firstName(signupRequestDto.getFirstName())
-                    .lastName(signupRequestDto.getLastName())
-                    .phone(signupRequestDto.getPhoneNumber())
-                    .gender(Gender.valueOf(signupRequestDto.getGender().toUpperCase()))
-                    .password(passwordEncoder.encode(signupRequestDto.getPassword()))
-                    .date_of_birth(signupRequestDto.getDate_of_birth())
-                    .customer(customer)
-                    .build();
-
+            Person person = new Person();
+        BeanUtils.copyProperties(signupRequestDto, person);
+        person.setCustomer(customer);
+        person.setRole(Role.CUSTOMER);
+        person.setVerificationStatus(false);
+        person.setGender(Gender.valueOf(signupRequestDto.getGender().toUpperCase()));
+        person.setPassword(passwordEncoder.encode(signupRequestDto.getPassword()));
             Wallet wallet = Wallet.builder()
                     .baseCurrency(BaseCurrency.NAIRA)
                     .accountBalance(0.00)
@@ -94,16 +89,9 @@ public class CustomerServiceImpl implements CustomerService {
                             "To complete your registration, we need you to verify your email address " + "http://localhost:8080/api/v1/auth/customer/verifyRegistration/" + validToken);
 
             // use the user object to create UserResponseDto Object
-            return SignupResponseDto.builder()
-                    .firstName(person.getFirstName())
-                    .lastName(person.getLastName())
-                    .email(person.getEmail())
-                    .gender(person.getGender())
-                    .date_of_birth(person.getDate_of_birth())
-                    .phone(person.getPhone())
-                    .verificationStatus(person.getVerificationStatus())
-                    .address(person.getAddress())
-                    .build();
+             SignupResponseDto signupResponseDto = new SignupResponseDto();
+        BeanUtils.copyProperties(signupResponseDto, person);
+                    return  signupResponseDto;
     }
     @Override
     public ResponseEntity<ApiResponse> verifyRegistration(String token){
@@ -119,6 +107,17 @@ public class CustomerServiceImpl implements CustomerService {
         tokenRepository.save(verificationToken);
         return new ResponseEntity<>(responseManager.success("Account verification successful"), HttpStatus.OK);
 
+    }
+
+    @Override
+    public void editProfile(EditProfileRequestDto editProfileRequestDto) {
+
+        String email = jwtUtils.extractUsername(editProfileRequestDto.getToken());
+
+        Person customer = personRepository.findByEmail(email)
+                .orElseThrow(()-> new ResourceNotFoundException("Not found"));
+        BeanUtils.copyProperties(editProfileRequestDto, customer);
+        personRepository.save(customer);
     }
 
 

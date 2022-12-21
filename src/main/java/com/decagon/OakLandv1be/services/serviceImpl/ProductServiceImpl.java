@@ -8,6 +8,9 @@ import com.decagon.OakLandv1be.services.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
@@ -26,5 +29,24 @@ public class ProductServiceImpl implements ProductService {
                 .description(product.getDescription())
                 .build();
     }
+
+    @Override
+    public List<ProductCustResponseDto> fetchAllProducts() {
+        List<Product> products = productRepository.findAll();
+        System.out.println("Products: " + products);
+        List<ProductCustResponseDto> productCustResponseDtoList= new ArrayList<>();
+        products.forEach(product -> {
+            ProductCustResponseDto productCustResponseDto = new ProductCustResponseDto();
+            productCustResponseDto.setName(product.getName());
+            productCustResponseDto.setPrice(product.getPrice());
+            productCustResponseDto.setImageUrl(product.getImageUrl());
+            productCustResponseDto.setColor(product.getColor());
+            productCustResponseDto.setDescription(product.getDescription());
+            productCustResponseDtoList.add(productCustResponseDto);
+        });
+        return productCustResponseDtoList;
+    }
+
+
 
 }

@@ -89,7 +89,17 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.UNAUTHORIZED)
                 .build();
 
+    @ExceptionHandler({UnauthorizedUserException.class})
+    public ResponseEntity<ErrorResponse> handleUnauthorizedUserException(UnauthorizedUserException ex){
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .message(ex.getMessage())
+                .debugMessage("User does not have the right access")
+                .status(HttpStatus.UNAUTHORIZED).build();
+
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
 
     }
+
+}
+
