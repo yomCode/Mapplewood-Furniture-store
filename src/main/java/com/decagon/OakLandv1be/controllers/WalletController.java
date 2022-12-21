@@ -1,6 +1,7 @@
 package com.decagon.OakLandv1be.controllers;
 
 
+import com.decagon.OakLandv1be.dto.WithdrawDto;
 import com.decagon.OakLandv1be.services.WalletService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,7 @@ public class WalletController {
     private final WalletService walletService;
 
     @PostMapping("/wallet-withdraw")
-    ResponseEntity<String> withdrwalFromWallet(Double amount) {
-        return walletService.withdrwalFromWallet(amount);
+    ResponseEntity<String> withdrawalFromWallet(WithdrawDto withdrawDto) {
+        return walletService.withdrawalFromWallet(withdrawDto);
     }
 }

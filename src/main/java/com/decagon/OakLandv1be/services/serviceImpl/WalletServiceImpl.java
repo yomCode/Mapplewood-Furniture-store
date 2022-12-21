@@ -1,5 +1,6 @@
 package com.decagon.OakLandv1be.services.serviceImpl;
 
+import com.decagon.OakLandv1be.dto.WithdrawDto;
 import com.decagon.OakLandv1be.entities.Person;
 import com.decagon.OakLandv1be.entities.Transaction;
 import com.decagon.OakLandv1be.entities.Wallet;
@@ -35,7 +36,7 @@ public class WalletServiceImpl implements WalletService {
 
 
     @Override
-    public ResponseEntity<String> withdrwalFromWallet(Double amount) {
+    public ResponseEntity<String> withdrawalFromWallet(WithdrawDto withdrawDto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             String email = authentication.getName();
@@ -46,10 +47,10 @@ public class WalletServiceImpl implements WalletService {
 
             Wallet wallet = walletRepository.findById(walletId).orElseThrow(() -> new WalletIdDoesNotExistException(walletId));
 
-            if (wallet.getAccountBalance() < amount)
+            if (wallet.getAccountBalance() < withdrawDto.getAmount())
                 throw new InsufficientBalanceInWalletException();
 
-                wallet.setAccountBalance(wallet.getAccountBalance() - amount);
+                wallet.setAccountBalance(wallet.getAccountBalance() - withdrawDto.getAmount());
 
             Transaction transaction = Transaction.builder()
                         .wallet(wallet)
@@ -62,7 +63,7 @@ public class WalletServiceImpl implements WalletService {
 
                 try {
                     mailService.sendMail(person.getEmail(), "Wallet deposit", "Your wallet has been debited with "
-                            + amount + ". Your new balance is now " + wallet.getAccountBalance());
+                            + withdrawDto + ". Your new balance is now " + wallet.getAccountBalance());
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }

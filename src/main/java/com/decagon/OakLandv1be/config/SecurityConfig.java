@@ -78,6 +78,7 @@ public class SecurityConfig {
         return converter;
     }
 
+    @Bean
     public AuthenticationProvider authenticationProvider() {
         final DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setUserDetailsService(appUserDetailsService);

@@ -14,16 +14,11 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AppUserDetailsService implements UserDetailsService {
     private final PersonRepository personRepository;
-    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Person dbUser = personRepository.findByEmail(email).orElseThrow(
                 () -> new UsernameNotFoundException("Not Found"));
-        return AppUserDetails.builder()
-                .username(dbUser.getEmail())
-                .password(passwordEncoder.encode(dbUser.getPassword()))
-                .grantedAuthorities(dbUser.getRole().getGrantedAuthorities())
-                .build();
+        return new AppUserDetails(dbUser);
     }
 }
