@@ -25,7 +25,7 @@ public class AdminController {
 
    @PutMapping("/products/update/{productId}")
       public ApiResponse<Product> updateProduct(@Valid @PathVariable Long productId , @RequestBody UpdateProductDto updateproductDto) {
-       return productService.updateProduct( productId, updateproductDto);
+       return adminService.updateProduct( productId, updateproductDto);
    }
 
     @GetMapping("/products/{product_id}")

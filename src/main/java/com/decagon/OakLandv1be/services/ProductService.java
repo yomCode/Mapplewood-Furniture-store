@@ -10,6 +10,5 @@ import java.util.List;
 public interface ProductService {
     ProductCustResponseDto fetchASingleProduct(Long product_id);
     List<ProductCustResponseDto> fetchAllProducts();
-    ApiResponse<Product> updateProduct(Long productId, UpdateProductDto updateproductDto);
 
 }

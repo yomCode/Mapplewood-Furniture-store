@@ -172,7 +172,7 @@ class AdminControllerIntegrationTest {
                 new ApiResponse<>("product updated", true, updatedProduct);
 
         ApiResponse<Product> apiResponse1 =
-                productService.updateProduct(32l, updateProductDto);
+                adminService.updateProduct(32l, updateProductDto);
         assertEquals(apiResponse1.toString(), expectedApiResponse.toString());
 
     }
@@ -183,7 +183,7 @@ class AdminControllerIntegrationTest {
                 .thenReturn(Optional.empty());
 
         assertThrows(ProductNotFoundException.class,
-                () -> productService.updateProduct(23L, updateProductDto));
+                () -> adminService.updateProduct(23L, updateProductDto));
 
     }
 
