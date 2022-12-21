@@ -26,10 +26,6 @@ public class Product extends BaseEntity{
     @JoinColumn(name = "subCategory_id")
     private SubCategory subCategory;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "customer_id")
-    private Customer customer;
-
     private String color;
 
     private String description;

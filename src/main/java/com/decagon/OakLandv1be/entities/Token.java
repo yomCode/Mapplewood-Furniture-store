@@ -3,19 +3,18 @@ package com.decagon.OakLandv1be.entities;
 import com.decagon.OakLandv1be.enums.TokenStatus;
 import lombok.Getter;
 import lombok.Setter;
-
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
-@Table(name = "password_reset_tokens")
+@Table(name = "token_tbl")
 @Getter
 @Setter
 public class Token extends BaseEntity {
 
+    @Column(length = 500)
     private String token;
+
+    @Enumerated(EnumType.STRING)
     private TokenStatus tokenStatus;
 
     @OneToOne()

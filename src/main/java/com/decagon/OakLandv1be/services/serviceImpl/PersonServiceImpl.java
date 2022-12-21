@@ -67,8 +67,6 @@ public class PersonServiceImpl implements PersonService {
         Person person = tokenEntity.getPerson();
         person.setPassword(passwordEncoder.encode(passwordResetDto.getPassword()));
         personRepository.save(person);
-
-//        tokenEntity.setToken(null);
         tokenEntity.setTokenStatus(EXPIRED);
         tokenRepository.save(tokenEntity);
 

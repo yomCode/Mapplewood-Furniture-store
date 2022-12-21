@@ -1,6 +1,6 @@
 package com.decagon.OakLandv1be.dto;
 
-import com.decagon.OakLandv1be.enums.Gender;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,7 +23,7 @@ public class SignupRequestDto {
     @Email
     private String email;
 
-    private Gender gender;
+    private String gender;
 
     @NotBlank(message = "Date of birth is mandatory")
     private String date_of_birth;
@@ -32,15 +32,10 @@ public class SignupRequestDto {
     @Size(min = 11, max = 14)
     private String phoneNumber;
 
-    @NotBlank(message = "Street number is mandatory")
-    private String street;
-
-    @NotBlank(message = "State is mandatory")
-    private String state;
-
-    @NotBlank(message = "Country is mandatory")
-    private String country;
+    @NotBlank(message = "Address is mandatory")
+    private String address;
 
     @NotBlank(message = "Password is mandatory")
+    @Size(min = 8, max=25, message="Password must be equal to or greater than 8 character and less than 25 characters")
     private String password;
 }

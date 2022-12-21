@@ -1,28 +1,25 @@
 package com.decagon.OakLandv1be.exceptions;
 
-public class AlreadyExistsException extends Exception{
-    public AlreadyExistsException() {
+import lombok.Getter;
+import lombok.Setter;
 
-        super();
-    }
+@Getter
+@Setter
+public class AlreadyExistsException extends RuntimeException{
+
+    private String debugMessage;
 
     public AlreadyExistsException(String message) {
 
         super(message);
     }
 
-    public AlreadyExistsException(String message, Throwable cause) {
-
-        super(message, cause);
+    public AlreadyExistsException(String message, String debugMessage) {
+        super(message);
+        this.debugMessage = debugMessage;
     }
 
-    public AlreadyExistsException(Throwable cause) {
 
-        super(cause);
-    }
 
-    protected AlreadyExistsException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
-    }
 }
 
