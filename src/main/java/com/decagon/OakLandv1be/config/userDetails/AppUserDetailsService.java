@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AppUserDetailsService implements UserDetailsService {
     private final PersonRepository personRepository;
-    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
