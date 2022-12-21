@@ -17,7 +17,7 @@ import java.util.Set;
 @Table(name = "customer_tbl")
 public class Customer extends BaseEntity{
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "person_id")
     private Person person;
 

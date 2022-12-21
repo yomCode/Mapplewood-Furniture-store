@@ -7,13 +7,8 @@ import org.springframework.http.HttpStatus;
 @Setter
 @Data
 @Builder
-
-@NoArgsConstructor
-@AllArgsConstructor
-
 @AllArgsConstructor
 @NoArgsConstructor
-
 public class ErrorResponse {
     private String message;
     private String debugMessage;
