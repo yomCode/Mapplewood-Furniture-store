@@ -34,7 +34,7 @@ class AdminControllerIntegrationTest {
     @MockBean
     ProductRepository productRepository;
 
-    @MockBean
+    @Autowired
     PasswordEncoder passwordEncoder;
 
     private Product product;
