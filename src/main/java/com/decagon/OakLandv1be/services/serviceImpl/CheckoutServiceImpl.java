@@ -1,17 +1,22 @@
 package com.decagon.OakLandv1be.services.serviceImpl;
 
 import com.decagon.OakLandv1be.dto.AddressRequestDto;
-import com.decagon.OakLandv1be.dto.CheckoutItemDto;
+import com.decagon.OakLandv1be.dto.CheckoutDto;
+import com.decagon.OakLandv1be.dto.CheckoutResponseDto;
 import com.decagon.OakLandv1be.entities.*;
 import com.decagon.OakLandv1be.enums.DeliveryStatus;
 import com.decagon.OakLandv1be.enums.ModeOfDelivery;
 import com.decagon.OakLandv1be.exceptions.InvalidPaymentMethodException;
+import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
 import com.decagon.OakLandv1be.exceptions.UnauthorizedUserException;
+import com.decagon.OakLandv1be.repositries.AddressRepository;
 import com.decagon.OakLandv1be.repositries.ModeOfPaymentRepository;
 import com.decagon.OakLandv1be.repositries.OrderRepository;
 import com.decagon.OakLandv1be.repositries.PersonRepository;
 import com.decagon.OakLandv1be.services.CheckoutService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,18 +28,20 @@ public class CheckoutServiceImpl implements CheckoutService {
     private final PersonRepository personRepository;
     private final ModeOfPaymentRepository modeOfPaymentRepository;
     private final OrderRepository orderRepository;
+    private final AddressRepository addressRepository;
 
     @Override
-    public Order cartCheckout(AddressRequestDto addressRequestDto, CheckoutItemDto checkoutItemDto){
+    public ResponseEntity<CheckoutResponseDto> cartCheckout(CheckoutDto checkoutDto){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
 
         if((auth instanceof AnonymousAuthenticationToken))
             throw new UnauthorizedUserException("Login to checkout");
-
         Person person = personRepository.findByEmail(email).orElseThrow();
         Customer customer = person.getCustomer();
         Cart cart = customer.getCart();
+        Address address = addressRepository.findById(checkoutDto.getAddress_id()).orElseThrow(()->
+                new ResourceNotFoundException("Address not found"));
 
         Order order = new Order();
 
@@ -45,23 +52,33 @@ public class CheckoutServiceImpl implements CheckoutService {
             order.getItems().add(item);
         }
 
-        Double total = 0.00;
-
+        double total = 0.00;
         for(Item item : order.getItems()){
             total += (item.getUnitPrice() * item.getOrderQty());
         }
-
-        order.setAddress(this.addNewAddress(addressRequestDto));
+        order.setAddress(address);
         order.setCustomer(customer);
         order.setDiscount(0.00);
         order.setDeliveryFee(0.00);
-        order.setModeOfDelivery(this.modeOfDelivery(checkoutItemDto.getModeOfDelivery()));
-        order.setModeOfPayment(modeOfPayment(checkoutItemDto.getModeOfPayment()));
+        order.setModeOfDelivery(this.modeOfDelivery(checkoutDto.getModeOfDelivery()));
+        order.setModeOfPayment(modeOfPayment(checkoutDto.getModeOfPayment()));
         order.setDelivery(delivery);
         order.setGrandTotal((total - order.getDiscount()) + order.getDeliveryFee());
         orderRepository.save(order);
 
-        return order;
+        CheckoutResponseDto checkoutResponseDto = CheckoutResponseDto.builder()
+                .customer(order.getCustomer())
+                .items(order.getItems())
+                .deliveryFee(order.getDeliveryFee())
+                .discount(order.getDiscount())
+                .grandTotal(order.getGrandTotal())
+                .delivery(order.getDelivery())
+                .modeOfPayment(order.getModeOfPayment())
+                .modeOfDelivery(order.getModeOfDelivery())
+                .address(order.getAddress())
+                .build();
+
+        return new ResponseEntity<>(checkoutResponseDto, HttpStatus.OK);
     }
     @Override
     public ModeOfPayment modeOfPayment(String modeOfPayment){
@@ -73,7 +90,7 @@ public class CheckoutServiceImpl implements CheckoutService {
         return ModeOfDelivery.valueOf(deliveryMethod.toUpperCase());
     }
     @Override
-    public Address addNewAddress(AddressRequestDto request){
+    public ResponseEntity<String> addNewAddress(AddressRequestDto addressRequestDto){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
 
@@ -83,14 +100,16 @@ public class CheckoutServiceImpl implements CheckoutService {
             Customer customer = person.getCustomer();
 
             Address address = Address.builder()
-                    .emailAddress(request.getEmailAddress())
-                    .state(request.getState())
-                    .country(request.getCountry())
-                    .street(request.getStreet())
-                    .fullName(request.getFullName())
+                    .emailAddress(addressRequestDto.getEmailAddress())
+                    .state(addressRequestDto.getState())
+                    .country(addressRequestDto.getCountry())
+                    .street(addressRequestDto.getStreet())
+                    .fullName(addressRequestDto.getFullName())
                     .customer(customer)
                     .build();
-            return address;
+             addressRepository.save(address);
+
+             return new ResponseEntity<>("Address saved", HttpStatus.OK);
         }
         throw new UnauthorizedUserException("Please login to add a new address");
     }
