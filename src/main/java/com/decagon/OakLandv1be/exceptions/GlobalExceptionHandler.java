@@ -52,7 +52,7 @@ public class GlobalExceptionHandler {
         errorResponse.setStatus(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
      }
-        
+
     @ExceptionHandler(InvalidTokenException.class)
     public ResponseEntity<ErrorResponse> tokenNotFound(InvalidTokenException ne){
         ErrorResponse errorResponse = new ErrorResponse();
@@ -60,8 +60,34 @@ public class GlobalExceptionHandler {
         errorResponse.setDebugMessage("Token not found");
         errorResponse.setStatus(HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
-
     }
+
+    @ExceptionHandler({WalletIdDoesNotExistException.class})
+    public ResponseEntity<ErrorResponse> walletIdNotFound(WalletIdDoesNotExistException ne){
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setMessage(ne.getMessage());
+        errorResponse.setDebugMessage("Sorry! this wallet doesnt exist");
+        errorResponse.setStatus(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler({InsufficientBalanceInWalletException.class})
+    public ResponseEntity<ErrorResponse> InsufficientBalanceInWallet(WalletIdDoesNotExistException ne){
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setMessage(ne.getMessage());
+        errorResponse.setDebugMessage("Oops! please fund your wallet");
+        errorResponse.setStatus(HttpStatus.PAYMENT_REQUIRED);
+        return new ResponseEntity<>(errorResponse, HttpStatus.PAYMENT_REQUIRED);
+    }
+
+    @ExceptionHandler(UnauthorizedUserException.class)
+    public ResponseEntity<ErrorResponse> handleUnauthorizedUserException(UnauthorizedUserException ex) {
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .debugMessage("Customer is not logged in")
+                .message(ex.getMessage())
+                .status(HttpStatus.UNAUTHORIZED)
+                .build();
 
     @ExceptionHandler({UnauthorizedUserException.class})
     public ResponseEntity<ErrorResponse> handleUnauthorizedUserException(UnauthorizedUserException ex){
@@ -73,4 +99,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
 
+    }
+
 }
+

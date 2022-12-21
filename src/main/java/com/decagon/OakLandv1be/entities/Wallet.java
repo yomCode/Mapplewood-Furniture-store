@@ -28,6 +28,5 @@ public class Wallet extends BaseEntity{
     @JsonIgnore
     @OneToOne(mappedBy = "wallet", cascade = CascadeType.ALL)
     private Customer customer;
-
-
 }
+
