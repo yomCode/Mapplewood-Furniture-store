@@ -7,6 +7,9 @@ import com.decagon.OakLandv1be.dto.LoginDto;
 import com.decagon.OakLandv1be.dto.PasswordResetDto;
 import com.decagon.OakLandv1be.entities.Person;
 import com.decagon.OakLandv1be.repositries.PersonRepository;
+import com.decagon.OakLandv1be.dto.UpdatePasswordDto;
+import com.decagon.OakLandv1be.services.serviceImpl.PersonServiceImpl;
+
 import com.decagon.OakLandv1be.services.PersonService;
 import com.decagon.OakLandv1be.services.serviceImpl.PersonServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -16,9 +19,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
-
 import java.io.IOException;
 
 @RestController
@@ -28,10 +29,9 @@ public class AuthenticationController {
     private final TokenService tokenService;
     private final AuthenticationManager authenticationManager;
     private final AppUserDetailsService userDetailsService;
-
     private final PersonRepository personRepository;
-
-    private final PersonServiceImpl personService;
+    private final PersonService personService;
+    
 
     @PostMapping("/login")
     public ResponseEntity<String> authenticate(@Valid @RequestBody LoginDto loginRequest) {
@@ -61,4 +61,11 @@ public class AuthenticationController {
         String result = personService.resetPassword(token, passwordResetDto);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
+
+    @PutMapping("/update-password/{email}")
+    public ResponseEntity<String> updatePassword(@Valid @PathVariable String email ,  @RequestBody UpdatePasswordDto updatePasswordDto){
+        personService.updatePassword( email ,updatePasswordDto);
+        return new ResponseEntity<>("Password changed successfully", HttpStatus.OK);
+    }
+
 }
