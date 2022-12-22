@@ -40,7 +40,8 @@ public class CustomerController {
         customerService.editProfile(editProfileRequestDto);
         return new ResponseEntity<>("Profile Updated Successfully", HttpStatus.OK);
     }
-
+    
+    
     @PostMapping("/cart/item/add/{productId}")
     public ResponseEntity<ApiResponse<CartResponseDto>> addItemToCart(@PathVariable Long productId, @RequestBody AddItemToCartDto addItemToCartDto) throws AlreadyExistsException {
         CartResponseDto cartResponseDto = cartService.addItemToCart(productId,addItemToCartDto);
