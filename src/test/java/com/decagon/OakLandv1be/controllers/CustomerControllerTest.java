@@ -57,7 +57,7 @@ class CustomerControllerTest {
         EditProfileRequestDto editProfileRequestDto = new EditProfileRequestDto();
         editProfileRequestDto.setFirstName("Many");
         editProfileRequestDto.setLastName("Rob");
-        editProfileRequestDto.setGender(Gender.MALE);
+        editProfileRequestDto.setGender(String.valueOf(Gender.MALE));
         editProfileRequestDto.setDate_of_birth("11-01-1993");
         editProfileRequestDto.setPhone("07068693321");
 
