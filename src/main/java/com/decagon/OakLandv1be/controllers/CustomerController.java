@@ -36,5 +36,4 @@ public class CustomerController {
         customerService.editProfile(editProfileRequestDto);
         return new ResponseEntity<>("Profile Updated Successfully", HttpStatus.OK);
     }
-
 }
