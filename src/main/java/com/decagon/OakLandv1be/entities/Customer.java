@@ -13,10 +13,11 @@ import java.util.Set;
 @Getter
 @Setter
 @Builder
+@ToString
 @Table(name = "customer_tbl")
 public class Customer extends BaseEntity{
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "person_id")
     private Person person;
 
@@ -40,6 +41,6 @@ public class Customer extends BaseEntity{
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Address> addressBook;
 
-
+    private boolean isActive = true;
 
 }

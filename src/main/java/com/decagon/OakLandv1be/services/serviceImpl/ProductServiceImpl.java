@@ -1,10 +1,15 @@
 package com.decagon.OakLandv1be.services.serviceImpl;
 
+import com.decagon.OakLandv1be.dto.UpdateProductDto;
 import com.decagon.OakLandv1be.dto.ProductCustResponseDto;
 import com.decagon.OakLandv1be.entities.Product;
 import com.decagon.OakLandv1be.exceptions.ProductNotFoundException;
 import com.decagon.OakLandv1be.repositries.ProductRepository;
 import com.decagon.OakLandv1be.services.ProductService;
+import com.decagon.OakLandv1be.utils.ApiResponse;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,8 +21,6 @@ import java.util.List;
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
 
-
-    @Override
     public ProductCustResponseDto fetchASingleProduct(Long product_id) {
         Product product = productRepository.findById(product_id)
                 .orElseThrow(() -> new ProductNotFoundException("This product was not found"));
@@ -46,7 +49,5 @@ public class ProductServiceImpl implements ProductService {
         });
         return productCustResponseDtoList;
     }
-
-
 
 }
