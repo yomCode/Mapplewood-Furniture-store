@@ -3,9 +3,12 @@ package com.decagon.OakLandv1be.services.serviceImpl;
 import com.decagon.OakLandv1be.dto.ProductCustResponseDto;
 import com.decagon.OakLandv1be.entities.Product;
 import com.decagon.OakLandv1be.exceptions.ProductNotFoundException;
+import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
 import com.decagon.OakLandv1be.repositries.ProductRepository;
 import com.decagon.OakLandv1be.services.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -45,6 +48,21 @@ public class ProductServiceImpl implements ProductService {
             productCustResponseDtoList.add(productCustResponseDto);
         });
         return productCustResponseDtoList;
+    }
+
+
+    public ResponseEntity<Boolean> deleteProduct(Long id){
+
+
+        Product product = productRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Product not found"));
+        productRepository.delete(product);
+
+        Product removedProduct = productRepository.findById(id).orElse(null);
+
+        if(removedProduct == null)
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
+
     }
 
 
