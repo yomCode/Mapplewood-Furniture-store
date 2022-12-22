@@ -1,13 +1,11 @@
 package com.decagon.OakLandv1be.controllers;
 
-import com.decagon.OakLandv1be.dto.EditProfileRequestDto;
-import com.decagon.OakLandv1be.dto.ProductCustResponseDto;
-import com.decagon.OakLandv1be.dto.SignupRequestDto;
-import com.decagon.OakLandv1be.dto.SignupResponseDto;
+import com.decagon.OakLandv1be.dto.*;
+import com.decagon.OakLandv1be.entities.Customer;
 import com.decagon.OakLandv1be.exceptions.AlreadyExistsException;
 import com.decagon.OakLandv1be.services.CustomerService;
 import com.decagon.OakLandv1be.utils.ApiResponse;
-import com.decagon.OakLandv1be.utils.ResponseManager;
+import com.decagon.OakLandv1be.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +18,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class CustomerController {
     private final CustomerService customerService;
+
     @PostMapping("/signup")
 
     public ResponseEntity<SignupResponseDto> signup(@Valid @RequestBody SignupRequestDto signupRequestDto) throws AlreadyExistsException, IOException {
@@ -36,5 +35,11 @@ public class CustomerController {
         customerService.editProfile(editProfileRequestDto);
         return new ResponseEntity<>("Profile Updated Successfully", HttpStatus.OK);
     }
+
+    @DeleteMapping ("/product/favorite/delete/{cid}/{pid}")
+    public ResponseEntity<String> deleteProductFromFavorites(@PathVariable Long pid, @RequestBody FavoritesDto favoritesDto, @PathVariable Long cid){
+        return customerService.deleteProductFromFavourites(favoritesDto,pid,cid);
+    }
+
 
 }

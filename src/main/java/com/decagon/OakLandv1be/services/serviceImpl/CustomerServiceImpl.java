@@ -2,6 +2,7 @@ package com.decagon.OakLandv1be.services.serviceImpl;
 
 
 import com.decagon.OakLandv1be.config.tokens.TokenService;
+import com.decagon.OakLandv1be.dto.FavoritesDto;
 import com.decagon.OakLandv1be.dto.EditProfileRequestDto;
 import com.decagon.OakLandv1be.dto.SignupRequestDto;
 import com.decagon.OakLandv1be.dto.SignupResponseDto;
@@ -11,17 +12,14 @@ import com.decagon.OakLandv1be.enums.Gender;
 import com.decagon.OakLandv1be.enums.Role;
 import com.decagon.OakLandv1be.exceptions.AlreadyExistsException;
 import com.decagon.OakLandv1be.exceptions.InvalidTokenException;
+import com.decagon.OakLandv1be.exceptions.ProductNotFoundException;
 import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
-import com.decagon.OakLandv1be.repositries.CustomerRepository;
-import com.decagon.OakLandv1be.repositries.PersonRepository;
-import com.decagon.OakLandv1be.repositries.TokenRepository;
-import com.decagon.OakLandv1be.repositries.WalletRepository;
+import com.decagon.OakLandv1be.repositries.*;
 import com.decagon.OakLandv1be.services.CustomerService;
 import com.decagon.OakLandv1be.services.JavaMailService;
 import com.decagon.OakLandv1be.utils.ApiResponse;
 import com.decagon.OakLandv1be.utils.JwtUtils;
 import com.decagon.OakLandv1be.utils.ResponseManager;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
@@ -29,7 +27,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.Set;
 import static com.decagon.OakLandv1be.enums.TokenStatus.ACTIVE;
 import static com.decagon.OakLandv1be.enums.TokenStatus.EXPIRED;
@@ -45,6 +42,7 @@ public class CustomerServiceImpl implements CustomerService {
     private final TokenService tokenService;
     private final TokenRepository tokenRepository;
     private final ResponseManager responseManager;
+    private final ProductRepository productRepository;
     private final JwtUtils jwtUtils;
 
 
@@ -119,6 +117,26 @@ public class CustomerServiceImpl implements CustomerService {
         BeanUtils.copyProperties(editProfileRequestDto, customer);
         personRepository.save(customer);
     }
+
+    @Override
+    public ResponseEntity<String> deleteProductFromFavourites(FavoritesDto favoritesDto, Long pid, Long cid){
+
+        Person person = new Person();
+
+        Product product = productRepository.findById(cid)
+        .orElseThrow(()-> new ResourceNotFoundException("Not Found"));
+
+        Set<Product> favorites = person.getCustomer().getFavorites();
+        if(favorites.contains(product)){
+            throw new AlreadyExistsException("This product is already in favorite");
+        }
+        favorites.remove(product);
+        person.getCustomer().setFavorites(favorites);
+
+        return ResponseEntity.ok("removed from favourite");
+    }
+
+
 
 
 
