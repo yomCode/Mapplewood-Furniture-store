@@ -21,7 +21,6 @@ import java.io.IOException;
 public class CustomerController {
     private final CustomerService customerService;
     @PostMapping("/signup")
-
     public ResponseEntity<SignupResponseDto> signup(@Valid @RequestBody SignupRequestDto signupRequestDto) throws AlreadyExistsException, IOException {
         SignupResponseDto signupResponseDto = customerService.saveCustomer(signupRequestDto);
         return new ResponseEntity<>(signupResponseDto, HttpStatus.CREATED);

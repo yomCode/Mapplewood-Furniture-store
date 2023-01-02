@@ -17,7 +17,7 @@ import java.util.Set;
 @Table(name = "order_tbl")
 public class Order extends BaseEntity{
 
-    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToOne( cascade = CascadeType.ALL)
     private ModeOfPayment modeOfPayment;
 
     @JsonIgnore
