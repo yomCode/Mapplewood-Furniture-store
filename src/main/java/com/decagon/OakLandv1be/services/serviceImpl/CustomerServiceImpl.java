@@ -10,28 +10,25 @@ import com.decagon.OakLandv1be.enums.BaseCurrency;
 import com.decagon.OakLandv1be.enums.Gender;
 import com.decagon.OakLandv1be.enums.Role;
 import com.decagon.OakLandv1be.exceptions.AlreadyExistsException;
-import com.decagon.OakLandv1be.repositries.CartRepository;
+import com.decagon.OakLandv1be.exceptions.ProductNotFoundException;
+import com.decagon.OakLandv1be.repositries.*;
 import com.decagon.OakLandv1be.exceptions.InvalidTokenException;
 import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
-import com.decagon.OakLandv1be.repositries.CustomerRepository;
-import com.decagon.OakLandv1be.repositries.ItemRepository;
-import com.decagon.OakLandv1be.repositries.PersonRepository;
-import com.decagon.OakLandv1be.repositries.TokenRepository;
-import com.decagon.OakLandv1be.repositries.WalletRepository;
 import com.decagon.OakLandv1be.services.CustomerService;
 import com.decagon.OakLandv1be.services.JavaMailService;
 import com.decagon.OakLandv1be.utils.ApiResponse;
 import com.decagon.OakLandv1be.utils.JwtUtils;
 import com.decagon.OakLandv1be.utils.ResponseManager;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.Set;
 import static com.decagon.OakLandv1be.enums.TokenStatus.ACTIVE;
 import static com.decagon.OakLandv1be.enums.TokenStatus.EXPIRED;
@@ -48,6 +45,8 @@ public class CustomerServiceImpl implements CustomerService {
     private final TokenRepository tokenRepository;
     private final ResponseManager responseManager;
     private final JwtUtils jwtUtils;
+
+    private final ProductRepository productRepository;
 
 
 
@@ -93,7 +92,7 @@ public class CustomerServiceImpl implements CustomerService {
 
             // use the user object to create UserResponseDto Object
              SignupResponseDto signupResponseDto = new SignupResponseDto();
-        BeanUtils.copyProperties(signupResponseDto, person);
+        BeanUtils.copyProperties(person, signupResponseDto);
                     return  signupResponseDto;
     }
 
@@ -127,6 +126,25 @@ public class CustomerServiceImpl implements CustomerService {
         personRepository.save(customer);
     }
 
+    @Override
+    public void addProductToFavorites(Long pid){
+        Product product = productRepository.findById(pid).
+                orElseThrow(() -> new ProductNotFoundException("This product was not found"));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if ((authentication instanceof AnonymousAuthenticationToken))
+            throw new ResourceNotFoundException("Please Login");
+        String email = authentication.getName();
+        Person person = personRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        Set<Product> favorites = person.getCustomer().getFavorites();
+        if (favorites.contains(product)){
+            throw new AlreadyExistsException("This product is already in favorites");
+        }
+        favorites.add(product);
+        person.getCustomer().setFavorites(favorites);
+        customerRepository.save(person.getCustomer());
+    }
 
 
 }

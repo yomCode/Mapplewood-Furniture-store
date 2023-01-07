@@ -1,7 +1,7 @@
 package com.decagon.OakLandv1be.utils;
 
-import com.decagon.OakLandv1be.entities.Person;
-import com.decagon.OakLandv1be.entities.Product;
+import com.decagon.OakLandv1be.entities.*;
+import com.decagon.OakLandv1be.enums.BaseCurrency;
 import com.decagon.OakLandv1be.enums.Gender;
 import com.decagon.OakLandv1be.enums.Role;
 import com.decagon.OakLandv1be.repositries.PersonRepository;
@@ -20,7 +20,7 @@ public class FakeData {
     @Bean
     public CommandLineRunner commandLineRunner(PersonRepository personRepository, ProductRepository productRepository) {
         return argument -> {
-            if(!personRepository.existsByEmail("benson@gmail.com")) {
+            if (!personRepository.existsByEmail("benson@gmail.com")) {
                 Person person = Person.builder()
                         .firstName("Benson")
                         .lastName("Malik")
@@ -28,6 +28,7 @@ public class FakeData {
                         .gender(Gender.MALE)
                         .date_of_birth("13-08-1990")
                         .phone("9859595959")
+                        .isActive(true)
                         .verificationStatus(true)
                         .password(passwordEncoder.encode("password123"))
                         .address("No Address")
@@ -36,7 +37,7 @@ public class FakeData {
                 personRepository.save(person);
             }
 
-            if(productRepository.existsById(1L)) {
+            if (productRepository.existsById(1L)) {
                 Product product = Product.builder()
                         .name("Oppola")
                         .price(40000.00)
@@ -52,32 +53,34 @@ public class FakeData {
         };
     }
 
-    @Bean
-    public CommandLineRunner commandLineRunner(PersonRepository personRepository,CustomerRepository customerRepository) {
-        return args -> {
-            Person person = Person.builder()
-                    .firstName("Maggie")
-                    .lastName("Stubborn")
-                    .password(passwordEncoder.encode("password123"))
-                    .email("maggie@gmail.com")
-                    .gender(Gender.OTHER)
-                    .date_of_birth("12-09-1993")
-                    .phone("78573944843")
-                    .verificationStatus(true)
-                    .address("Foolish address")
-                    .role(Role.ADMIN)
-                    .build();
-
-
-            Customer customer = Customer.builder()
-                    .person(person)
-                    .cart(new Cart())
-                    .wallet(Wallet.builder()
-                            .accountBalance(4000D)
-                            .baseCurrency(BaseCurrency.POUNDS)
-                            .build())
-                    .build();
-
-            personRepository.save(person);
-            customerRepository.save(customer);
+//    @Bean
+//    public CommandLineRunner commandLineRunner(PersonRepository personRepository, CustomerRepository customerRepository) {
+//        return args -> {
+//            Person person = Person.builder()
+//                    .firstName("Maggie")
+//                    .lastName("Stubborn")
+//                    .password(passwordEncoder.encode("password123"))
+//                    .email("maggie@gmail.com")
+//                    .gender(Gender.OTHER)
+//                    .date_of_birth("12-09-1993")
+//                    .phone("78573944843")
+//                    .verificationStatus(true)
+//                    .address("Foolish address")
+//                    .role(Role.ADMIN)
+//                    .build();
+//
+//
+//            Customer customer = Customer.builder()
+//                    .person(person)
+//                    .cart(new Cart())
+//                    .wallet(Wallet.builder()
+//                            .accountBalance(4000D)
+//                            .baseCurrency(BaseCurrency.POUNDS)
+//                            .build())
+//                    .build();
+//
+//            personRepository.save(person);
+//            customerRepository.save(customer);
+//        };
+//    }
 }
