@@ -62,11 +62,7 @@ class AdminServiceImplTest {
 
     @Test
     void testDeleteProductById() {
-//        when(productRepository.findById(anyLong())).thenReturn(Optional.of(product));
-//        ApiResponse<OperationStatus> apiResponse = adminService.deleteProduct(1L);
-//        assertNotNull(apiResponse);
-//        Assertions.assertEquals("");
-        adminService.deleteProduct(1L);
+      adminService.deleteProduct(1L);
         verify(productRepository, times(1)).deleteById(anyLong());
     }
 }
