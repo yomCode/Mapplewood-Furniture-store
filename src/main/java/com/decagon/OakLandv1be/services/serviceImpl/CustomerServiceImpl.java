@@ -10,9 +10,11 @@ import com.decagon.OakLandv1be.enums.BaseCurrency;
 import com.decagon.OakLandv1be.enums.Gender;
 import com.decagon.OakLandv1be.enums.Role;
 import com.decagon.OakLandv1be.exceptions.AlreadyExistsException;
+import com.decagon.OakLandv1be.repositries.CartRepository;
 import com.decagon.OakLandv1be.exceptions.InvalidTokenException;
 import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
 import com.decagon.OakLandv1be.repositries.CustomerRepository;
+import com.decagon.OakLandv1be.repositries.ItemRepository;
 import com.decagon.OakLandv1be.repositries.PersonRepository;
 import com.decagon.OakLandv1be.repositries.TokenRepository;
 import com.decagon.OakLandv1be.repositries.WalletRepository;
@@ -48,6 +50,7 @@ public class CustomerServiceImpl implements CustomerService {
     private final TokenRepository tokenRepository;
     private final ResponseManager responseManager;
     private final JwtUtils jwtUtils;
+
 
 
     @Override
@@ -95,6 +98,10 @@ public class CustomerServiceImpl implements CustomerService {
         BeanUtils.copyProperties(signupResponseDto, person);
                     return  signupResponseDto;
     }
+
+
+
+
     @Override
     public ResponseEntity<ApiResponse> verifyRegistration(String token){
 
