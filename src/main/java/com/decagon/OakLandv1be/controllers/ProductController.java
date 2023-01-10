@@ -39,4 +39,6 @@ public class ProductController {
             @PathVariable Integer offset, @PathVariable Integer size,@PathVariable String sortingField ){
         return  new ResponseEntity<>(productService.productWithPaginationAndSorting(offset, size, sortingField),HttpStatus.OK);
     }
+
+
 }
