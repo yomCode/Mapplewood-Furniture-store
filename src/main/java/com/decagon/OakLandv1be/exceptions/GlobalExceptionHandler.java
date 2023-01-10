@@ -63,15 +63,6 @@ public class GlobalExceptionHandler {
 
     }
 
-//    @ExceptionHandler({InsufficientBalanceInWalletException.class})
-//    public ResponseEntity<ErrorResponse> InsufficientBalanceInWallet(WalletIdDoesNotExistException ne){
-//        ErrorResponse errorResponse = new ErrorResponse();
-//        errorResponse.setMessage(ne.getMessage());
-//        errorResponse.setDebugMessage("Oops! please fund your wallet");
-//        errorResponse.setStatus(HttpStatus.PAYMENT_REQUIRED);
-//        return new ResponseEntity<>(errorResponse, HttpStatus.PAYMENT_REQUIRED);
-//    }
-
     @ExceptionHandler({UnauthorizedUserException.class})
     public ResponseEntity<ErrorResponse> handleUnauthorizedUserException(UnauthorizedUserException ex){
         ErrorResponse errorResponse = ErrorResponse.builder()

@@ -34,7 +34,7 @@ public class CustomerController {
         return new ResponseEntity<>("Profile Updated Successfully", HttpStatus.OK);
     }
 
-    @PutMapping("/product/favorites/add/{pid}")
+    @PostMapping("/product/favorites/add/{pid}")
     public ResponseEntity<String> addFavorites(@PathVariable Long pid){
         customerService.addProductToFavorites(pid);
         return new ResponseEntity<>("Product added to favourites successfully", HttpStatus.ACCEPTED);
