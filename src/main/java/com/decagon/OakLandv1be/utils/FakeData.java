@@ -18,7 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class FakeData {
     private final PasswordEncoder passwordEncoder;
 
-    @Bean
+
     public CommandLineRunner commandLineRunner(PersonRepository personRepository, ProductRepository productRepository) {
         return argument -> {
             if (!personRepository.existsByEmail("benson@gmail.com")) {
@@ -54,7 +54,7 @@ public class FakeData {
         };
     }
 
-    @Bean
+
     public CommandLineRunner commandLineRunner(PersonRepository personRepository, CustomerRepository customerRepository) {
         return args -> {
             Person person = Person.builder()

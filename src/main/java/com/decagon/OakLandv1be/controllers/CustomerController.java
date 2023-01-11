@@ -23,7 +23,7 @@ public class CustomerController {
         SignupResponseDto signupResponseDto = customerService.saveCustomer(signupRequestDto);
         return new ResponseEntity<>(signupResponseDto, HttpStatus.CREATED);
     }
-    @PostMapping("/verifyRegistration/{token}")
+    @GetMapping("/verifyRegistration/{token}")
     public ResponseEntity<ApiResponse> verifyAccount(@PathVariable String token){
         return customerService.verifyRegistration(token);
     }

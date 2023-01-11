@@ -12,7 +12,7 @@ public enum Role {
     CUSTOMER;
 
     public Set<SimpleGrantedAuthority> getGrantedAuthorities() {
-        java.util.Set<SimpleGrantedAuthority> authorities = new HashSet<>();
+        Set<SimpleGrantedAuthority> authorities = new HashSet<>();
         authorities.add(new SimpleGrantedAuthority(this.name()));
         return authorities;
     }
