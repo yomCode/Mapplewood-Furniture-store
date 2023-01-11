@@ -18,11 +18,11 @@ import java.io.IOException;
 public class CustomerController {
     private final CustomerService customerService;
     @PostMapping("/signup")
-    public ResponseEntity<SignupResponseDto> signup(@Valid @RequestBody SignupRequestDto signupRequestDto) throws AlreadyExistsException, IOException {
-        SignupResponseDto signupResponseDto = customerService.saveCustomer(signupRequestDto);
-        return new ResponseEntity<>(signupResponseDto, HttpStatus.CREATED);
+    public ResponseEntity<String> signup(@Valid @RequestBody SignupRequestDto signupRequestDto) throws AlreadyExistsException, IOException {
+        customerService.saveCustomer(signupRequestDto);
+        return new ResponseEntity<>("Registration Successful! Check your mail to verify your account.", HttpStatus.CREATED);
     }
-    @PostMapping("/verifyRegistration/{token}")
+    @GetMapping("/verifyRegistration/{token}")
     public ResponseEntity<ApiResponse> verifyAccount(@PathVariable String token){
         return customerService.verifyRegistration(token);
     }
