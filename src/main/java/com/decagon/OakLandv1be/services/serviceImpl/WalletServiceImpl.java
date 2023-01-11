@@ -21,6 +21,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.function.Function;
 
 import static com.decagon.OakLandv1be.enums.TransactionStatus.SUCCESSFUL;
 
@@ -64,5 +65,6 @@ public class WalletServiceImpl implements WalletService {
         }
         throw new UnauthorizedUserException("Login to carry out this operation");
     }
+
 
 }

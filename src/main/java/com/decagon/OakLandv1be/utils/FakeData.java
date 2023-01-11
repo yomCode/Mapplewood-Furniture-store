@@ -1,7 +1,10 @@
 package com.decagon.OakLandv1be.utils;
 
+import com.decagon.OakLandv1be.entities.Customer;
 import com.decagon.OakLandv1be.entities.Person;
 import com.decagon.OakLandv1be.entities.Product;
+import com.decagon.OakLandv1be.entities.Wallet;
+import com.decagon.OakLandv1be.enums.BaseCurrency;
 import com.decagon.OakLandv1be.enums.Gender;
 import com.decagon.OakLandv1be.enums.Role;
 import com.decagon.OakLandv1be.repositries.PersonRepository;
@@ -20,6 +23,8 @@ public class FakeData {
     public CommandLineRunner commandLineRunner(PersonRepository personRepository, ProductRepository productRepository) {
         return argument -> {
             if(!personRepository.existsByEmail("benson@gmail.com")) {
+                Wallet wallet = Wallet.builder().baseCurrency(BaseCurrency.NAIRA).accountBalance(20.00).build();
+                Customer customer = Customer.builder().wallet(wallet).build();
                 Person person = Person.builder()
                         .firstName("Benson")
                         .lastName("Malik")
@@ -30,7 +35,8 @@ public class FakeData {
                         .verificationStatus(true)
                         .password(passwordEncoder.encode("password123"))
                         .address("No Address")
-                        .role(Role.ADMIN)
+                        .role(Role.CUSTOMER)
+                        .customer(customer)
                         .build();
                 personRepository.save(person);
             }
