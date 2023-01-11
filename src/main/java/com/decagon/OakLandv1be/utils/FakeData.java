@@ -1,12 +1,11 @@
 package com.decagon.OakLandv1be.utils;
 
-import com.decagon.OakLandv1be.entities.Customer;
-import com.decagon.OakLandv1be.entities.Person;
-import com.decagon.OakLandv1be.entities.Product;
-import com.decagon.OakLandv1be.entities.Wallet;
+
+import com.decagon.OakLandv1be.entities.*;
 import com.decagon.OakLandv1be.enums.BaseCurrency;
 import com.decagon.OakLandv1be.enums.Gender;
 import com.decagon.OakLandv1be.enums.Role;
+import com.decagon.OakLandv1be.repositries.CustomerRepository;
 import com.decagon.OakLandv1be.repositries.PersonRepository;
 import com.decagon.OakLandv1be.repositries.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,12 +19,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class FakeData {
     private final PasswordEncoder passwordEncoder;
 
-    @Bean
+
     public CommandLineRunner commandLineRunner(PersonRepository personRepository, ProductRepository productRepository) {
         return argument -> {
-            if(!personRepository.existsByEmail("benson@gmail.com")) {
-                Wallet wallet = Wallet.builder().baseCurrency(BaseCurrency.NAIRA).accountBalance(20.00).build();
-                Customer customer = Customer.builder().wallet(wallet).build();
+            if (!personRepository.existsByEmail("benson@gmail.com")) {
                 Person person = Person.builder()
                         .firstName("Benson")
                         .lastName("Malik")
@@ -37,12 +34,11 @@ public class FakeData {
                         .password(passwordEncoder.encode("password123"))
                         .address("No Address")
                         .role(Role.CUSTOMER)
-                        .customer(customer)
                         .build();
                 personRepository.save(person);
             }
 
-            if(productRepository.existsById(1L)) {
+            if (productRepository.existsById(1L)) {
                 Product product = Product.builder()
                         .name("Oppola")
                         .price(40000.00)
@@ -58,8 +54,8 @@ public class FakeData {
         };
     }
 
-    @Bean
-    public CommandLineRunner commandLineRunner(PersonRepository personRepository,CustomerRepository customerRepository) {
+
+    public CommandLineRunner commandLineRunner(PersonRepository personRepository, CustomerRepository customerRepository) {
         return args -> {
             Person person = Person.builder()
                     .firstName("Maggie")
@@ -86,4 +82,6 @@ public class FakeData {
 
             personRepository.save(person);
             customerRepository.save(customer);
+        };
+    }
 }
