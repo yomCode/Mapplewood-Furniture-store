@@ -19,6 +19,7 @@ public class FakeData {
     private final PasswordEncoder passwordEncoder;
 
 
+    @Bean
     public CommandLineRunner commandLineRunner(PersonRepository personRepository, ProductRepository productRepository) {
         return argument -> {
             if (!personRepository.existsByEmail("benson@gmail.com")) {
@@ -33,6 +34,7 @@ public class FakeData {
                         .password(passwordEncoder.encode("password123"))
                         .address("No Address")
                         .role(Role.ADMIN)
+                        .isActive(true)
                         .build();
                 personRepository.save(person);
             }

@@ -2,7 +2,6 @@ package com.decagon.OakLandv1be.services.serviceImpl;
 
 import com.decagon.OakLandv1be.dto.NewProductRequestDto;
 import com.decagon.OakLandv1be.dto.ProductResponseDto;
-import com.decagon.OakLandv1be.entities.Customer;
 import com.decagon.OakLandv1be.entities.Person;
 import com.decagon.OakLandv1be.dto.UpdateProductDto;
 import com.decagon.OakLandv1be.entities.Product;
@@ -73,7 +72,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public void deactivateUser(Long customerId) {
+    public String deactivateUser(Long customerId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if ((authentication instanceof AnonymousAuthenticationToken))
             throw new ResourceNotFoundException("Please Login");
@@ -84,8 +83,10 @@ public class AdminServiceImpl implements AdminService {
         Person customer = personRepository.findById(customerId)
                 .orElseThrow(()-> new UserNotFoundException("User not found"));
 
-        customer.setActive(false);
+        boolean isActive = !customer.isActive();
+        customer.setActive(isActive);
         personRepository.save(customer);
+        return isActive ? "Account Re-activated":"Account deactivated";
     }
     
     

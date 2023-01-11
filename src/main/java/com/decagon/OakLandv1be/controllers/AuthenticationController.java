@@ -42,6 +42,9 @@ public class AuthenticationController {
         UserDetails user = userDetailsService.loadUserByUsername(loginRequest.getEmail());
         if(!user.isEnabled())
             throw new UsernameNotFoundException("You have not been verified. Check your email to be verified!");
+        if (!user.isAccountNonLocked()){
+            return new ApiResponse<>("This account has been deactivated", false, null);
+        }
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
