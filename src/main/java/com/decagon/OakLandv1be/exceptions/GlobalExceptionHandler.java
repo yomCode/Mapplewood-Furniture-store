@@ -54,7 +54,7 @@ public class GlobalExceptionHandler {
      }
         
     @ExceptionHandler(InvalidTokenException.class)
-    public ResponseEntity<ErrorResponse> tokenNotFound(InvalidTokenException ne){
+    public ResponseEntity<ErrorResponse>tokenNotFound (InvalidTokenException ne){
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setMessage(ne.getMessage());
         errorResponse.setDebugMessage("Token not found");
@@ -63,14 +63,32 @@ public class GlobalExceptionHandler {
 
     }
 
+    @ExceptionHandler({InsufficientBalanceInWalletException.class})
+    public ResponseEntity<ErrorResponse> InsufficientBalanceInWallet(WalletIdDoesNotExistException ne){
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setMessage(ne.getMessage());
+        errorResponse.setDebugMessage("Oops! please fund your wallet");
+        errorResponse.setStatus(HttpStatus.PAYMENT_REQUIRED);
+        return new ResponseEntity<>(errorResponse, HttpStatus.PAYMENT_REQUIRED);
+    }
+
     @ExceptionHandler({UnauthorizedUserException.class})
     public ResponseEntity<ErrorResponse> handleUnauthorizedUserException(UnauthorizedUserException ex){
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .message(ex.getMessage())
                 .debugMessage("User does not have the right access")
                 .status(HttpStatus.UNAUTHORIZED).build();
-
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(InvalidAttributeException.class)
+    public ResponseEntity<ErrorResponse>invalidProductAttributes (InvalidAttributeException ie){
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setMessage(ie.getMessage());
+        errorResponse.setDebugMessage("Attribute not valid or does not exist");
+        errorResponse.setStatus(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+
     }
 
 }
