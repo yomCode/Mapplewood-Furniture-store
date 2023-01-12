@@ -12,6 +12,6 @@ import javax.validation.Valid;
 public interface AdminService {
     ProductResponseDto fetchASingleProduct(Long product_id);
     void deactivateUser(Long customerId);
-    ResponseEntity<Product> addNewProduct(@Valid NewProductRequestDto productDto);
+    ResponseEntity<NewProductRequestDto> addNewProduct(@Valid NewProductRequestDto productDto);
     ApiResponse<Product> updateProduct(Long productId, UpdateProductDto updateproductDto);
 }

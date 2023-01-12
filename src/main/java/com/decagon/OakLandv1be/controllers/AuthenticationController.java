@@ -25,6 +25,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.security.Principal;
 
 @RestController
 @RequiredArgsConstructor
@@ -50,7 +51,7 @@ public class AuthenticationController {
             return new ApiResponse<>("Login Successful",
                     true, tokenService.generateToken(authentication));
 
-        return new ApiResponse<>("Invalid Username or Password", false, null);
+        return new ApiResponse<>("Invalid Email or Password", false, null);
 
     }
 
@@ -66,9 +67,10 @@ public class AuthenticationController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @PutMapping("/update-password/{email}")
-    public ResponseEntity<String> updatePassword(@Valid @PathVariable String email ,  @RequestBody UpdatePasswordDto updatePasswordDto){
-        personService.updatePassword( email ,updatePasswordDto);
+    @PutMapping("/update-password")
+    public ResponseEntity<String> updatePassword(Principal principal, @Valid  @RequestBody UpdatePasswordDto updatePasswordDto){
+        String email = principal.getName();
+        personService.updatePassword(email, updatePasswordDto);
         return new ResponseEntity<>("Password changed successfully", HttpStatus.OK);
     }
 
