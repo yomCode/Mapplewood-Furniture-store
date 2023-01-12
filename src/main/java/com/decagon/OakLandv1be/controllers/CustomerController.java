@@ -20,7 +20,6 @@ public class CustomerController {
     private final ResponseManager responseManager;
     private final CustomerService customerService;
     @PostMapping("/signup")
-
     public ResponseEntity<ApiResponse> signup(@Valid @RequestBody SignupRequestDto signupRequestDto) throws AlreadyExistsException, IOException {
         customerService.saveCustomer(signupRequestDto);
         return new ResponseEntity<>(responseManager.success("Registration Successful! Check your mail for activation link"),HttpStatus.CREATED);
