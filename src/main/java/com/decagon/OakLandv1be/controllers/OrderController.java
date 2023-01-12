@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("api/v1/customer")
 public class OrderController {
     private final CheckoutService checkoutService;
-    @GetMapping("/checkout")
+    @PostMapping ("/checkout")
     public ResponseEntity<CheckoutResponseDto> checkoutOrder(@RequestBody CheckoutDto checkoutDto){
         return checkoutService.cartCheckout(checkoutDto);
 

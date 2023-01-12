@@ -32,30 +32,29 @@ public class CheckoutServiceImpl implements CheckoutService {
 
     @Override
     public ResponseEntity<CheckoutResponseDto> cartCheckout(CheckoutDto checkoutDto){
+        // Get the currently logged in user's email
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String email = auth.getName();
-
-        if((auth instanceof AnonymousAuthenticationToken))
+        if (auth instanceof AnonymousAuthenticationToken) {
             throw new UnauthorizedUserException("Login to checkout");
-        Person person = personRepository.findByEmail(email).orElseThrow();
-        Customer customer = person.getCustomer();
+        }
+        String email = auth.getName();
+        // Get the customer and their cart
+        Customer customer = personRepository.findByEmail(email)
+                .map(Person::getCustomer)
+                .orElseThrow(() -> new UnauthorizedUserException("Invalid user"));
         Cart cart = customer.getCart();
-        Address address = addressRepository.findById(checkoutDto.getAddress_id()).orElseThrow(()->
-                new ResourceNotFoundException("Address not found"));
-
+        // Get the selected address
+        Address address = addressRepository.findById(checkoutDto.getAddress_id())
+                .orElseThrow(() -> new ResourceNotFoundException("Address not found"));
+        // Create a new Order and Delivery
         Order order = new Order();
-
         Delivery delivery = new Delivery();
         delivery.setStatus(DeliveryStatus.TO_ARRIVE);
-
-        for(Item item : cart.getItems()){
-            order.getItems().add(item);
-        }
-
-        double total = 0.00;
-        for(Item item : order.getItems()){
-            total += (item.getUnitPrice() * item.getOrderQty());
-        }
+        order.setItems(cart.getItems());
+        // Calculate the total and set order details
+        double total = cart.getItems().stream()
+                .mapToDouble(item -> item.getUnitPrice() * item.getOrderQty())
+                .sum();
         order.setAddress(address);
         order.setCustomer(customer);
         order.setDiscount(0.00);
@@ -64,9 +63,9 @@ public class CheckoutServiceImpl implements CheckoutService {
         order.setModeOfPayment(modeOfPayment(checkoutDto.getModeOfPayment()));
         order.setDelivery(delivery);
         order.setGrandTotal((total - order.getDiscount()) + order.getDeliveryFee());
+        // Save the order and create the response
         orderRepository.save(order);
-
-        CheckoutResponseDto checkoutResponseDto = CheckoutResponseDto.builder()
+        CheckoutResponseDto response = CheckoutResponseDto.builder()
                 .customer(order.getCustomer())
                 .items(order.getItems())
                 .deliveryFee(order.getDeliveryFee())
@@ -77,8 +76,8 @@ public class CheckoutServiceImpl implements CheckoutService {
                 .modeOfDelivery(order.getModeOfDelivery())
                 .address(order.getAddress())
                 .build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
 
-        return new ResponseEntity<>(checkoutResponseDto, HttpStatus.OK);
     }
     @Override
     public ModeOfPayment modeOfPayment(String modeOfPayment){
@@ -95,7 +94,8 @@ public class CheckoutServiceImpl implements CheckoutService {
         String email = auth.getName();
 
         if(!(auth instanceof AnonymousAuthenticationToken)){
-            Person person = personRepository.findByEmail(email).orElseThrow();
+            Person person = personRepository.findByEmail(email)
+                    .orElseThrow(()->new UnauthorizedUserException("Login to add checkout address"));
 
             Customer customer = person.getCustomer();
 
@@ -109,7 +109,7 @@ public class CheckoutServiceImpl implements CheckoutService {
                     .build();
              addressRepository.save(address);
 
-             return new ResponseEntity<>("Address saved", HttpStatus.OK);
+             return new ResponseEntity<>("Address saved successfully", HttpStatus.OK);
         }
         throw new UnauthorizedUserException("Please login to add a new address");
     }
