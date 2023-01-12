@@ -66,4 +66,29 @@ public class WalletServiceImpl implements WalletService {
         throw new UnauthorizedUserException("Login to carry out this operation");
     }
 
+
+    @Override
+    public Double getWalletBalance() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            String email = authentication.getName();
+
+            Person person = personRepository.findByEmail(email)
+                    .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
+
+            Wallet wallet = person.getCustomer().getWallet();
+            Double walletBalance = wallet.getAccountBalance();
+
+            try {
+                mailService.sendMail(person.getEmail(), "Wallet Balance", "Your wallet is " + walletBalance + wallet.getBaseCurrency());
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+            return walletBalance;
+        }
+        throw new UnauthorizedUserException("User does not have access");
+    }
+
 }
