@@ -19,7 +19,7 @@ public class ModeOfPayment extends BaseEntity{
     private String provider;
 
     @JsonIgnore
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "modeOfPayment", cascade = CascadeType.ALL)
     @JoinColumn(name = "order_id")
     private Order order;
 }
