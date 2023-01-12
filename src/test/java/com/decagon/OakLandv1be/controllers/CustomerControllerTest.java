@@ -35,7 +35,7 @@ class CustomerControllerTest {
         EditProfileRequestDto editProfileRequestDto = new EditProfileRequestDto();
         editProfileRequestDto.setFirstName("Many");
         editProfileRequestDto.setLastName("Rob");
-        editProfileRequestDto.setGender("MALE");
+        editProfileRequestDto.setGender(Gender.MALE.name());
         editProfileRequestDto.setDate_of_birth("11-01-1993");
         editProfileRequestDto.setPhone("07068693321");
 
@@ -43,5 +43,16 @@ class CustomerControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/auth/customer/edit-profile")
                         .contentType("application/json").content(requestBody))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void customerToAddProductsToFavorites() throws Exception {
+        Long pid = 1L;
+
+        String requestBody = mapper.writeValueAsString(pid);
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/auth/customer/product/favorites/add/{pid}", 1L)
+                        .contentType("application/json")
+                        .content(requestBody))
+                .andExpect(status().isAccepted());
     }
 }

@@ -13,6 +13,7 @@ import java.util.Set;
 @Setter
 @Getter
 @Builder
+@ToString
 @Table(name = "wallet_tbl")
 public class Wallet extends BaseEntity{
 
