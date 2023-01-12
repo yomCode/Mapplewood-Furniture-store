@@ -14,7 +14,7 @@ public class EditProfileRequestDto {
     private String lastName;
 
     @NotNull(message = "Please select your gender")
-    private Gender gender;
+    private String gender;
 
     @NotNull(message = "Please enter your date of birth")
     private String date_of_birth;

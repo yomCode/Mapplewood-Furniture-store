@@ -11,6 +11,7 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 @Builder
 @Table(name = "sub_category_tbl")
 public class SubCategory extends BaseEntity{

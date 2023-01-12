@@ -1,18 +1,20 @@
 package com.decagon.OakLandv1be.exceptions;
 
+
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class ProductNotFoundException extends RuntimeException{
+public class InsufficientBalanceInWalletException extends RuntimeException{
     private String debugMessage;
 
-    public ProductNotFoundException(String message) {
+    public InsufficientBalanceInWalletException(String message) {
+
         super(message);
     }
 
-    public ProductNotFoundException(String message, String debugMessage) {
+    public InsufficientBalanceInWalletException(String message, String debugMessage) {
         super(message);
         this.debugMessage = debugMessage;
     }
