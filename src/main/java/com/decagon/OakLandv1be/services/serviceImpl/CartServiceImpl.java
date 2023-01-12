@@ -31,6 +31,9 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public String removeItem(Long itemToRemoveId) {
+
+//        itemRepository.deleteById(itemToRemoveId);
+//        return "Item successfully deleted";
         //search for the logged in user
         //get his cart
         //cart
@@ -40,23 +43,26 @@ public class CartServiceImpl implements CartService {
 
             Person person = personRepository.findByEmail(email)
                     .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
-
             Cart cart = person.getCustomer().getCart();
-            if( cart == null) throw new ResourceNotFoundException("cart is empty");
+            if (cart == null) throw new ResourceNotFoundException("cart is empty");
+//            Item item = itemRepository.findById(itemToRemoveId)
+//                    .orElseThrow(() -> new ResourceNotFoundException("Item does not exist"));
+//
+//            itemRepository.delete(item);
             Set<Item> itemsInCart = cart.getItems();
             System.out.println(itemsInCart.toString());
             for (Item item : itemsInCart) {
                 if (item.getId() == itemToRemoveId) {
+
                     itemsInCart.remove(item);
-
-
+                    itemRepository.save(item);
                     cart.setItems(itemsInCart);
                     cartRepository.save(cart);
                     personRepository.save(person);
-                    return "Item successfully deleted";
-                }
-                throw new ResourceNotFoundException("Item does not exist");
-            }
+           return "Item successfully deleted";
+        }
+        throw new ResourceNotFoundException("Item does not exist");
+    }
         }
         throw new UnauthorizedUserException("Login to carry out this operation");
     }

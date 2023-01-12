@@ -1,10 +1,7 @@
 package com.decagon.OakLandv1be.controllers;
 
 
-import com.decagon.OakLandv1be.entities.Cart;
-import com.decagon.OakLandv1be.entities.Customer;
-import com.decagon.OakLandv1be.entities.Item;
-import com.decagon.OakLandv1be.entities.Person;
+import com.decagon.OakLandv1be.entities.*;
 import com.decagon.OakLandv1be.enums.Gender;
 import com.decagon.OakLandv1be.enums.Role;
 import com.decagon.OakLandv1be.services.CartService;
@@ -48,6 +45,15 @@ class CartControllerTest {
                 .cart(cart)
                 .wallet(null)
                 .build();
+
+        Product product = new Product();
+        product.setId(2L);
+        product.setName("Tall dinning chair");
+        product.setImageUrl("hgdhg");
+        product.setColor("green");
+        product.setPrice(2000.00);
+        product.setDescription("strong black");
+
         item = Item.builder()
                 .productName("cushion wood")
                 .cart(null)
