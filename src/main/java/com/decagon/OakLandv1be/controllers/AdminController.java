@@ -33,6 +33,7 @@ public class AdminController {
 
 
     @DeleteMapping("/products/delete/{product_id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     ApiResponse<OperationStatus> deleteProduct(@PathVariable Long product_id){
         return adminService.deleteProduct(product_id);
 
