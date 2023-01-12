@@ -36,10 +36,12 @@ public class WalletServiceImpl implements WalletService {
     private final JavaMailService mailService;
 
     @Override
-    public ResponseEntity<ApiResponse<Object>> fundWallet(FundWalletRequest request) {
+    public ResponseEntity<ApiResponse<Object>> fundWallet(FundWalletRequest request)
+    {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(!(authentication instanceof AnonymousAuthenticationToken)){
+        if(!(authentication instanceof AnonymousAuthenticationToken))
+        {
             String email = authentication.getName();
 
             Person person = personRepository.findByEmail(email)

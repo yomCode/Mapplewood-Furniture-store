@@ -21,9 +21,12 @@ import com.decagon.OakLandv1be.utils.ApiResponse;
 import com.decagon.OakLandv1be.utils.JwtUtils;
 import com.decagon.OakLandv1be.utils.ResponseManager;
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.io.IOException;
@@ -119,21 +122,22 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public ResponseEntity<String> deleteProductFromFavourites(FavoritesDto favoritesDto, Long pid, Long cid){
-
-        Person person = new Person();
-
-        Product product = productRepository.findById(cid)
-        .orElseThrow(()-> new ResourceNotFoundException("Not Found"));
-
+    public void removeProductFromFavorites(Long pid){
+        Product product = productRepository.findById(pid).
+                orElseThrow(() -> new ProductNotFoundException("This product was not found"));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if ((authentication instanceof AnonymousAuthenticationToken))
+            throw new ResourceNotFoundException("Please Login");
+        String email = authentication.getName();
+        Person person = personRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         Set<Product> favorites = person.getCustomer().getFavorites();
-        if(favorites.contains(product)){
-            throw new AlreadyExistsException("This product is already in favorite");
+        if (favorites.contains(product)){
+            throw new AlreadyExistsException("This product is already in favorites");
         }
         favorites.remove(product);
         person.getCustomer().setFavorites(favorites);
-
-        return ResponseEntity.ok("removed from favourite");
+        customerRepository.save(person.getCustomer());
     }
 
 

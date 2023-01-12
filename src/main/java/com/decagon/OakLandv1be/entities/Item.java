@@ -13,11 +13,11 @@ import javax.persistence.*;
 @Table(name = "item_tbl")
 public class Item extends BaseEntity{
 
-    private String productName;
-    private String imageUrl;
+    private String  productName;
+    private String  imageUrl;
     private Integer orderQty;
-    private Double unitPrice;
-    private Double subTotal;
+    private Double  unitPrice;
+    private Double  subTotal;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "cart_id")

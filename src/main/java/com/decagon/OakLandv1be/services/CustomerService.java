@@ -14,6 +14,8 @@ public interface CustomerService {
 
     ResponseEntity<ApiResponse> verifyRegistration(String token);
 
+    public void removeProductFromFavorites(Long pid);
+
     public void editProfile(EditProfileRequestDto editProfileRequestDto);
 
     ResponseEntity<String> deleteProductFromFavourites(FavoritesDto deleteFavoriteDto, Long pid, Long cid);

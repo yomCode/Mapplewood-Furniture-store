@@ -36,10 +36,12 @@ public class CustomerController {
         return new ResponseEntity<>("Profile Updated Successfully", HttpStatus.OK);
     }
 
-    @DeleteMapping ("/product/favorite/delete/{cid}/{pid}")
-    public ResponseEntity<String> deleteProductFromFavorites(@PathVariable Long pid, @RequestBody FavoritesDto favoritesDto, @PathVariable Long cid){
-        return customerService.deleteProductFromFavourites(favoritesDto,pid,cid);
+    @DeleteMapping("/product/favorites/remove/{pid}")
+    public ResponseEntity<String> addFavorites(@PathVariable Long pid){
+        customerService.removeProductFromFavorites(pid);
+        return new ResponseEntity<>("Product added to favourites successfully", HttpStatus.ACCEPTED);
+    }
     }
 
 
-}
+
