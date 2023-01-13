@@ -41,8 +41,9 @@ public class AdminController {
     
     @PutMapping("/deactivate-user/{userId}")
     public ResponseEntity<String> deactivateUser(@PathVariable Long userId){
-        adminService.deactivateUser(userId);
-        return new ResponseEntity<>("Account deactivated", HttpStatus.OK);
+        String response = adminService.deactivateUser(userId);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 }

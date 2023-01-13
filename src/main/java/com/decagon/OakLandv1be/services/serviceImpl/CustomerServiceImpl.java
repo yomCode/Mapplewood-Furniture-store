@@ -17,7 +17,6 @@ import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
 import com.decagon.OakLandv1be.services.CustomerService;
 import com.decagon.OakLandv1be.services.JavaMailService;
 import com.decagon.OakLandv1be.utils.ApiResponse;
-import com.decagon.OakLandv1be.utils.JwtUtils;
 import com.decagon.OakLandv1be.utils.ResponseManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -46,7 +45,6 @@ public class CustomerServiceImpl implements CustomerService {
     private final TokenService tokenService;
     private final TokenRepository tokenRepository;
     private final ResponseManager responseManager;
-    private final JwtUtils jwtUtils;
 
     private final ProductRepository productRepository;
 
@@ -120,11 +118,20 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public void editProfile(EditProfileRequestDto editProfileRequestDto) {
 
-        String email = jwtUtils.extractUsername(editProfileRequestDto.getToken());
-
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if ((authentication instanceof AnonymousAuthenticationToken))
+            throw new ResourceNotFoundException("Please Login");
+        String email = authentication.getName();
         Person customer = personRepository.findByEmail(email)
-                .orElseThrow(()-> new ResourceNotFoundException("Not found"));
-        BeanUtils.copyProperties(editProfileRequestDto, customer);
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        customer.setFirstName(editProfileRequestDto.getFirstName());
+        customer.setLastName(editProfileRequestDto.getLastName());
+        customer.setGender(Gender.valueOf(editProfileRequestDto.getGender().toUpperCase()));
+        customer.setEmail(editProfileRequestDto.getEmail());
+        customer.setPhone(editProfileRequestDto.getPhone());
+        customer.setDate_of_birth(editProfileRequestDto.getDate_of_birth());
+
         personRepository.save(customer);
     }
 
