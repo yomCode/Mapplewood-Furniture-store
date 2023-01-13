@@ -4,7 +4,6 @@ import com.decagon.OakLandv1be.dto.EditProfileRequestDto;
 import com.decagon.OakLandv1be.dto.SignupRequestDto;
 import com.decagon.OakLandv1be.dto.SignupResponseDto;
 import com.decagon.OakLandv1be.dto.cartDtos.AddItemToCartDto;
-import com.decagon.OakLandv1be.dto.cartDtos.CartResponseDto;
 import com.decagon.OakLandv1be.exceptions.AlreadyExistsException;
 import com.decagon.OakLandv1be.services.CartService;
 import com.decagon.OakLandv1be.services.CustomerService;
@@ -42,7 +41,8 @@ public class CustomerController {
         customerService.editProfile(editProfileRequestDto);
         return new ResponseEntity<>("Profile Updated Successfully", HttpStatus.OK);
     }
-
+    
+    
     @PostMapping("/cart/item/add/{productId}")
     public ResponseEntity<ApiResponse<String>> addItemToCart(@PathVariable Long productId, @RequestBody AddItemToCartDto addItemToCartDto) throws AlreadyExistsException {
         String response = cartService.addItemToCart(productId,addItemToCartDto);

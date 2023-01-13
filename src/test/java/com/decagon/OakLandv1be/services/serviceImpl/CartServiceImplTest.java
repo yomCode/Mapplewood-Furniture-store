@@ -1,27 +1,33 @@
 package com.decagon.OakLandv1be.services.serviceImpl;
 
 import com.decagon.OakLandv1be.dto.cartDtos.AddItemToCartDto;
-import com.decagon.OakLandv1be.dto.cartDtos.CartResponseDto;
 import com.decagon.OakLandv1be.entities.*;
 import com.decagon.OakLandv1be.enums.Gender;
 import com.decagon.OakLandv1be.enums.Role;
 import com.decagon.OakLandv1be.exceptions.AlreadyExistsException;
 import com.decagon.OakLandv1be.repositries.CartRepository;
 import com.decagon.OakLandv1be.repositries.ProductRepository;
+import com.decagon.OakLandv1be.services.CartService;
 import com.decagon.OakLandv1be.services.CustomerService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.BeanUtils;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 
 import java.util.*;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
+import com.decagon.OakLandv1be.repositries.ItemRepository;
+import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
+import java.util.Optional;
+import static org.assertj.core.api.BDDAssumptions.given;
+import static org.mockito.Mockito.verify;
+
+
+@RunWith(MockitoJUnitRunner.class)
 @ExtendWith(MockitoExtension.class)
 class CartServiceImplTest {
 
@@ -35,7 +41,13 @@ class CartServiceImplTest {
     CustomerService customerService;
 
     @Mock
+    CartService cartService;
+
+    @Mock
     CartRepository cartRepository;;
+
+    @Mock
+    private ItemRepository itemRepository;
 
 
     @Test
@@ -90,4 +102,31 @@ class CartServiceImplTest {
 
         assertEquals(response,cartServiceImpl.addItemToCart(1L,addItemToCartDto));
     }
+    
+     @Test
+    public void removeItemsInCart() {
+        Item item = new Item();
+        Product product = Product.builder().name("Tall dinning chair").price(2000.00).imageUrl("hgdhg")
+                .color("green").description("strong black").build();
+        item.setId(2L);
+
+        item.setProductName(product.getName());
+        item.setOrderQty(3);
+        item.setUnitPrice(100.00);
+        item.setSubTotal(300.00);
+       when(itemRepository.save(item)).thenReturn(item);
+       when(itemRepository.findById(2L)).thenReturn(Optional.of(item));
+       // System.out.println();
+        cartService.removeItem(item.getId());
+        verify(itemRepository).deleteById(item.getId());
+        // verify(itemRepository,times(1)).deleteById(anyLong());
+    }
+
+//    @Test(expected = RuntimeException.class)
+//    public void should_throw_exception_when_item_doesnt_exist(){
+//        Item item = new Item();
+//        item.setId(89L);
+//        given(itemRepository.findById(anyLong())).will
+//    }
+
 }

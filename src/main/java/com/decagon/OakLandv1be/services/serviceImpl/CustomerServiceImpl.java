@@ -26,7 +26,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -48,6 +47,7 @@ public class CustomerServiceImpl implements CustomerService {
     private final TokenRepository tokenRepository;
     private final ResponseManager responseManager;
     private final JwtUtils jwtUtils;
+
 
 
     @Override
@@ -95,6 +95,10 @@ public class CustomerServiceImpl implements CustomerService {
         BeanUtils.copyProperties(signupResponseDto, person);
                     return  signupResponseDto;
     }
+
+
+
+
     @Override
     public ResponseEntity<ApiResponse> verifyRegistration(String token){
 
