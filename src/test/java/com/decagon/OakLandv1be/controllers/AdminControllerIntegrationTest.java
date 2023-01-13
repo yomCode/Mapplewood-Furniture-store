@@ -160,6 +160,7 @@ class AdminControllerIntegrationTest {
        assertEquals(apiResponse.getStatusCodeValue(), testResponse.getStatusCodeValue());
     }
 
+
     @Test
     void updateProduct() {
         when(productRepository.save(product)).thenReturn(product);

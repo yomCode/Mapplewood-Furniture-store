@@ -38,7 +38,10 @@ public class AuthenticationController {
     
 
     @PostMapping("/login")
-    public ApiResponse<String> authenticate(@Valid @RequestBody LoginDto loginRequest) {
+    public ResponseEntity<String> authenticate(@Valid @RequestBody LoginDto loginRequest) {
+//        authenticationManager.authenticate(
+//                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+
         UserDetails user = userDetailsService.loadUserByUsername(loginRequest.getEmail());
         if(!user.isEnabled())
             throw new UsernameNotFoundException("You have not been verified. Check your email to be verified!");
