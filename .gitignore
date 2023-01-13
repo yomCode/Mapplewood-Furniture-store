@@ -1,6 +1,7 @@
 # Compiled class file
 *.class
 
+
 # Log file
 *.log
 
@@ -58,5 +59,7 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
+application-local.properties
 ### VS Code ###
 .vscode/application-local.properties
+

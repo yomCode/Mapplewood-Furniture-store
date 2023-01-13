@@ -2,14 +2,18 @@ package com.decagon.OakLandv1be.controllers;
 
 import com.decagon.OakLandv1be.dto.NewProductRequestDto;
 import com.decagon.OakLandv1be.dto.ProductResponseDto;
+import com.decagon.OakLandv1be.dto.UpdateProductDto;
 import com.decagon.OakLandv1be.entities.Customer;
 import com.decagon.OakLandv1be.entities.Person;
 import com.decagon.OakLandv1be.entities.Product;
 import com.decagon.OakLandv1be.entities.SubCategory;
 import com.decagon.OakLandv1be.enums.Gender;
 import com.decagon.OakLandv1be.enums.Role;
+import com.decagon.OakLandv1be.exceptions.ProductNotFoundException;
 import com.decagon.OakLandv1be.repositries.ProductRepository;
 import com.decagon.OakLandv1be.services.AdminService;
+import com.decagon.OakLandv1be.services.ProductService;
+import com.decagon.OakLandv1be.utils.ApiResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,7 +25,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -31,15 +39,18 @@ class AdminControllerIntegrationTest {
     @Autowired
     AdminService adminService;
 
-    @MockBean
-    ProductRepository productRepository;
-
-    @MockBean
+    @Autowired
     PasswordEncoder passwordEncoder;
 
-    private Product product;
-    private Customer customer;
+    @Autowired
+    ProductService productService;
+    @MockBean
+    ProductRepository productRepository;
     private Person person;
+    private Customer customer;
+    private Product product, updatedProduct;
+    private UpdateProductDto updateProductDto;
+
     private NewProductRequestDto newProductDto;
     private ProductResponseDto newProductResponseDto;
 
@@ -64,6 +75,7 @@ class AdminControllerIntegrationTest {
                 .cart(null)
                 .wallet(null)
                 .build();
+
 
         product = Product.builder()
                 .name("Oak Cupboard")
@@ -97,6 +109,41 @@ class AdminControllerIntegrationTest {
                 .description("This is a valid description of the furniture.")
 
                 .build();
+
+        product = Product.builder()
+                .name("center table")
+                .price(20.0d)
+                .imageUrl("")
+                .availableQty(10)
+                .subCategory(new SubCategory())
+//                .customer(new Customer())
+                .color("blue")
+                .description("new products")
+                .build();
+
+        product.setId(23L);
+
+        updateProductDto = UpdateProductDto.builder()
+                .name("Not a center table")
+                .price(20.0d)
+                .imageUrl("blah blah")
+                .availableQty(20)
+                .subCategory(new SubCategory())
+                .color("brown")
+                .description("old products")
+                .build();
+
+
+        updatedProduct = Product.builder()
+                .name("Not a center table")
+                .price(20.0d)
+                .imageUrl("blah blah")
+                .availableQty(20)
+                .subCategory(new SubCategory())
+//                .customer(new Customer())
+                .color("brown")
+                .description("old products")
+                .build();
     }
 
     @Test
@@ -112,5 +159,32 @@ class AdminControllerIntegrationTest {
 
        assertEquals(apiResponse.getStatusCodeValue(), testResponse.getStatusCodeValue());
     }
-//
+
+
+    @Test
+    void updateProduct() {
+        when(productRepository.save(product)).thenReturn(product);
+        assertEquals(product, productRepository.save(product));
+
+        when(productRepository.findById(any()))
+                .thenReturn(Optional.of(product));
+        ApiResponse<Product> expectedApiResponse =
+                new ApiResponse<>("product updated", true, updatedProduct);
+
+        ApiResponse<Product> apiResponse1 =
+                adminService.updateProduct(32l, updateProductDto);
+        assertEquals(apiResponse1.toString(), expectedApiResponse.toString());
+
+    }
+
+    @Test
+    void shouldThrowProductNotFoundException() {
+        when(productRepository.findById(any()))
+                .thenReturn(Optional.empty());
+
+        assertThrows(ProductNotFoundException.class,
+                () -> adminService.updateProduct(23L, updateProductDto));
+
+    }
+
 }
