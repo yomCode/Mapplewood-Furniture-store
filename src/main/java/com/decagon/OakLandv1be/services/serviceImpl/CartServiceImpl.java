@@ -16,23 +16,15 @@ import java.util.Set;
 @Service
 @RequiredArgsConstructor
 public class CartServiceImpl implements CartService {
-    private final CartRepository cartRepository;
     private final ProductRepository productRepository;
     private final CustomerService customerService;
-    private final ItemRepository itemRepository;
+    private final CustomerRepository customerRepository;
 
     @Override
-    public CartResponseDto addItemToCart(Long productId, AddItemToCartDto addItemToCartDto) {
+    public String addItemToCart(Long productId, AddItemToCartDto addItemToCartDto) {
 
         Customer loggedInCustomer = customerService.getCurrentlyLoggedInUser();
-        Cart cart = cartRepository.findByCustomer(loggedInCustomer);
-
-        if(cart == null){
-            cart = new Cart();
-            cart.setCustomer(loggedInCustomer);
-        }
-
-        cart.setCustomer(loggedInCustomer);
+        Cart cart = loggedInCustomer.getCart();
 
         Product product = productRepository.findById(productId).orElseThrow(() -> new NotAvailableException("Product not available"));
 
@@ -61,11 +53,8 @@ public class CartServiceImpl implements CartService {
 
         cart.setTotal(cartTotal);
 
-        newCartItem.setCart(cart);
-        itemRepository.save(newCartItem);
+        customerRepository.save(loggedInCustomer);
 
-        CartResponseDto cartResponseDto = new CartResponseDto();
-        BeanUtils.copyProperties(newCartItem, cartResponseDto);
-        return cartResponseDto;
+        return "Item Saved to Cart Successfully";
     }
 }

@@ -32,6 +32,7 @@ public class FakeData {
                         .date_of_birth("13-08-1990")
                         .phone("9859595959")
                         .verificationStatus(true)
+                        .isActive(true)
                         .password(passwordEncoder.encode("password123"))
                         .address("No Address")
                         .role(Role.CUSTOMER)
@@ -59,32 +60,32 @@ public class FakeData {
         };
     }
 
-    @Bean
-    public CommandLineRunner commandLineRunner(PersonRepository personRepository,CustomerRepository customerRepository) {
-        return args -> {
-            Person person = Person.builder()
-                    .firstName("Maggie")
-                    .lastName("Stubborn")
-                    .password(passwordEncoder.encode("password123"))
-                    .email("maggie@gmail.com")
-                    .gender(Gender.OTHER)
-                    .date_of_birth("12-09-1993")
-                    .phone("78573944843")
-                    .verificationStatus(true)
-                    .address("Foolish address")
-                    .role(Role.ADMIN)
-                    .build();
-
-
-            Customer customer = Customer.builder()
-                    .person(person)
-                    .cart(new Cart())
-                    .wallet(Wallet.builder()
-                            .accountBalance(4000D)
-                            .baseCurrency(BaseCurrency.POUNDS)
-                            .build())
-                    .build();
-
-            personRepository.save(person);
-            customerRepository.save(customer);
+//    @Bean
+//    public CommandLineRunner commandLineRunner(PersonRepository personRepository,CustomerRepository customerRepository) {
+//        return args -> {
+//            Person person = Person.builder()
+//                    .firstName("Maggie")
+//                    .lastName("Stubborn")
+//                    .password(passwordEncoder.encode("password123"))
+//                    .email("maggie@gmail.com")
+//                    .gender(Gender.OTHER)
+//                    .date_of_birth("12-09-1993")
+//                    .phone("78573944843")
+//                    .verificationStatus(true)
+//                    .address("Foolish address")
+//                    .role(Role.ADMIN)
+//                    .build();
+//
+//
+//            Customer customer = Customer.builder()
+//                    .person(person)
+//                    .cart(new Cart())
+//                    .wallet(Wallet.builder()
+//                            .accountBalance(4000D)
+//                            .baseCurrency(BaseCurrency.POUNDS)
+//                            .build())
+//                    .build();
+//
+//            personRepository.save(person);
+//            customerRepository.save(customer);
 }

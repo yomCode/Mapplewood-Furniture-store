@@ -23,7 +23,7 @@ public class Customer extends BaseEntity{
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="cart_id")
-    private Cart cart;
+    private Cart cart = new Cart();
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "wallet_id")

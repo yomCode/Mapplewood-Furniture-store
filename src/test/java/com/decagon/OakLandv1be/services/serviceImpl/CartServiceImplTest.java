@@ -74,11 +74,6 @@ class CartServiceImplTest {
 
         Cart cart = new Cart();
 
-        if(cart == null){
-            cart = new Cart();
-            cart.setCustomer(customer);
-        }
-
         Set<Item> cartItemsSet = new HashSet<>();
         cartItemsSet.add(item);
         cart.setItems(cartItemsSet);
@@ -87,14 +82,12 @@ class CartServiceImplTest {
         AddItemToCartDto addItemToCartDto = new AddItemToCartDto();
         addItemToCartDto.setOrderQty(20);
 
-        CartResponseDto cartResponseDto = new CartResponseDto();
-        BeanUtils.copyProperties(item,cartResponseDto);
+        String response = "Item Saved to Cart Successfully";
 
         when(customerService.getCurrentlyLoggedInUser()).thenReturn(customer);
         when(cartRepository.findByCustomer(customer)).thenReturn(cart);
         when(productRepository.findById(1L)).thenReturn(Optional.of(product));
 
-        assertEquals(cartResponseDto,cartServiceImpl.addItemToCart(1L,addItemToCartDto));
-
+        assertEquals(response,cartServiceImpl.addItemToCart(1L,addItemToCartDto));
     }
 }

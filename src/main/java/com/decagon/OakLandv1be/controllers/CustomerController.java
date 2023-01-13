@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.io.IOException;
 
+
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/v1/customer")
 @RequiredArgsConstructor
@@ -42,9 +44,9 @@ public class CustomerController {
     }
 
     @PostMapping("/cart/item/add/{productId}")
-    public ResponseEntity<ApiResponse<CartResponseDto>> addItemToCart(@PathVariable Long productId, @RequestBody AddItemToCartDto addItemToCartDto) throws AlreadyExistsException {
-        CartResponseDto cartResponseDto = cartService.addItemToCart(productId,addItemToCartDto);
-        return new ResponseEntity<>(responseManager.success(cartResponseDto), HttpStatus.CREATED);
+    public ResponseEntity<ApiResponse<String>> addItemToCart(@PathVariable Long productId, @RequestBody AddItemToCartDto addItemToCartDto) throws AlreadyExistsException {
+        String response = cartService.addItemToCart(productId,addItemToCartDto);
+        return new ResponseEntity<>(responseManager.success(response), HttpStatus.CREATED);
     }
 
 }

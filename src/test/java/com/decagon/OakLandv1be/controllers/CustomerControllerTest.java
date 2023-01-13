@@ -117,16 +117,14 @@ class CustomerControllerTest {
             AddItemToCartDto addItemToCartDto = new AddItemToCartDto();
             addItemToCartDto.setOrderQty(20);
 
-            CartResponseDto cartResponseDto = new CartResponseDto();
-            BeanUtils.copyProperties(item,cartResponseDto);
+            String response = "Item Saved to Cart Successfully";
 
-
-            ApiResponse apiResponse = new ApiResponse<>("Request Successful",true, cartResponseDto);
+            ApiResponse apiResponse = new ApiResponse<>("Request Successful",true, response);
 
             when(customerService.getCurrentlyLoggedInUser()).thenReturn(customer);
             when(cartRepository.findByCustomer(customer)).thenReturn(cart);
-            when(cartService.addItemToCart(1L,addItemToCartDto)).thenReturn(cartResponseDto);
-            when(responseManager.success(cartResponseDto)).thenReturn(apiResponse);
+            when(cartService.addItemToCart(1L,addItemToCartDto)).thenReturn(response);
+            when(responseManager.success(response)).thenReturn(apiResponse);
 
             mockMvc.perform(post("/api/v1/auth/customer/cart/item/add/productId",1L).contentType("application/json"))
                     .andExpect(status().isCreated());
