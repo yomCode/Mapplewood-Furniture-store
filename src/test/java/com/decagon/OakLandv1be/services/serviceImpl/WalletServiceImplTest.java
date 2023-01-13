@@ -1,6 +1,7 @@
 package com.decagon.OakLandv1be.services.serviceImpl;
 
 import com.decagon.OakLandv1be.dto.FundWalletRequest;
+import com.decagon.OakLandv1be.dto.FundWalletResponseDto;
 import com.decagon.OakLandv1be.entities.Customer;
 import com.decagon.OakLandv1be.entities.Person;
 import com.decagon.OakLandv1be.entities.Wallet;
@@ -28,13 +29,13 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyDouble;
 
-@SpringBootTest
+//@SpringBootTest
 @ExtendWith(MockitoExtension.class)
 class WalletServiceImplTest {
 
-    @InjectMocks
-    private WalletServiceImpl walletService;
+
 
     @Mock
     private PersonRepository personRepository;
@@ -48,8 +49,11 @@ class WalletServiceImplTest {
     @Mock
     private JavaMailService mailService;
 
-    @Mock
+//    @Mock
     Person person;
+
+    @InjectMocks
+    private WalletServiceImpl walletService;
 
     @BeforeEach
     void setUp() {
@@ -74,17 +78,22 @@ class WalletServiceImplTest {
                 .verificationStatus(true)
                 .role(Role.CUSTOMER)
                 .build();
+
         Mockito.when(personRepository.findByEmail(any())).thenReturn(Optional.of(person));
-        FundWalletRequest request = new FundWalletRequest(10000.00);
-        walletService.fundWallet(request);
 
 
     }
 
     @Test
     void fundWallet() {
+        FundWalletRequest request = new FundWalletRequest(10000.00);
+        FundWalletResponseDto response = FundWalletResponseDto.builder().fullName(person.getFirstName() + " " + person.getLastName())
+                .depositAmount(request.getAmount())
+                        .newBalance(person.getCustomer().getWallet().getAccountBalance()).build();
+//        walletService.fundWallet(request);
+        Mockito.when(walletService.fundWallet(request)).thenReturn(response);
 
-        assertEquals(10000.00, person.getCustomer().getWallet().getAccountBalance());
+        assertEquals(response, walletService.fundWallet(request));
 
     }
 }

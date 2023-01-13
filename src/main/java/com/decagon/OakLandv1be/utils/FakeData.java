@@ -1,5 +1,6 @@
 package com.decagon.OakLandv1be.utils;
 
+
 import com.decagon.OakLandv1be.entities.*;
 import com.decagon.OakLandv1be.enums.BaseCurrency;
 import com.decagon.OakLandv1be.enums.Gender;
@@ -30,10 +31,12 @@ public class FakeData {
                         .gender(Gender.MALE)
                         .date_of_birth("13-08-1990")
                         .phone("9859595959")
+                        .isActive(true)
                         .verificationStatus(true)
                         .password(passwordEncoder.encode("password123453"))
                         .address("No Address")
                         .role(Role.ADMIN)
+                        .isActive(true)
                         .build();
                 personRepository.save(person);
             }

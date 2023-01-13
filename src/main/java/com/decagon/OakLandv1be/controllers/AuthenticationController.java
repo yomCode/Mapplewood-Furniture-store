@@ -39,20 +39,23 @@ public class AuthenticationController {
     
 
     @PostMapping("/login")
-    public ApiResponse<String> authenticate(@Valid @RequestBody LoginDto loginRequest) {
+    public ResponseEntity<String> authenticate(@Valid @RequestBody LoginDto loginRequest) {
         UserDetails user = userDetailsService.loadUserByUsername(loginRequest.getEmail());
         if(!user.isEnabled())
             throw new UsernameNotFoundException("You have not been verified. Check your email to be verified!");
+        if (!user.isAccountNonLocked()){
+            return new ApiResponse<>("This account has been deactivated", false, null);
+        }
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 
         if(authentication != null)
             return new ApiResponse<>("Login Successful",
-                    true, tokenService.generateToken(authentication));
+                    true, tokenService.generateToken(authentication), HttpStatus.OK);
 
-        return new ApiResponse<>("Invalid Email or Password", false, null);
-
+        return new ApiResponse<>("Invalid Username or Password",
+                false, null, HttpStatus.UNAUTHORIZED);
     }
 
     @PostMapping("/forgot-password-request")
@@ -68,10 +71,8 @@ public class AuthenticationController {
     }
 
     @PutMapping("/update-password")
-    public ResponseEntity<String> updatePassword(Principal principal, @Valid  @RequestBody UpdatePasswordDto updatePasswordDto){
-        String email = principal.getName();
-        personService.updatePassword(email, updatePasswordDto);
-        return new ResponseEntity<>("Password changed successfully", HttpStatus.OK);
+    public ApiResponse<String> updatePassword(@Valid  @RequestBody UpdatePasswordDto updatePasswordDto){
+        personService.updatePassword( updatePasswordDto);
+        return new ApiResponse<>("Password changed successfully",true ,null,HttpStatus.ACCEPTED);
     }
-
 }

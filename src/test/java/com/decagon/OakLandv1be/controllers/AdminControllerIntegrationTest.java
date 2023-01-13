@@ -160,6 +160,7 @@ class AdminControllerIntegrationTest {
        assertEquals(apiResponse.getStatusCodeValue(), testResponse.getStatusCodeValue());
     }
 
+
     @Test
     void updateProduct() {
         when(productRepository.save(product)).thenReturn(product);
@@ -167,7 +168,6 @@ class AdminControllerIntegrationTest {
 
         when(productRepository.findById(any()))
                 .thenReturn(Optional.of(product));
-
         ApiResponse<Product> expectedApiResponse =
                 new ApiResponse<>("product updated", true, updatedProduct);
 
