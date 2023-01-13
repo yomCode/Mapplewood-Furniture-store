@@ -8,14 +8,22 @@ import com.decagon.OakLandv1be.exceptions.PasswordMisMatchException;
 import com.decagon.OakLandv1be.exceptions.UserNotFoundException;
 import com.decagon.OakLandv1be.repositries.PersonRepository;
 import com.decagon.OakLandv1be.services.PersonService;
+import com.decagon.OakLandv1be.utils.ApiResponse;
+import com.decagon.OakLandv1be.utils.UserUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -23,7 +31,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -31,16 +39,19 @@ class AuthenticationControllerTest {
 
     @Autowired
     private PersonService personService;
-
     @MockBean
     private PersonRepository personRepository;
-
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @MockBean
+    SecurityContextHolder securityContextHolder;
+    @MockBean
+    Authentication authentication;
+    @MockBean
+    AuthenticationManager authenticationManager;
+
     Person person;
-
-
     UpdatePasswordDto updatePasswordDto;
 
     @BeforeEach
@@ -68,29 +79,59 @@ class AuthenticationControllerTest {
         when(personRepository.save(person)).thenReturn(person);
         assertEquals(person , personRepository.save(person));
         when(personRepository.findByEmail(any())).thenReturn(Optional.ofNullable(person));
-        ResponseEntity<String> expectedResponseEntity =
-                new ResponseEntity<>("Password updated successfully", HttpStatus.OK);
-        ResponseEntity<String> responseEntity =
-                personService.updatePassword("benson@gmail.com",updatePasswordDto);
-        assertEquals(expectedResponseEntity.toString(),responseEntity.toString());
+
+        ApiResponse<String> expectedApiResponse =
+                new ApiResponse<>("Password updated successfully", true,null,HttpStatus.OK);
+
+        try (MockedStatic<UserUtil> mockStatic = mockStatic(UserUtil.class)) {
+
+            mockStatic.when(UserUtil::extractEmailFromPrincipal)
+                    .thenReturn(Optional.of("benny@gmail.com"));
+
+            assertEquals(Optional.of("benny@gmail.com"), UserUtil.extractEmailFromPrincipal());
+            mockStatic.verify(UserUtil::extractEmailFromPrincipal);
+
+            ApiResponse<String> apiResponse1 =
+                    personService.updatePassword( updatePasswordDto);
+
+            assertEquals(expectedApiResponse.toString(), apiResponse1.toString());
+        }
     }
+
+
+
 
     @Test
-    void shouldThrowUserNotFoundException(){
+    void shouldThrowUserNotFoundException() {
         when(personRepository.save(person)).thenReturn(person);
-        assertEquals(person , personRepository.save(person));
-        when(personRepository.findByEmail(any())).thenReturn(Optional.empty());
-        assertThrows(UserNotFoundException.class, () ->
-                personService.updatePassword("benson@gmail.com",updatePasswordDto));
-    }
+        assertEquals(person, personRepository.save(person));
+        try (MockedStatic<UserUtil> mockStatic = mockStatic(UserUtil.class)) {
 
+            mockStatic.when(UserUtil::extractEmailFromPrincipal)
+                    .thenReturn(Optional.of("benny@gmail.com"));
+
+            assertEquals(Optional.of("benny@gmail.com"), UserUtil.extractEmailFromPrincipal());
+            mockStatic.verify(UserUtil::extractEmailFromPrincipal);
+
+            when(personRepository.findByEmail(any())).thenReturn(Optional.empty());
+            assertThrows(UserNotFoundException.class, () ->
+                    personService.updatePassword(updatePasswordDto));
+        }
+    }
     @Test
     void shouldThrowPasswordMisMatchException(){
         when(personRepository.save(person)).thenReturn(person);
         assertEquals(person , personRepository.save(person));
+            try (MockedStatic<UserUtil> mockStatic = mockStatic(UserUtil.class)) {
+
+                mockStatic.when(UserUtil::extractEmailFromPrincipal)
+                        .thenReturn(Optional.of("benny@gmail.com"));
+
+                assertEquals(Optional.of("benny@gmail.com"), UserUtil.extractEmailFromPrincipal());
+                mockStatic.verify(UserUtil::extractEmailFromPrincipal);
         when(personRepository.findByEmail(any())).thenReturn(Optional.ofNullable(person));
         updatePasswordDto.setOldPassword("oldPassword");
         assertThrows(PasswordMisMatchException.class, () ->
-                personService.updatePassword("benson@gmail.com",updatePasswordDto));
+                personService.updatePassword(updatePasswordDto));
     }
-}
+}}
