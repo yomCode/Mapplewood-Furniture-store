@@ -24,8 +24,7 @@ public class WalletController {
 
     @PostMapping("/fund")
     public ApiResponse<Object> fundWallet(@RequestBody FundWalletRequest request){
-        FundWalletResponseDto response = walletService.fundWallet(request);
-        return new ApiResponse("Request successful", response, HttpStatus.OK);
+        return new ApiResponse("Request successful", walletService.fundWallet(request), HttpStatus.OK);
     }
 
 

@@ -167,7 +167,6 @@ class AdminControllerIntegrationTest {
 
         when(productRepository.findById(any()))
                 .thenReturn(Optional.of(product));
-
         ApiResponse<Product> expectedApiResponse =
                 new ApiResponse<>("product updated", true, updatedProduct);
 

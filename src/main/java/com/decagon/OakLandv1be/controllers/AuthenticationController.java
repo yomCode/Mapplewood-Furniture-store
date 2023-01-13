@@ -48,9 +48,10 @@ public class AuthenticationController {
 
         if(authentication != null)
             return new ApiResponse<>("Login Successful",
-                    true, tokenService.generateToken(authentication));
+                    true, tokenService.generateToken(authentication), HttpStatus.OK);
 
-        return new ApiResponse<>("Invalid Username or Password", false, null);
+        return new ApiResponse<>("Invalid Username or Password",
+                false, null, HttpStatus.UNAUTHORIZED);
 
     }
 
@@ -66,10 +67,10 @@ public class AuthenticationController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @PutMapping("/update-password/{email}")
-    public ResponseEntity<String> updatePassword(@Valid @PathVariable String email ,  @RequestBody UpdatePasswordDto updatePasswordDto){
-        personService.updatePassword( email ,updatePasswordDto);
-        return new ResponseEntity<>("Password changed successfully", HttpStatus.OK);
+    @PutMapping("/update-password")
+    public ApiResponse<String> updatePassword(@Valid  @RequestBody UpdatePasswordDto updatePasswordDto){
+        personService.updatePassword( updatePasswordDto);
+        return new ApiResponse<>("Password changed successfully",true ,null,HttpStatus.ACCEPTED);
     }
 
 }
