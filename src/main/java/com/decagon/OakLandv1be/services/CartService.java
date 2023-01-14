@@ -18,12 +18,8 @@ public interface CartService {
     Item getNewCartItem(int itemQuantity, Product product, Customer loggedInCustomer, List<Item> cartItemsList);
     Cart getLoggedInCustomerCart(Customer loggedInCustomer, List<Item> cartItemsList, Set<Item> allCartItems);
     String currentUserEmail();
-}
-
-
-  
-
-public interface CartService {
     String removeItem(Long itemToRemoveId);
 }
+
+
 
