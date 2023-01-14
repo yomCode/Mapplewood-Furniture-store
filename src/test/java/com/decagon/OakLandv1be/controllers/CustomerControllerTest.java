@@ -1,5 +1,6 @@
 package com.decagon.OakLandv1be.controllers;
 
+
 import com.decagon.OakLandv1be.OakLandV1BeApplication;
 import com.decagon.OakLandv1be.dto.SignupResponseDto;
 import com.decagon.OakLandv1be.dto.cartDtos.AddItemToCartDto;
@@ -14,12 +15,21 @@ import com.decagon.OakLandv1be.services.CustomerService;
 import com.decagon.OakLandv1be.services.serviceImpl.CartServiceImpl;
 import com.decagon.OakLandv1be.utils.ApiResponse;
 import com.decagon.OakLandv1be.utils.ResponseManager;
-import org.junit.jupiter.api.Test;
+
 import org.mockito.Mock;
+
+import com.decagon.OakLandv1be.dto.EditProfileRequestDto;
+import com.decagon.OakLandv1be.enums.Gender;
+import com.decagon.OakLandv1be.repositries.CustomerRepository;
+import com.decagon.OakLandv1be.services.serviceImpl.CustomerServiceImpl;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Test;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -35,10 +45,28 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = CustomerController.class)
 @AutoConfigureMockMvc(addFilters = false)
 @ContextConfiguration(classes = OakLandV1BeApplication.class)
+=======
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@WebMvcTest(CustomerController.class)
+@AutoConfigureMockMvc(addFilters = false)
+
 class CustomerControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+    
+    @Autowired
+    private ObjectMapper mapper;
+
+    @MockBean
+    private CustomerServiceImpl customerService;
+
+    @MockBean
+    private CustomerRepository customerRepository;
 
     @MockBean
     private CartServiceImpl cartService;
@@ -110,3 +138,5 @@ class CustomerControllerTest {
         }
     }
 }
+
+

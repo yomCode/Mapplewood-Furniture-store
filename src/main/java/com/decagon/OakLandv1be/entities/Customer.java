@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -12,6 +13,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Builder
+@ToString
 @Table(name = "customer_tbl")
 public class Customer extends BaseEntity{
 
@@ -36,11 +38,13 @@ public class Customer extends BaseEntity{
     private Set<Order> orders;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<Product> favorites;
+    @OneToMany(cascade = CascadeType.ALL)
+    private Set<Product> favorites = new HashSet<>();
 
     @JsonIgnore
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Address> addressBook;
+
+    private boolean isActive = true;
 
 }

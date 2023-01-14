@@ -1,5 +1,6 @@
 package com.decagon.OakLandv1be.services.serviceImpl;
 
+
 import com.decagon.OakLandv1be.dto.SignupResponseDto;
 import com.decagon.OakLandv1be.dto.cartDtos.AddItemToCartDto;
 import com.decagon.OakLandv1be.dto.cartDtos.CartItemResponseDto;
@@ -18,6 +19,22 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 
+import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import java.util.Optional;
+
+import static org.assertj.core.api.BDDAssumptions.given;
+import static org.junit.jupiter.api.Assertions.*;
+
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+
+
+
+
+
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,6 +43,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc(addFilters = false)
+@RunWith(MockitoJUnitRunner.class)
 class CartServiceImplTest {
 
     @InjectMocks
@@ -38,6 +56,9 @@ class CartServiceImplTest {
     PersonRepository personRepository;
     @MockBean
     CustomerService customerService;
+  
+  
+  
 
     @Test
     @WithMockUser("a@mail.com")
@@ -114,4 +135,25 @@ class CartServiceImplTest {
         when(itemRepository.save(item)).thenReturn(item);
         assertEquals(cartItemResponseDto,cartServiceImpl.addItemToCart(1L,addItemToCartDto));
     }
+  
+  
+  @Test
+    public void removeItemsInCart() {
+        Item item = new Item();
+        Product product = Product.builder().name("Tall dinning chair").price(2000.00).imageUrl("hgdhg")
+                .color("green").description("strong black").build();
+        item.setId(2L);
+
+        item.setProductName(product.getName());
+        item.setOrderQty(3);
+        item.setUnitPrice(100.00);
+        item.setSubTotal(300.00);
+       when(itemRepository.save(item)).thenReturn(item);
+       when(itemRepository.findById(2L)).thenReturn(Optional.of(item));
+       // System.out.println();
+        cartService.removeItem(item.getId());
+        verify(itemRepository).deleteById(item.getId());
+        // verify(itemRepository,times(1)).deleteById(anyLong());
+    }
+
 }

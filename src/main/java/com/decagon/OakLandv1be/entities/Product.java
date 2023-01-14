@@ -11,6 +11,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Builder
+@ToString
 @Table(name = "product_tbl")
 public class Product extends BaseEntity{
 
@@ -25,10 +26,6 @@ public class Product extends BaseEntity{
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "subCategory_id")
     private SubCategory subCategory;
-
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "customer_id")
-    private Customer customer;
 
     private String color;
 

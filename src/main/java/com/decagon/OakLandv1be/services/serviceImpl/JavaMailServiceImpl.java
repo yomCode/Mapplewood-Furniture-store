@@ -30,7 +30,9 @@ public class JavaMailServiceImpl implements JavaMailService {
     private static final Logger LOGGER = LoggerFactory.getLogger(OakLandV1BeApplication.class);
     private static final Marker IMPORTANT = MarkerFactory.getMarker("IMPORTANT");
     @Override
+
     public ResponseEntity<String> sendMail(String receiverEmail, String subject, String text) throws IOException {
+
         if (!isValidEmail(receiverEmail))
             new ResponseEntity<>("Email is not valid", HttpStatus.BAD_REQUEST);
 
