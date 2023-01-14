@@ -9,16 +9,13 @@ import org.springframework.http.ResponseEntity;
 import java.io.IOException;
 
 public interface CustomerService {
-
     SignupResponseDto saveCustomer(SignupRequestDto signupRequestDto) throws AlreadyExistsException, IOException;
 
     ResponseEntity<ApiResponse> verifyRegistration(String token);
-
     public void removeProductFromFavorites(Long pid);
-
-    public void editProfile(EditProfileRequestDto editProfileRequestDto);
-
     ResponseEntity<String> deleteProductFromFavourites(FavoritesDto deleteFavoriteDto, Long pid, Long cid);
-
-
+    void editProfile(EditProfileRequestDto editProfileRequestDto);
+    void addProductToFavorites(Long pid);
+    Customer getCurrentlyLoggedInUser();
+  
 }

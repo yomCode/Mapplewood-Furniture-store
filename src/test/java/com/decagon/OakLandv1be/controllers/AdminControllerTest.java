@@ -1,13 +1,10 @@
 package com.decagon.OakLandv1be.controllers;
 
-import com.decagon.OakLandv1be.dto.ProductCustResponseDto;
 import com.decagon.OakLandv1be.dto.ProductResponseDto;
 import com.decagon.OakLandv1be.entities.Product;
 import com.decagon.OakLandv1be.entities.SubCategory;
-import com.decagon.OakLandv1be.repositries.CustomerRepository;
 import com.decagon.OakLandv1be.repositries.PersonRepository;
 import com.decagon.OakLandv1be.services.serviceImpl.AdminServiceImpl;
-import com.decagon.OakLandv1be.services.serviceImpl.CustomerServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,18 +12,24 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
-
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
 
 @WebMvcTest(AdminController.class)
 @AutoConfigureMockMvc(addFilters = false)
 class AdminControllerTest {
     @Autowired
     private MockMvc mockMvc;
+
     @Autowired
     private ObjectMapper mapper;
 

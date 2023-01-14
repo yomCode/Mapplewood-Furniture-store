@@ -23,8 +23,12 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationProvider;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Collection;
+import java.util.Collections;
 
 import static com.decagon.OakLandv1be.enums.Role.*;
 
@@ -35,9 +39,9 @@ import static com.decagon.OakLandv1be.enums.Role.*;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
-    private final String[] WHITE_LISTED_URLS = { "/", "/home", "index", "/css/*", "/js/*", "api/v1/products/**",
+    private final String[] WHITE_LISTED_URLS = { "/", "/home", "index", "/css/*", "/js/*", "/api/v1/products/**",
             "/api/v1/auth/**","/v2/api-docs/**", "/v3/api-docs/**","/configuration/**",
-            "/swagger*/**","/swagger-ui/**","/webjars/**", "/swagger-ui.html"
+            "/swagger*/**","/swagger-ui/**","/webjars/**", "/swagger-ui.html", "/api/v1/auth/customer/signup"
     };
     private final AppUserDetailsService appUserDetailsService;
     private static final String AUTHORITY_PREFIX = "ROLE_";
@@ -45,11 +49,20 @@ public class SecurityConfig {
     private final PasswordEncoder passwordEncoder;
     private final JWTCoder jwtCoder;
 
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
-        return http
-                .csrf(AbstractHttpConfigurer::disable)
+        return http.cors().configurationSource(new CorsConfigurationSource() {
+                    @Override
+                    public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
+                        CorsConfiguration config = new CorsConfiguration();
+                        config.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
+                        config.setAllowedMethods(Collections.singletonList("*"));
+                        config.setAllowCredentials(true);
+                        config.setAllowedHeaders(Collections.singletonList("*"));
+                        config.setMaxAge(3600L);
+                        return config;
+                    }
+                }).and().csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((auth) -> {
                 auth.antMatchers(WHITE_LISTED_URLS).permitAll()
                             .antMatchers("/api/v1/super-admin/**").hasRole(SUPERADMIN.name())
@@ -81,6 +94,7 @@ public class SecurityConfig {
         return converter;
     }
 
+    @Bean
     public AuthenticationProvider authenticationProvider() {
         final DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setUserDetailsService(appUserDetailsService);
@@ -99,4 +113,5 @@ public class SecurityConfig {
         provider.setJwtAuthenticationConverter(getJwtAuthenticationConverter());
         return provider;
     }
+
 }

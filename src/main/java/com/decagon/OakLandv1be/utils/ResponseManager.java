@@ -11,8 +11,8 @@ public class ResponseManager<T> {
         return new ApiResponse<>("Request Successful", true, data);
     }
 
-    public ApiResponse<T> error(String errorMessage){
-
-        return new ApiResponse<>(errorMessage,false,null);
-    }
+//    public ApiResponse<T> error(String errorMessage){
+//
+//        return new ApiResponse<>(errorMessage,false,null);
+//    }
 }
