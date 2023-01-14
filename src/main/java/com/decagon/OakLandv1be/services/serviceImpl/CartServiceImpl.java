@@ -4,12 +4,13 @@ package com.decagon.OakLandv1be.services.serviceImpl;
 import com.decagon.OakLandv1be.entities.Cart;
 import com.decagon.OakLandv1be.entities.Item;
 import com.decagon.OakLandv1be.entities.Person;
-import com.decagon.OakLandv1be.entities.Product;
+import com.decagon.OakLandv1be.entities.Token;
 import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
 import com.decagon.OakLandv1be.exceptions.UnauthorizedUserException;
 import com.decagon.OakLandv1be.repositries.CartRepository;
 import com.decagon.OakLandv1be.repositries.ItemRepository;
 import com.decagon.OakLandv1be.repositries.PersonRepository;
+import com.decagon.OakLandv1be.repositries.TokenRepository;
 import com.decagon.OakLandv1be.services.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -28,42 +29,47 @@ public class CartServiceImpl implements CartService {
     private final ItemRepository itemRepository;
     private final PersonRepository personRepository;
     private final CartRepository cartRepository;
-
+    private final TokenRepository tokenRepository;
     @Override
     public String removeItem(Long itemToRemoveId) {
 
-//        itemRepository.deleteById(itemToRemoveId);
-//        return "Item successfully deleted";
+        Item item = itemRepository.findById(itemToRemoveId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Item does not exist"));
+            itemRepository.delete(item);
+            return "Item successfully deleted";
+
         //search for the logged in user
         //get his cart
         //cart
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (!(authentication instanceof AnonymousAuthenticationToken)) {
-            String email = authentication.getName();
-
-            Person person = personRepository.findByEmail(email)
-                    .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
-            Cart cart = person.getCustomer().getCart();
-            if (cart == null) throw new ResourceNotFoundException("cart is empty");
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+//            String email = authentication.getName();
+//
+//            Person person = personRepository.findByEmail(email)
+//                    .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
+//
+//            Cart cart = person.getCustomer().getCart();
+//            if( cart == null) throw new ResourceNotFoundException("cart is empty");
 //            Item item = itemRepository.findById(itemToRemoveId)
 //                    .orElseThrow(() -> new ResourceNotFoundException("Item does not exist"));
-//
 //            itemRepository.delete(item);
-            Set<Item> itemsInCart = cart.getItems();
-            System.out.println(itemsInCart.toString());
-            for (Item item : itemsInCart) {
-                if (item.getId() == itemToRemoveId) {
+//            return "Item successfully deleted";
+//
+//            System.out.println(" person is " + person.getCustomer());
+//            Set<Item> itemsInCart = cart.getItems();
+//            for (Item item : itemsInCart) {
+//                if (item.getId() == itemToRemoveId) {
+//                    itemsInCart.remove(item);
+//
+//                    cart.setItems(itemsInCart);
+//                    cartRepository.save(cart);
+//                    personRepository.save(person);
+//                    return "Item successfully deleted";
+//                }
+//                throw new ResourceNotFoundException("Item does not exist");
+////            }
+//        }
+//        throw new UnauthorizedUserException("Login to carry out this operation");
 
-                    itemsInCart.remove(item);
-                    itemRepository.save(item);
-                    cart.setItems(itemsInCart);
-                    cartRepository.save(cart);
-                    personRepository.save(person);
-           return "Item successfully deleted";
-        }
-        throw new ResourceNotFoundException("Item does not exist");
-    }
-        }
-        throw new UnauthorizedUserException("Login to carry out this operation");
     }
 }

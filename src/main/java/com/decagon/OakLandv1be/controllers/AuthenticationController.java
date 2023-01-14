@@ -50,7 +50,7 @@ public class AuthenticationController {
             return new ApiResponse<>("Login Successful",
                     true, tokenService.generateToken(authentication));
 
-        return new ApiResponse<>("Invalid Username or Password", false, null);
+        return new ApiResponse<String>("Invalid Username or Password", false, "null");
 
     }
 
