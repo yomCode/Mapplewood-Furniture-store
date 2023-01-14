@@ -29,6 +29,10 @@ public class Customer extends BaseEntity{
     @JoinColumn(name = "wallet_id")
     private Wallet wallet;
 
+//    @JsonIgnore
+//    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+//    private Set<Item> items;
+
     @JsonIgnore
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Order> orders;

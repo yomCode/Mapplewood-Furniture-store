@@ -1,18 +1,26 @@
 package com.decagon.OakLandv1be.controllers;
 
 import com.decagon.OakLandv1be.OakLandV1BeApplication;
+import com.decagon.OakLandv1be.dto.SignupResponseDto;
 import com.decagon.OakLandv1be.dto.EditProfileRequestDto;
 import com.decagon.OakLandv1be.dto.cartDtos.AddItemToCartDto;
 import com.decagon.OakLandv1be.dto.cartDtos.CartResponseDto;
-import com.decagon.OakLandv1be.entities.*;
+import com.decagon.OakLandv1be.dto.cartDtos.CartItemResponseDto;
+import com.decagon.OakLandv1be.entities.Cart;
+import com.decagon.OakLandv1be.entities.Customer;
+import com.decagon.OakLandv1be.entities.Item;
+import com.decagon.OakLandv1be.entities.Person;
 import com.decagon.OakLandv1be.enums.Gender;
 import com.decagon.OakLandv1be.enums.Role;
 import com.decagon.OakLandv1be.repositries.CartRepository;
+import com.decagon.OakLandv1be.services.CustomerService;
 import com.decagon.OakLandv1be.services.serviceImpl.CartServiceImpl;
-import com.decagon.OakLandv1be.services.serviceImpl.CustomerServiceImpl;
 import com.decagon.OakLandv1be.utils.ApiResponse;
 import com.decagon.OakLandv1be.utils.ResponseManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.mockito.Mock;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +28,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
+import static org.mockito.ArgumentMatchers.anyLong;
+
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -37,6 +47,7 @@ class CustomerControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+    
     @Autowired
     private ObjectMapper mapper;
 
@@ -51,6 +62,15 @@ class CustomerControllerTest {
 
     @MockBean
     private ResponseManager responseManager;
+
+    @MockBean
+    private CartServiceImpl cartService;
+
+    @MockBean
+    private ResponseManager responseManager;
+    @MockBean
+    CustomerService customerService;
+
 
     @Test
     public void editProfile() throws Exception {
@@ -133,3 +153,5 @@ class CustomerControllerTest {
         }
     }
 }
+
+

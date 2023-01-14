@@ -1,21 +1,35 @@
 package com.decagon.OakLandv1be.services.serviceImpl;
 
-import com.decagon.OakLandv1be.entities.*;
-import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
-import com.decagon.OakLandv1be.exceptions.UnauthorizedUserException;
+import com.decagon.OakLandv1be.dto.SignupResponseDto;
+import com.decagon.OakLandv1be.dto.cartDtos.AddItemToCartDto;
+import com.decagon.OakLandv1be.dto.cartDtos.CartItemResponseDto;
+import com.decagon.OakLandv1be.enums.Role;
+import com.decagon.OakLandv1be.exceptions.AlreadyExistsException;
+import com.decagon.OakLandv1be.exceptions.NotAvailableException;
+import com.decagon.OakLandv1be.exceptions.UnauthorizedException;
+import com.decagon.OakLandv1be.exceptions.UserNotFoundException;
 import com.decagon.OakLandv1be.repositries.*;
 import com.decagon.OakLandv1be.services.CartService;
-import com.decagon.OakLandv1be.services.CustomerService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
+
+import com.decagon.OakLandv1be.entities.Cart;
+import com.decagon.OakLandv1be.entities.Item;
+import com.decagon.OakLandv1be.entities.Person;
+import com.decagon.OakLandv1be.entities.Product;
+import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
+import com.decagon.OakLandv1be.exceptions.UnauthorizedUserException;
+import com.decagon.OakLandv1be.services.CustomerService;
+
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import com.decagon.OakLandv1be.dto.cartDtos.AddItemToCartDto;
 import com.decagon.OakLandv1be.exceptions.NotAvailableException;
-import org.springframework.beans.BeanUtils;
-
+import java.util.Arrays;
 import java.util.Set;
+
 
 
 @Service
