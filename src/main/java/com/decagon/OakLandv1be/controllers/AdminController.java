@@ -8,11 +8,7 @@ import lombok.RequiredArgsConstructor;
 import com.decagon.OakLandv1be.dto.NewProductRequestDto;
 import com.decagon.OakLandv1be.dto.OperationStatus;
 import com.decagon.OakLandv1be.dto.ProductResponseDto;
-import com.decagon.OakLandv1be.entities.Product;
-import com.decagon.OakLandv1be.enums.OperationResult;
 import com.decagon.OakLandv1be.services.AdminService;
-import com.decagon.OakLandv1be.utils.ApiResponse;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +19,6 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/admin")
 public class AdminController {
-    private final ProductService productService;
     private final AdminService adminService;
 
    @PutMapping("/products/update/{productId}")
@@ -38,22 +33,19 @@ public class AdminController {
     }
 
     @PostMapping("products/new")
-    ResponseEntity<NewProductRequestDto> addNewProduct(@Valid @RequestBody NewProductRequestDto productDto) {
-        return adminService.addNewProduct(productDto);
+    ResponseEntity<ProductResponseDto> addNewProduct(@Valid @RequestBody NewProductRequestDto productDto) {
+        return new ResponseEntity<>(adminService.addNewProduct(productDto), HttpStatus.CREATED);
     }
     
     @PutMapping("/deactivate-user/{userId}")
     public ResponseEntity<String> deactivateUser(@PathVariable Long userId){
         String response = adminService.deactivateUser(userId);
-
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
 
     @DeleteMapping("/products/delete/{product_id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     ApiResponse<OperationStatus> deleteProduct(@PathVariable Long product_id){
         return adminService.deleteProduct(product_id);
-
     }
 }

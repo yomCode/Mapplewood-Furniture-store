@@ -39,14 +39,13 @@ public class AuthenticationController {
     
 
     @PostMapping("/login")
-    public ResponseEntity<String> authenticate(@Valid @RequestBody LoginDto loginRequest) {
+    public ApiResponse authenticate(@Valid @RequestBody LoginDto loginRequest) {
         UserDetails user = userDetailsService.loadUserByUsername(loginRequest.getEmail());
         if(!user.isEnabled())
             throw new UsernameNotFoundException("You have not been verified. Check your email to be verified!");
         if (!user.isAccountNonLocked()){
-            return new ApiResponse<>("This account has been deactivated", false, null);
+            return new ApiResponse<>("This account has been deactivated", false, null,HttpStatus.OK);
         }
-
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 
@@ -71,8 +70,8 @@ public class AuthenticationController {
     }
 
     @PutMapping("/update-password")
-    public ApiResponse<String> updatePassword(@Valid  @RequestBody UpdatePasswordDto updatePasswordDto){
-        personService.updatePassword( updatePasswordDto);
-        return new ApiResponse<>("Password changed successfully",true ,null,HttpStatus.ACCEPTED);
+    public ResponseEntity<ApiResponse<String>> updatePassword(@Valid  @RequestBody UpdatePasswordDto updatePasswordDto){
+        ApiResponse response = personService.updatePassword( updatePasswordDto);
+        return new ResponseEntity<>(response,HttpStatus.ACCEPTED);
     }
 }

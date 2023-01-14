@@ -6,15 +6,13 @@ import com.decagon.OakLandv1be.dto.EditProfileRequestDto;
 import com.decagon.OakLandv1be.dto.cartDtos.AddItemToCartDto;
 import com.decagon.OakLandv1be.dto.cartDtos.CartResponseDto;
 import com.decagon.OakLandv1be.dto.cartDtos.CartItemResponseDto;
-import com.decagon.OakLandv1be.entities.Cart;
-import com.decagon.OakLandv1be.entities.Customer;
-import com.decagon.OakLandv1be.entities.Item;
-import com.decagon.OakLandv1be.entities.Person;
+import com.decagon.OakLandv1be.entities.*;
 import com.decagon.OakLandv1be.enums.Gender;
 import com.decagon.OakLandv1be.enums.Role;
 import com.decagon.OakLandv1be.repositries.CartRepository;
 import com.decagon.OakLandv1be.services.CustomerService;
 import com.decagon.OakLandv1be.services.serviceImpl.CartServiceImpl;
+import com.decagon.OakLandv1be.services.serviceImpl.CustomerServiceImpl;
 import com.decagon.OakLandv1be.utils.ApiResponse;
 import com.decagon.OakLandv1be.utils.ResponseManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -62,14 +60,6 @@ class CustomerControllerTest {
 
     @MockBean
     private ResponseManager responseManager;
-
-    @MockBean
-    private CartServiceImpl cartService;
-
-    @MockBean
-    private ResponseManager responseManager;
-    @MockBean
-    CustomerService customerService;
 
 
     @Test
