@@ -10,7 +10,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.SimpleMailMessage;
 
 import java.io.IOException;
 
@@ -18,7 +17,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 
 @ExtendWith(MockitoExtension.class)
-public class JavaMailServiceImplTest {
+public class claJavaMailServiceImplTest {
     @Mock
     JavaMailServiceImpl javaMailServiceImpl;
 
@@ -32,9 +31,6 @@ public class JavaMailServiceImplTest {
 
                 Assertions.assertThat(responseEntity.getBody().equals("sent"));
         Assertions.assertThat(responseEntity.getStatusCode().equals(HttpStatus.OK));
-
-
-
     }
 
 }
