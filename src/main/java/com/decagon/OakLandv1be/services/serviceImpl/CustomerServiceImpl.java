@@ -10,19 +10,21 @@ import com.decagon.OakLandv1be.enums.BaseCurrency;
 import com.decagon.OakLandv1be.enums.Gender;
 import com.decagon.OakLandv1be.enums.Role;
 import com.decagon.OakLandv1be.exceptions.AlreadyExistsException;
-import com.decagon.OakLandv1be.exceptions.ProductNotFoundException;
-import com.decagon.OakLandv1be.repositries.*;
 import com.decagon.OakLandv1be.exceptions.InvalidTokenException;
 import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
+import com.decagon.OakLandv1be.exceptions.ProductNotFoundException;
+import com.decagon.OakLandv1be.exceptions.UserNotFoundException;
+import com.decagon.OakLandv1be.repositries.*;
+
 import com.decagon.OakLandv1be.services.CustomerService;
 import com.decagon.OakLandv1be.services.JavaMailService;
 import com.decagon.OakLandv1be.utils.ApiResponse;
-import com.decagon.OakLandv1be.utils.JwtUtils;
 import com.decagon.OakLandv1be.utils.ResponseManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -46,10 +48,8 @@ public class CustomerServiceImpl implements CustomerService {
     private final TokenService tokenService;
     private final TokenRepository tokenRepository;
     private final ResponseManager responseManager;
-    private final JwtUtils jwtUtils;
 
     private final ProductRepository productRepository;
-
 
 
     @Override
@@ -98,9 +98,6 @@ public class CustomerServiceImpl implements CustomerService {
                     return  signupResponseDto;
     }
 
-
-
-
     @Override
     public ResponseEntity<ApiResponse> verifyRegistration(String token){
 
@@ -119,12 +116,20 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public void editProfile(EditProfileRequestDto editProfileRequestDto) {
-
-        String email = jwtUtils.extractUsername(editProfileRequestDto.getToken());
-
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if ((authentication instanceof AnonymousAuthenticationToken))
+            throw new ResourceNotFoundException("Please Login");
+        String email = authentication.getName();
         Person customer = personRepository.findByEmail(email)
-                .orElseThrow(()-> new ResourceNotFoundException("Not found"));
-        BeanUtils.copyProperties(editProfileRequestDto, customer);
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        customer.setFirstName(editProfileRequestDto.getFirstName());
+        customer.setLastName(editProfileRequestDto.getLastName());
+        customer.setGender(Gender.valueOf(editProfileRequestDto.getGender().toUpperCase()));
+        customer.setEmail(editProfileRequestDto.getEmail());
+        customer.setPhone(editProfileRequestDto.getPhone());
+        customer.setDate_of_birth(editProfileRequestDto.getDate_of_birth());
+
         personRepository.save(customer);
     }
 
@@ -146,7 +151,14 @@ public class CustomerServiceImpl implements CustomerService {
         favorites.add(product);
         person.getCustomer().setFavorites(favorites);
         customerRepository.save(person.getCustomer());
+
     }
 
-
+    @Override
+    public Customer getCurrentlyLoggedInUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String loggedInUserEmail = authentication.getName();
+        Person loggedInUser = personRepository.findByEmail(loggedInUserEmail).orElseThrow(() -> new UserNotFoundException("No user with this email"));
+        return loggedInUser.getCustomer();
+    }
 }

@@ -25,6 +25,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.security.Principal;
 
 @RestController
 @RequiredArgsConstructor
@@ -38,20 +39,23 @@ public class AuthenticationController {
     
 
     @PostMapping("/login")
-    public ApiResponse<String> authenticate(@Valid @RequestBody LoginDto loginRequest) {
+    public ApiResponse authenticate(@Valid @RequestBody LoginDto loginRequest) {
         UserDetails user = userDetailsService.loadUserByUsername(loginRequest.getEmail());
         if(!user.isEnabled())
             throw new UsernameNotFoundException("You have not been verified. Check your email to be verified!");
-
+        if (!user.isAccountNonLocked()){
+            return new ApiResponse<>("This account has been deactivated", false, null,HttpStatus.OK);
+        }
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 
         if(authentication != null)
             return new ApiResponse<>("Login Successful",
-                    true, tokenService.generateToken(authentication));
 
-        return new ApiResponse<String>("Invalid Username or Password", false, "null");
+                    true, tokenService.generateToken(authentication), HttpStatus.OK);
 
+        return new ApiResponse<>("Invalid Username or Password",
+                false, null, HttpStatus.UNAUTHORIZED);
     }
 
     @PostMapping("/forgot-password-request")
@@ -66,10 +70,9 @@ public class AuthenticationController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @PutMapping("/update-password/{email}")
-    public ResponseEntity<String> updatePassword(@Valid @PathVariable String email ,  @RequestBody UpdatePasswordDto updatePasswordDto){
-        personService.updatePassword( email ,updatePasswordDto);
-        return new ResponseEntity<>("Password changed successfully", HttpStatus.OK);
+    @PutMapping("/update-password")
+    public ResponseEntity<ApiResponse<String>> updatePassword(@Valid  @RequestBody UpdatePasswordDto updatePasswordDto){
+        ApiResponse response = personService.updatePassword( updatePasswordDto);
+        return new ResponseEntity<>(response,HttpStatus.ACCEPTED);
     }
-
 }

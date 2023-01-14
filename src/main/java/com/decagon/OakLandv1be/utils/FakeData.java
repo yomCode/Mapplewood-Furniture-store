@@ -1,7 +1,7 @@
 package com.decagon.OakLandv1be.utils;
 
-
 import com.decagon.OakLandv1be.entities.*;
+
 import com.decagon.OakLandv1be.enums.BaseCurrency;
 import com.decagon.OakLandv1be.enums.Gender;
 import com.decagon.OakLandv1be.enums.Role;
@@ -20,9 +20,12 @@ public class FakeData {
     private final PasswordEncoder passwordEncoder;
 
 
-    public CommandLineRunner commandLineRunner(PersonRepository personRepository, ProductRepository productRepository) {
+    @Bean
+    public CommandLineRunner commandLineRunner(PersonRepository personRepository, ProductRepository productRepository, CustomerRepository customerRepository) {
         return argument -> {
             if (!personRepository.existsByEmail("benson@gmail.com")) {
+             Customer customer = new Customer();
+             
                 Person person = Person.builder()
                         .firstName("Benson")
                         .lastName("Malik")
@@ -35,26 +38,33 @@ public class FakeData {
                         .password(passwordEncoder.encode("password123"))
                         .address("No Address")
                         .role(Role.CUSTOMER)
+                        .customer(customer)
+                        .password(passwordEncoder.encode("password123453"))
+                        .address("No Address")
+                        .role(Role.ADMIN)
+                        .isActive(true)
                         .build();
                 personRepository.save(person);
+
+                customer.setPerson(person);
+                customerRepository.save(customer);
             }
 
-            if (productRepository.existsById(1L)) {
+            if(!productRepository.existsById(1L)) {
                 Product product = Product.builder()
                         .name("Oppola")
                         .price(40000.00)
+                        .availableQty(400)
                         .imageUrl("www.google.com")
                         .color("yellow")
                         .description("lovely fur")
                         .build();
-
-                product.setId(1L);
+                    product.setId(1L);
                 productRepository.save(product);
             }
 
         };
     }
-
 
     public CommandLineRunner commandLineRunner(PersonRepository personRepository, CustomerRepository customerRepository) {
         return args -> {
@@ -86,3 +96,4 @@ public class FakeData {
         };
     }
 }
+

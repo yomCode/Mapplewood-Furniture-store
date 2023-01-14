@@ -2,13 +2,7 @@ package com.decagon.OakLandv1be.config;
 
 import com.decagon.OakLandv1be.config.jwt.JWTCoder;
 import com.decagon.OakLandv1be.config.userDetails.AppUserDetailsService;
-import com.decagon.OakLandv1be.config.userDetails.PasswordService;
-import com.decagon.OakLandv1be.entities.Person;
-import com.decagon.OakLandv1be.enums.Gender;
-import com.decagon.OakLandv1be.enums.Role;
-import com.decagon.OakLandv1be.repositries.PersonRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
@@ -29,8 +23,12 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationProvider;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Collection;
+import java.util.Collections;
 
 import static com.decagon.OakLandv1be.enums.Role.*;
 
@@ -53,8 +51,18 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
-        return http
-                .csrf(AbstractHttpConfigurer::disable)
+        return http.cors().configurationSource(new CorsConfigurationSource() {
+                    @Override
+                    public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
+                        CorsConfiguration config = new CorsConfiguration();
+                        config.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
+                        config.setAllowedMethods(Collections.singletonList("*"));
+                        config.setAllowCredentials(true);
+                        config.setAllowedHeaders(Collections.singletonList("*"));
+                        config.setMaxAge(3600L);
+                        return config;
+                    }
+                }).and().csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((auth) -> {
                 auth.antMatchers(WHITE_LISTED_URLS).permitAll()
                             .antMatchers("/api/v1/super-admin/**").hasRole(SUPERADMIN.name())
