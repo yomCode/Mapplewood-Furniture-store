@@ -6,21 +6,26 @@ import com.decagon.OakLandv1be.dto.ForgotPasswordRequestDto;
 import com.decagon.OakLandv1be.dto.LoginDto;
 import com.decagon.OakLandv1be.dto.PasswordResetDto;
 import com.decagon.OakLandv1be.entities.Person;
+import com.decagon.OakLandv1be.exceptions.InvalidAttributeException;
 import com.decagon.OakLandv1be.repositries.PersonRepository;
 import com.decagon.OakLandv1be.dto.UpdatePasswordDto;
 import com.decagon.OakLandv1be.services.serviceImpl.PersonServiceImpl;
 
 import com.decagon.OakLandv1be.services.PersonService;
 import com.decagon.OakLandv1be.services.serviceImpl.PersonServiceImpl;
+import com.decagon.OakLandv1be.utils.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.security.Principal;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,25 +34,27 @@ public class AuthenticationController {
     private final TokenService tokenService;
     private final AuthenticationManager authenticationManager;
     private final AppUserDetailsService userDetailsService;
-    private final PersonRepository personRepository;
+
     private final PersonService personService;
     
 
     @PostMapping("/login")
-    public ResponseEntity<String> authenticate(@Valid @RequestBody LoginDto loginRequest) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+    public ApiResponse authenticate(@Valid @RequestBody LoginDto loginRequest) {
         UserDetails user = userDetailsService.loadUserByUsername(loginRequest.getEmail());
-        if (user != null){
-            String email = user.getUsername();
-            Person person = personRepository.findByEmail(email).get();
-            if (!person.isActive()){
-                return ResponseEntity.status(400).body("This account has been deactivated");
-            }
-            return ResponseEntity.ok(tokenService.generateToken(user));
+        if(!user.isEnabled())
+            throw new UsernameNotFoundException("You have not been verified. Check your email to be verified!");
+        if (!user.isAccountNonLocked()){
+            return new ApiResponse<>("This account has been deactivated", false, null,HttpStatus.OK);
         }
-        else
-            return ResponseEntity.status(400).body("Some error has occurred");
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+
+        if(authentication != null)
+            return new ApiResponse<>("Login Successful",
+                    true, tokenService.generateToken(authentication), HttpStatus.OK);
+
+        return new ApiResponse<>("Invalid Username or Password",
+                false, null, HttpStatus.UNAUTHORIZED);
     }
 
     @PostMapping("/forgot-password-request")
@@ -62,10 +69,9 @@ public class AuthenticationController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @PutMapping("/update-password/{email}")
-    public ResponseEntity<String> updatePassword(@Valid @PathVariable String email ,  @RequestBody UpdatePasswordDto updatePasswordDto){
-        personService.updatePassword( email ,updatePasswordDto);
-        return new ResponseEntity<>("Password changed successfully", HttpStatus.OK);
+    @PutMapping("/update-password")
+    public ResponseEntity<ApiResponse<String>> updatePassword(@Valid  @RequestBody UpdatePasswordDto updatePasswordDto){
+        ApiResponse response = personService.updatePassword( updatePasswordDto);
+        return new ResponseEntity<>(response,HttpStatus.ACCEPTED);
     }
-
 }

@@ -1,20 +1,28 @@
 package com.decagon.OakLandv1be.services.serviceImpl;
 
 import com.decagon.OakLandv1be.dto.NewProductRequestDto;
+import com.decagon.OakLandv1be.dto.OperationStatus;
 import com.decagon.OakLandv1be.dto.ProductResponseDto;
-import com.decagon.OakLandv1be.entities.Customer;
+
+import com.decagon.OakLandv1be.entities.Category;
 import com.decagon.OakLandv1be.entities.Person;
 import com.decagon.OakLandv1be.dto.UpdateProductDto;
 import com.decagon.OakLandv1be.entities.Product;
+import com.decagon.OakLandv1be.entities.SubCategory;
+import com.decagon.OakLandv1be.enums.OperationName;
+import com.decagon.OakLandv1be.enums.OperationResult;
 import com.decagon.OakLandv1be.exceptions.AlreadyExistsException;
 import com.decagon.OakLandv1be.exceptions.ProductNotFoundException;
 import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
+
 import com.decagon.OakLandv1be.exceptions.UserNotFoundException;
 import com.decagon.OakLandv1be.repositries.PersonRepository;
 import com.decagon.OakLandv1be.repositries.ProductRepository;
 import com.decagon.OakLandv1be.repositries.*;
 import com.decagon.OakLandv1be.services.AdminService;
 import com.decagon.OakLandv1be.utils.ApiResponse;
+import com.decagon.OakLandv1be.utils.ResponseManager;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,13 +39,11 @@ public class AdminServiceImpl implements AdminService {
     private final ProductRepository productRepository;
     private final PersonRepository personRepository;
     private final CustomerRepository customerRepository;
+    private final SubCategoryRepository subCategoryRepository;
+    private final CategoryRepository categoryRepository;
 
     @Override
     public ProductResponseDto fetchASingleProduct(Long product_id) {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//            String email = authentication.getName();
-//            personRepository.findByEmail(email)
-//                    .orElseThrow(() -> new ResourceNotFoundException("Admin User not found"));
             Product product = productRepository.findById(product_id)
                     .orElseThrow(() -> new ProductNotFoundException("This product was not found"));
             return ProductResponseDto.builder()
@@ -51,29 +57,56 @@ public class AdminServiceImpl implements AdminService {
                     .build();
         }
 
-    public ResponseEntity<Product> addNewProduct(NewProductRequestDto newProductRequestDto) {
+    @Override
+    public ProductResponseDto addNewProduct(NewProductRequestDto newProductRequestDto) {
         if(productRepository.existsByName(newProductRequestDto.getName()))
             throw new AlreadyExistsException("Product with name '" +
                     newProductRequestDto.getName() + "' already exists");
+
+        Category category = categoryRepository.save(Category.builder()
+                        .name(newProductRequestDto.getCategory()).build());
+
+        SubCategory subCategory = subCategoryRepository.save(SubCategory.builder()
+                .name(newProductRequestDto.getName())
+                .category(category)
+                .build());
 
         Product product = Product.builder()
                 .name(newProductRequestDto.getName())
                 .price(newProductRequestDto.getPrice())
                 .imageUrl(newProductRequestDto.getImageUrl())
                 .availableQty(newProductRequestDto.getAvailableQty())
-                .subCategory(newProductRequestDto.getSubCategory())
+                .subCategory(subCategory)
                 .color(newProductRequestDto.getColor())
                 .description(newProductRequestDto.getDescription())
                 .build();
 
         Product newProduct = productRepository.save(product);
 
-
-        return new ResponseEntity<>(newProduct, HttpStatus.CREATED);
+        ProductResponseDto productResponseDto = ProductResponseDto.builder()
+                .name(newProduct.getName())
+                .price(newProduct.getPrice())
+                .availableQty(newProduct.getAvailableQty())
+                .subCategory(newProduct.getSubCategory())
+                .imageUrl(newProduct.getImageUrl())
+                .color(newProduct.getColor())
+                .description(newProduct.getDescription())
+                .build();
+        return productResponseDto;
     }
 
     @Override
-    public void deactivateUser(Long customerId) {
+    public ApiResponse<OperationStatus> deleteProduct(Long product_id) {
+        ResponseManager<OperationStatus> manager = new ResponseManager<>();
+        Product product = productRepository.findById(product_id)
+                .orElseThrow(()-> new ResourceNotFoundException("Product not found"));
+
+        productRepository.deleteById(product_id);
+        return manager.success(new OperationStatus(OperationName.DELETE.name(), OperationResult.SUCCESS.name()));
+    }
+
+    @Override
+    public String deactivateUser(Long customerId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if ((authentication instanceof AnonymousAuthenticationToken))
             throw new ResourceNotFoundException("Please Login");
@@ -84,11 +117,13 @@ public class AdminServiceImpl implements AdminService {
         Person customer = personRepository.findById(customerId)
                 .orElseThrow(()-> new UserNotFoundException("User not found"));
 
-        customer.setActive(false);
+        boolean isActive = !customer.isActive();
+        customer.setActive(isActive);
         personRepository.save(customer);
+        return isActive ? "Account Re-activated":"Account deactivated";
     }
     
-    
+    @Override
     public ApiResponse<Product> updateProduct(Long productId, UpdateProductDto updateproductDto) {
         Product product = productRepository.findById(productId).
                 orElseThrow(()->
@@ -104,7 +139,6 @@ public class AdminServiceImpl implements AdminService {
 
         Product updatedProduct = productRepository.save(product);
         return new ApiResponse<>("product updated", true, updatedProduct);
-
     }
     
 }

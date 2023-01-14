@@ -19,22 +19,25 @@ public class NewProductRequestDto {
     @NotBlank(message = "Product name cannot be blank")
     private String name;
 
-    @DecimalMin(value="0.0", message="Field cannot be blank")
+    @DecimalMin(value="0.0", message="Field Price cannot be blank")
     private Double price;
 
-    @NotBlank(message = "Field cannot be blank")
+    @NotBlank(message = "Field ImageUrl cannot be blank")
     private String imageUrl;
 
-    @Range(min=0, message = "Field cannot be blank")
+    @Range(min=0, message = "Field Available Quantity cannot be blank")
     private Integer availableQty;
 
-    @NotNull(message="Field cannot be null")
-    private SubCategory subCategory;
+    @NotNull(message="Field SubCategory cannot be null")
+    private String subCategory;
 
-    @NotBlank(message = "Field cannot be blank")
+    @NotNull(message = "Field Category cannot be null")
+    private String category;
+
+    @NotBlank(message = "Field Color cannot be blank")
     private String color;
 
-    @NotBlank(message = "Field cannot be blank")
+    @NotBlank(message = "Field Description cannot be blank")
     private String description;
 
 }

@@ -10,18 +10,13 @@ import com.decagon.OakLandv1be.repositries.TransactionRepository;
 import com.decagon.OakLandv1be.repositries.WalletRepository;
 import com.decagon.OakLandv1be.services.JavaMailService;
 import com.decagon.OakLandv1be.services.WalletService;
-import com.decagon.OakLandv1be.utils.ApiResponse;
-import com.decagon.OakLandv1be.utils.ResponseManager;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.function.Function;
 
 import static com.decagon.OakLandv1be.enums.TransactionStatus.SUCCESSFUL;
 
@@ -66,5 +61,28 @@ public class WalletServiceImpl implements WalletService {
         throw new UnauthorizedUserException("Login to carry out this operation");
     }
 
+    @Override
+    public Double getWalletBalance() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            String email = authentication.getName();
+
+            Person person = personRepository.findByEmail(email)
+                    .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
+
+            Wallet wallet = person.getCustomer().getWallet();
+            Double walletBalance = wallet.getAccountBalance();
+
+            try {
+                mailService.sendMail(person.getEmail(), "Wallet Balance", "Your wallet is " + walletBalance + wallet.getBaseCurrency());
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+            return walletBalance;
+        }
+        throw new UnauthorizedUserException("User does not have access");
+    }
 
 }
