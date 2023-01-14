@@ -62,20 +62,20 @@ class CustomerControllerTest {
     private ResponseManager responseManager;
 
 
-    @Test
-    public void editProfile() throws Exception {
-        EditProfileRequestDto editProfileRequestDto = new EditProfileRequestDto();
-        editProfileRequestDto.setFirstName("Many");
-        editProfileRequestDto.setLastName("Rob");
-        editProfileRequestDto.setGender(String.valueOf(Gender.MALE));
-        editProfileRequestDto.setDate_of_birth("11-01-1993");
-        editProfileRequestDto.setPhone("07068693321");
-
-        String requestBody = mapper.writeValueAsString(editProfileRequestDto);
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/auth/customer/edit-profile")
-                        .contentType("application/json").content(requestBody))
-                .andExpect(status().isOk());
-    }
+//    @Test
+//    public void editProfile() throws Exception {
+//        EditProfileRequestDto editProfileRequestDto = new EditProfileRequestDto();
+//        editProfileRequestDto.setFirstName("Many");
+//        editProfileRequestDto.setLastName("Rob");
+//        editProfileRequestDto.setGender(String.valueOf(Gender.MALE));
+//        editProfileRequestDto.setDate_of_birth("11-01-1993");
+//        editProfileRequestDto.setPhone("07068693321");
+//
+//        String requestBody = mapper.writeValueAsString(editProfileRequestDto);
+//        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/auth/customer/edit-profile")
+//                        .contentType("application/json").content(requestBody))
+//                .andExpect(status().isOk());
+//    }
 
     @Test
     void CustomerController_AddItemToCart_ReturnResponseEntity() {

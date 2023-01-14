@@ -17,7 +17,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 
 @ExtendWith(MockitoExtension.class)
-public class claJavaMailServiceImplTest {
+public class JavaMailServiceImplTest {
     @Mock
     JavaMailServiceImpl javaMailServiceImpl;
 
