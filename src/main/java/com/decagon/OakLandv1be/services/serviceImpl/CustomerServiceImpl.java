@@ -10,10 +10,10 @@ import com.decagon.OakLandv1be.enums.BaseCurrency;
 import com.decagon.OakLandv1be.enums.Gender;
 import com.decagon.OakLandv1be.enums.Role;
 import com.decagon.OakLandv1be.exceptions.AlreadyExistsException;
-import com.decagon.OakLandv1be.exceptions.ProductNotFoundException;
-import com.decagon.OakLandv1be.repositries.*;
 import com.decagon.OakLandv1be.exceptions.InvalidTokenException;
-
+import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
+import com.decagon.OakLandv1be.exceptions.ProductNotFoundException;
+import com.decagon.OakLandv1be.exceptions.InvalidTokenException;
 import com.decagon.OakLandv1be.exceptions.UserNotFoundException;
 import com.decagon.OakLandv1be.repositries.CustomerRepository;
 import com.decagon.OakLandv1be.repositries.PersonRepository;
@@ -30,6 +30,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -38,9 +39,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.io.IOException;
-
 import java.util.Set;
-
 import static com.decagon.OakLandv1be.enums.TokenStatus.ACTIVE;
 import static com.decagon.OakLandv1be.enums.TokenStatus.EXPIRED;
 
@@ -57,7 +56,6 @@ public class CustomerServiceImpl implements CustomerService {
     private final ResponseManager responseManager;
 
     private final ProductRepository productRepository;
-
 
 
     @Override
@@ -176,5 +174,11 @@ public class CustomerServiceImpl implements CustomerService {
 
     }
 
-
+    @Override
+    public Customer getCurrentlyLoggedInUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String loggedInUserEmail = authentication.getName();
+        Person loggedInUser = personRepository.findByEmail(loggedInUserEmail).orElseThrow(() -> new UserNotFoundException("No user with this email"));
+        return loggedInUser.getCustomer();
+    }
 }

@@ -5,16 +5,12 @@ import com.decagon.OakLandv1be.entities.Cart;
 import com.decagon.OakLandv1be.entities.Customer;
 import com.decagon.OakLandv1be.entities.Item;
 import com.decagon.OakLandv1be.entities.Person;
-import com.decagon.OakLandv1be.enums.Gender;
-import com.decagon.OakLandv1be.enums.Role;
-import com.decagon.OakLandv1be.services.CartService;
 import com.decagon.OakLandv1be.services.serviceImpl.CartServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -59,7 +55,6 @@ class CartControllerTest {
                 .build();
         item.setId(1L);
 
-        //String uriValue =""     mockMvc.perform(get("/api/v1/admin/products/{product_id}", 2L)
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .delete("/api/v1/cart/item/delete/{itemId}",1L)
                 .contentType(MediaType.APPLICATION_JSON);

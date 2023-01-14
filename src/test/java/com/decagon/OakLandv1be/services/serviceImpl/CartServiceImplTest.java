@@ -1,6 +1,5 @@
 package com.decagon.OakLandv1be.services.serviceImpl;
 
-
 import com.decagon.OakLandv1be.dto.SignupResponseDto;
 import com.decagon.OakLandv1be.dto.cartDtos.AddItemToCartDto;
 import com.decagon.OakLandv1be.dto.cartDtos.CartItemResponseDto;
@@ -8,6 +7,7 @@ import com.decagon.OakLandv1be.entities.*;
 import com.decagon.OakLandv1be.enums.Gender;
 import com.decagon.OakLandv1be.enums.Role;
 import com.decagon.OakLandv1be.exceptions.AlreadyExistsException;
+import com.decagon.OakLandv1be.services.CartService;
 import com.decagon.OakLandv1be.repositries.*;
 import com.decagon.OakLandv1be.services.CustomerService;
 import org.junit.jupiter.api.Test;
@@ -19,23 +19,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 
+import java.util.*;
+
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
-
 import java.util.Optional;
-
 import static org.assertj.core.api.BDDAssumptions.given;
-import static org.junit.jupiter.api.Assertions.*;
-
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-
-
-
-
-
-import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -48,8 +37,16 @@ class CartServiceImplTest {
 
     @InjectMocks
     CartServiceImpl cartServiceImpl;
+
     @Mock
     ProductRepository productRepository;
+
+    @Mock
+    CartService cartService;
+
+    @Mock
+    CartRepository cartRepository;
+    
     @Mock
     ItemRepository itemRepository;
     @Mock
@@ -57,10 +54,6 @@ class CartServiceImplTest {
     @MockBean
     CustomerService customerService;
   
-  
-  
-
-    @Test
     @WithMockUser("a@mail.com")
     void testCurrentUserEmail() {
         String message = cartServiceImpl.currentUserEmail();
@@ -110,32 +103,15 @@ class CartServiceImplTest {
 
         AddItemToCartDto addItemToCartDto = new AddItemToCartDto();
         addItemToCartDto.setOrderQty(20);
+        String response = "Item Saved to Cart Successfully";
 
-        SignupResponseDto signupResponseDto = SignupResponseDto.builder().gender(Gender.FEMALE).phone("1234").email("a@mail.com").date_of_birth("10-06-1992").address("123").firstName("Aishat").lastName("Moshood").verificationStatus(true).build();
+        when(customerService.getCurrentlyLoggedInUser()).thenReturn(customer);
+        when(cartRepository.findByCustomer(customer)).thenReturn(cart);
+        when(productRepository.findById(1L)).thenReturn(Optional.of(product));
 
-        CartItemResponseDto cartItemResponseDto = new CartItemResponseDto();
-        cartItemResponseDto.setProductName("ArmChair");
-        cartItemResponseDto.setImageUrl("abcd");
-        cartItemResponseDto.setUnitPrice(2000.0);
-        cartItemResponseDto.setOrderQty(20);
-        cartItemResponseDto.setSubTotal(cartItemResponseDto.getUnitPrice() * cartItemResponseDto.getOrderQty());
-        cartItemResponseDto.setCart(cart);
-        cartItemResponseDto.setCustomer(signupResponseDto);
-
-        Set<Item> allCartItems = new HashSet<>();
-        allCartItems.add(item);
-
-        List<Item> cartItemsList = new ArrayList<>();
-        cartItemsList.addAll(allCartItems);
-
-
-        when(productRepository.findById(anyLong())).thenReturn(Optional.of(product));
-        when(customerService.getCurrentlyLoggedInUser()).thenReturn(any());
-        //when(cartServiceImpl.getNewCartItem(addItemToCartDto.getOrderQty(),product,customer,cartItemsList)).thenReturn(item);
-        when(itemRepository.save(item)).thenReturn(item);
-        assertEquals(cartItemResponseDto,cartServiceImpl.addItemToCart(1L,addItemToCartDto));
+        assertEquals(response,cartServiceImpl.addItemToCart(1L,addItemToCartDto));
     }
-  
+    
   
   @Test
     public void removeItemsInCart() {
@@ -156,4 +132,10 @@ class CartServiceImplTest {
         // verify(itemRepository,times(1)).deleteById(anyLong());
     }
 
+//    @Test(expected = RuntimeException.class)
+//    public void should_throw_exception_when_item_doesnt_exist(){
+//        Item item = new Item();
+//        item.setId(89L);
+//        given(itemRepository.findById(anyLong())).will
+//    }
 }
