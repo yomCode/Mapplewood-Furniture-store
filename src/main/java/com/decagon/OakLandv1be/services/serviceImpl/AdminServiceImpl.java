@@ -4,9 +4,11 @@ import com.decagon.OakLandv1be.dto.NewProductRequestDto;
 import com.decagon.OakLandv1be.dto.OperationStatus;
 import com.decagon.OakLandv1be.dto.ProductResponseDto;
 
+import com.decagon.OakLandv1be.entities.Category;
 import com.decagon.OakLandv1be.entities.Person;
 import com.decagon.OakLandv1be.dto.UpdateProductDto;
 import com.decagon.OakLandv1be.entities.Product;
+import com.decagon.OakLandv1be.entities.SubCategory;
 import com.decagon.OakLandv1be.enums.OperationName;
 import com.decagon.OakLandv1be.enums.OperationResult;
 import com.decagon.OakLandv1be.exceptions.AlreadyExistsException;
@@ -42,10 +44,6 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public ProductResponseDto fetchASingleProduct(Long product_id) {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//            String email = authentication.getName();
-//            personRepository.findByEmail(email)
-//                    .orElseThrow(() -> new ResourceNotFoundException("Admin User not found"));
             Product product = productRepository.findById(product_id)
                     .orElseThrow(() -> new ProductNotFoundException("This product was not found"));
             return ProductResponseDto.builder()
@@ -59,7 +57,8 @@ public class AdminServiceImpl implements AdminService {
                     .build();
         }
 
-    public ResponseEntity<NewProductRequestDto> addNewProduct(NewProductRequestDto newProductRequestDto) {
+    @Override
+    public ProductResponseDto addNewProduct(NewProductRequestDto newProductRequestDto) {
         if(productRepository.existsByName(newProductRequestDto.getName()))
             throw new AlreadyExistsException("Product with name '" +
                     newProductRequestDto.getName() + "' already exists");
@@ -84,22 +83,19 @@ public class AdminServiceImpl implements AdminService {
 
         Product newProduct = productRepository.save(product);
 
-        NewProductRequestDto productResponseDto = NewProductRequestDto.builder()
+        ProductResponseDto productResponseDto = ProductResponseDto.builder()
                 .name(newProduct.getName())
                 .price(newProduct.getPrice())
                 .availableQty(newProduct.getAvailableQty())
-                .subCategory(newProduct.getSubCategory().getName())
-                .category(newProduct.getSubCategory().getCategory().getName())
+                .subCategory(newProduct.getSubCategory())
+                .imageUrl(newProduct.getImageUrl())
                 .color(newProduct.getColor())
                 .description(newProduct.getDescription())
                 .build();
-
-
-        return new ResponseEntity<>(productResponseDto, HttpStatus.CREATED);
+        return productResponseDto;
     }
 
     @Override
-
     public ApiResponse<OperationStatus> deleteProduct(Long product_id) {
         ResponseManager<OperationStatus> manager = new ResponseManager<>();
         Product product = productRepository.findById(product_id)
@@ -109,6 +105,7 @@ public class AdminServiceImpl implements AdminService {
         return manager.success(new OperationStatus(OperationName.DELETE.name(), OperationResult.SUCCESS.name()));
     }
 
+    @Override
     public String deactivateUser(Long customerId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if ((authentication instanceof AnonymousAuthenticationToken))
@@ -126,7 +123,7 @@ public class AdminServiceImpl implements AdminService {
         return isActive ? "Account Re-activated":"Account deactivated";
     }
     
-    
+    @Override
     public ApiResponse<Product> updateProduct(Long productId, UpdateProductDto updateproductDto) {
         Product product = productRepository.findById(productId).
                 orElseThrow(()->
@@ -142,7 +139,6 @@ public class AdminServiceImpl implements AdminService {
 
         Product updatedProduct = productRepository.save(product);
         return new ApiResponse<>("product updated", true, updatedProduct);
-
     }
     
 }

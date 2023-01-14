@@ -1,8 +1,6 @@
 package com.decagon.OakLandv1be.utils;
 
-import com.decagon.OakLandv1be.entities.Customer;
-import com.decagon.OakLandv1be.entities.Person;
-import com.decagon.OakLandv1be.entities.Product;
+import com.decagon.OakLandv1be.entities.*;
 
 import com.decagon.OakLandv1be.enums.BaseCurrency;
 import com.decagon.OakLandv1be.enums.Gender;

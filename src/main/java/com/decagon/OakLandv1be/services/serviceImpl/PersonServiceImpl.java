@@ -5,7 +5,6 @@ import com.decagon.OakLandv1be.dto.ForgotPasswordRequestDto;
 import com.decagon.OakLandv1be.dto.PasswordResetDto;
 import com.decagon.OakLandv1be.dto.UpdatePasswordDto;
 import com.decagon.OakLandv1be.entities.Person;
-import com.decagon.OakLandv1be.entities.Product;
 import com.decagon.OakLandv1be.entities.Token;
 import com.decagon.OakLandv1be.exceptions.InputMismatchException;
 import com.decagon.OakLandv1be.exceptions.PasswordMisMatchException;
@@ -18,7 +17,6 @@ import com.decagon.OakLandv1be.utils.ApiResponse;
 import com.decagon.OakLandv1be.utils.UserUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 

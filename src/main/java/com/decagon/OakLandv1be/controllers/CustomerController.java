@@ -30,7 +30,6 @@ public class CustomerController {
     private final ResponseManager responseManager;
     private final CustomerService customerService;
     private final CartService cartService;
-    private final ResponseManager responseManager;
 
     @PostMapping("/signup")
     public ResponseEntity<ApiResponse> signup(@Valid @RequestBody SignupRequestDto signupRequestDto) throws AlreadyExistsException, IOException {
@@ -49,9 +48,9 @@ public class CustomerController {
     }
     
     @PostMapping("/cart/item/add/{productId}")
-    public ResponseEntity<ApiResponse<String>> addItemToCart(@PathVariable Long productId, @RequestBody AddItemToCartDto addItemToCartDto) throws AlreadyExistsException {
+    public ResponseEntity<String> addItemToCart(@PathVariable Long productId, @RequestBody AddItemToCartDto addItemToCartDto) throws AlreadyExistsException {
         String response = cartService.addItemToCart(productId,addItemToCartDto);
-        return new ResponseEntity<>(responseManager.success(response), HttpStatus.CREATED);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PostMapping("/product/favorites/add/{pid}")
