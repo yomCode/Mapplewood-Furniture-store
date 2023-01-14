@@ -38,7 +38,7 @@ public class AdminController {
     }
 
     @PostMapping("products/new")
-    ResponseEntity<Product> addNewProduct(@Valid @RequestBody NewProductRequestDto productDto) {
+    ResponseEntity<NewProductRequestDto> addNewProduct(@Valid @RequestBody NewProductRequestDto productDto) {
         return adminService.addNewProduct(productDto);
     }
     

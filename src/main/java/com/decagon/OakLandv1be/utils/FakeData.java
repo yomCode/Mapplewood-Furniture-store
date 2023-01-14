@@ -33,7 +33,7 @@ public class FakeData {
                         .phone("9859595959")
                         .isActive(true)
                         .verificationStatus(true)
-                        .password(passwordEncoder.encode("password123"))
+                        .password(passwordEncoder.encode("password123453"))
                         .address("No Address")
                         .role(Role.ADMIN)
                         .isActive(true)

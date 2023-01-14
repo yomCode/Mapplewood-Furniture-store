@@ -25,6 +25,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.security.Principal;
 
 @RestController
 @RequiredArgsConstructor
@@ -39,9 +40,6 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<String> authenticate(@Valid @RequestBody LoginDto loginRequest) {
-//        authenticationManager.authenticate(
-//                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
-
         UserDetails user = userDetailsService.loadUserByUsername(loginRequest.getEmail());
         if(!user.isEnabled())
             throw new UsernameNotFoundException("You have not been verified. Check your email to be verified!");
@@ -58,7 +56,6 @@ public class AuthenticationController {
 
         return new ApiResponse<>("Invalid Username or Password",
                 false, null, HttpStatus.UNAUTHORIZED);
-
     }
 
     @PostMapping("/forgot-password-request")
@@ -78,5 +75,4 @@ public class AuthenticationController {
         personService.updatePassword( updatePasswordDto);
         return new ApiResponse<>("Password changed successfully",true ,null,HttpStatus.ACCEPTED);
     }
-
 }

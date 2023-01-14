@@ -154,7 +154,7 @@ class AdminControllerIntegrationTest {
 
         assertEquals(product, productRepository.save(product));
 
-        ResponseEntity<Product> testResponse = adminService.addNewProduct(newProductDto);
+        ResponseEntity<NewProductRequestDto> testResponse = adminService.addNewProduct(newProductDto);
         when(productRepository.save(product)).thenReturn(product);
 
        assertEquals(apiResponse.getStatusCodeValue(), testResponse.getStatusCodeValue());
