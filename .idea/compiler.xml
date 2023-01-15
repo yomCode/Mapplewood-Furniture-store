@@ -11,7 +11,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="OakLand-v1-be" target="11" />
+      <module name="OakLand-v1-be" target="18" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
