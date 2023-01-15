@@ -47,7 +47,7 @@ public class AppUserDetails implements UserDetails {
         public boolean isAccountNonLocked() {
 
 
-        return true;
+        return person.isActive();
         }
 
         @Override

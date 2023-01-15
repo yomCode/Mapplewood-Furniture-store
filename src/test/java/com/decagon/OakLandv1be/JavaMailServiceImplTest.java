@@ -10,7 +10,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.SimpleMailMessage;
 
 import java.io.IOException;
 
@@ -32,11 +31,6 @@ public class JavaMailServiceImplTest {
 
         Assertions.assertThat(responseEntity.getBody().equals("sent"));
         Assertions.assertThat(responseEntity.getStatusCode().equals(HttpStatus.OK));
-
-    }
-
-
-
 
 
 }

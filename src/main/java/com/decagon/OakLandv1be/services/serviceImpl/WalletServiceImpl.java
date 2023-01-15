@@ -10,18 +10,13 @@ import com.decagon.OakLandv1be.repositries.TransactionRepository;
 import com.decagon.OakLandv1be.repositries.WalletRepository;
 import com.decagon.OakLandv1be.services.JavaMailService;
 import com.decagon.OakLandv1be.services.WalletService;
-import com.decagon.OakLandv1be.utils.ApiResponse;
-import com.decagon.OakLandv1be.utils.ResponseManager;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.function.Function;
 
 import static com.decagon.OakLandv1be.enums.TransactionStatus.SUCCESSFUL;
 
