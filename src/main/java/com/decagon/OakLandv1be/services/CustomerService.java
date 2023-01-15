@@ -24,4 +24,6 @@ public interface CustomerService {
     public void editProfile(EditProfileRequestDto editProfileRequestDto);
 
     void addProductToFavorites(Long pid);
+
+    void removeProductFromFavorites(Long pid);
 }
