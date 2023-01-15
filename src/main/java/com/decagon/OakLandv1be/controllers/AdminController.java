@@ -4,7 +4,7 @@ import com.decagon.OakLandv1be.dto.UpdateProductDto;
 import com.decagon.OakLandv1be.entities.Product;
 import com.decagon.OakLandv1be.utils.ApiResponse;
 import lombok.RequiredArgsConstructor;
-import com.decagon.OakLandv1be.dto.NewProductDto;
+import com.decagon.OakLandv1be.dto.NewProductRequestDto;
 import com.decagon.OakLandv1be.dto.OperationStatus;
 import com.decagon.OakLandv1be.dto.ProductResponseDto;
 import com.decagon.OakLandv1be.services.AdminService;
@@ -32,7 +32,7 @@ public class AdminController {
     }
 
     @PostMapping("products/new")
-    ApiResponse<NewProductDto> addNewProduct(@Valid @RequestBody NewProductDto productDto) {
+    ApiResponse<ProductResponseDto> addNewProduct(@Valid @RequestBody NewProductRequestDto productDto) {
         return adminService.addNewProduct(productDto);
     }
     

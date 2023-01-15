@@ -1,6 +1,6 @@
 package com.decagon.OakLandv1be.services;
 
-import com.decagon.OakLandv1be.dto.NewProductDto;
+import com.decagon.OakLandv1be.dto.NewProductRequestDto;
 import com.decagon.OakLandv1be.dto.OperationStatus;
 import com.decagon.OakLandv1be.dto.ProductResponseDto;
 import com.decagon.OakLandv1be.dto.UpdateProductDto;
@@ -12,7 +12,7 @@ import javax.validation.Valid;
 public interface AdminService {
     ProductResponseDto fetchASingleProduct(Long product_id);
     String deactivateUser(Long customerId);
-    ApiResponse<NewProductDto> addNewProduct(@Valid NewProductDto productDto);
+    ApiResponse<ProductResponseDto> addNewProduct(@Valid NewProductRequestDto productDto);
     ApiResponse<OperationStatus> deleteProduct(Long product_id);
     ApiResponse<Product> updateProduct(Long productId, UpdateProductDto updateproductDto);
 }

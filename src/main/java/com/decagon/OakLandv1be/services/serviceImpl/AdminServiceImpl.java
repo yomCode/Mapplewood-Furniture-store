@@ -1,10 +1,9 @@
 package com.decagon.OakLandv1be.services.serviceImpl;
 
-import com.decagon.OakLandv1be.dto.NewProductDto;
+import com.decagon.OakLandv1be.dto.NewProductRequestDto;
 import com.decagon.OakLandv1be.dto.OperationStatus;
 import com.decagon.OakLandv1be.dto.ProductResponseDto;
 
-import com.decagon.OakLandv1be.entities.Category;
 import com.decagon.OakLandv1be.entities.Person;
 import com.decagon.OakLandv1be.dto.UpdateProductDto;
 import com.decagon.OakLandv1be.entities.Product;
@@ -57,37 +56,36 @@ public class AdminServiceImpl implements AdminService {
         }
 
     @Override
-    public ApiResponse<NewProductDto> addNewProduct(NewProductDto newProductDto) {
-        if(productRepository.existsByName(newProductDto.getName()))
+    public ApiResponse<ProductResponseDto> addNewProduct(NewProductRequestDto newProductRequestDto) {
+        if(productRepository.existsByName(newProductRequestDto.getName()))
             throw new AlreadyExistsException("Product with name '" +
-                    newProductDto.getName() + "' already exists");
+                    newProductRequestDto.getName() + "' already exists");
 
-        Category category = categoryRepository.save(Category.builder()
-                        .name(newProductDto.getCategory()).build());
-
-        SubCategory subCategory = subCategoryRepository.save(SubCategory.builder()
-                .name(newProductDto.getName())
-                .category(category)
-                .build());
+        SubCategory subCategory = subCategoryRepository
+                .findByName(newProductRequestDto.getSubCategory())
+                .orElseThrow(() ->
+                        new ProductNotFoundException("SubCategory does not exist"));
 
         Product product = Product.builder()
-                .name(newProductDto.getName())
-                .price(newProductDto.getPrice())
-                .imageUrl(newProductDto.getImageUrl())
-                .availableQty(newProductDto.getAvailableQty())
+                .name(newProductRequestDto.getName())
+                .price(newProductRequestDto.getPrice())
+                .imageUrl(newProductRequestDto.getImageUrl())
+                .availableQty(newProductRequestDto.getAvailableQty())
                 .subCategory(subCategory)
-                .color(newProductDto.getColor())
-                .description(newProductDto.getDescription())
+                .color(newProductRequestDto.getColor())
+                .description(newProductRequestDto.getDescription())
                 .build();
 
         Product newProduct = productRepository.save(product);
 
-        NewProductDto productResponseDto = NewProductDto.builder()
+        ProductResponseDto productResponseDto = ProductResponseDto.builder()
                 .name(newProduct.getName())
                 .price(newProduct.getPrice())
                 .availableQty(newProduct.getAvailableQty())
-                .subCategory(newProduct.getSubCategory().getName())
-                .category(newProduct.getSubCategory().getCategory().getName())
+                .subCategory(SubCategory.builder()
+                        .name(subCategory.getName())
+                        .category(subCategory.getCategory())
+                        .build())
                 .imageUrl(newProduct.getImageUrl())
                 .color(newProduct.getColor())
                 .description(newProduct.getDescription())

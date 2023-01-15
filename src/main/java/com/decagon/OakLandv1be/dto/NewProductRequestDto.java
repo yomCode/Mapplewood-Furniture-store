@@ -8,13 +8,12 @@ import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class NewProductDto {
+public class NewProductRequestDto {
     @NotBlank(message = "Product name cannot be blank")
     private String name;
 

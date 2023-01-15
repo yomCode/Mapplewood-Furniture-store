@@ -1,6 +1,6 @@
 package com.decagon.OakLandv1be.controllers;
 
-import com.decagon.OakLandv1be.dto.NewProductDto;
+import com.decagon.OakLandv1be.dto.NewProductRequestDto;
 import com.decagon.OakLandv1be.dto.ProductResponseDto;
 import com.decagon.OakLandv1be.dto.UpdateProductDto;
 import com.decagon.OakLandv1be.entities.*;
@@ -15,14 +15,13 @@ import com.decagon.OakLandv1be.services.AdminService;
 import com.decagon.OakLandv1be.services.ProductService;
 import com.decagon.OakLandv1be.utils.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -59,7 +58,7 @@ class AdminControllerIntegrationTest {
     SubCategory subCategory;
     private UpdateProductDto updateProductDto;
 
-    private NewProductDto newProductDto;
+    private NewProductRequestDto newProductRequestDto;
 
     @BeforeEach
     void setUp() {
@@ -101,7 +100,7 @@ class AdminControllerIntegrationTest {
                 .description("This is a valid description of the furniture.")
                 .build();
 
-        newProductDto = NewProductDto.builder()
+        newProductRequestDto = NewProductRequestDto.builder()
                 .name("Oak Cupboard")
                 .price(230_000D)
                 .imageUrl("imageUrl")
@@ -135,24 +134,35 @@ class AdminControllerIntegrationTest {
     }
 
     @Test
-    void addNewProduct() {
+    void whenAddNewProductThenSuccess() {
         when(productRepository.existsByName(any())).thenReturn(false);
-        when(categoryRepository.save(category)).thenReturn(category);
         when(subCategoryRepository.save(subCategory)).thenReturn(subCategory);
+        when(subCategoryRepository.findByName(newProductRequestDto.getSubCategory()))
+                .thenReturn(Optional.of(subCategory));
 
         when(productRepository.save(any())).thenReturn(product);
 
-        ApiResponse<NewProductDto> apiResponse = adminService.addNewProduct(newProductDto);
+        ApiResponse<ProductResponseDto> apiResponse = adminService.addNewProduct(newProductRequestDto);
         log.info("apiResponse: {}", apiResponse);
-        assertNotNull(apiResponse.getData());
+        Assertions.assertNotNull(apiResponse.getData());
     }
 
     @Test
-    void addNewProductShouldReturnNameAlreadyExists() {
+    void whenAddNewProductThenThrowProductNotFoundException() {
+        when(productRepository.existsByName(any())).thenReturn(false);
+        when(subCategoryRepository.save(subCategory)).thenReturn(subCategory);
+        when(productRepository.save(any())).thenReturn(product);
+
+        assertThrows(ProductNotFoundException.class,
+                ()-> adminService.addNewProduct(newProductRequestDto));
+    }
+
+    @Test
+    void whenAddNewProductThenThrowNameAlreadyExists() {
         when(productRepository.save(any())).thenReturn(product);
 
         when(productRepository.existsByName(any())).thenReturn(true);
-        assertThrows(AlreadyExistsException.class, () -> adminService.addNewProduct(newProductDto));
+        assertThrows(AlreadyExistsException.class, () -> adminService.addNewProduct(newProductRequestDto));
     }
 
 
