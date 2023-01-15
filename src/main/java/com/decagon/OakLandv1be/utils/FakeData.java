@@ -17,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 @RequiredArgsConstructor
 public class FakeData {
+
     private final PasswordEncoder passwordEncoder;
 
 
@@ -29,7 +30,7 @@ public class FakeData {
                 Person person = Person.builder()
                         .firstName("Benson")
                         .lastName("Malik")
-                        .email("benson@gmail.com")
+                        .email("bennyson1@gmail.com")
                         .gender(Gender.MALE)
                         .date_of_birth("13-08-1990")
                         .phone("9859595959")
