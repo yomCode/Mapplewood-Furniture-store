@@ -1,6 +1,5 @@
 package com.decagon.OakLandv1be.dto;
 
-import com.decagon.OakLandv1be.entities.SubCategory;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,7 +14,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class NewProductRequestDto {
+public class NewProductDto {
     @NotBlank(message = "Product name cannot be blank")
     private String name;
 
@@ -28,10 +27,10 @@ public class NewProductRequestDto {
     @Range(min=0, message = "Field Available Quantity cannot be blank")
     private Integer availableQty;
 
-    @NotNull(message="Field SubCategory cannot be null")
+    @NotBlank(message="Field SubCategory cannot be null")
     private String subCategory;
 
-    @NotNull(message = "Field Category cannot be null")
+    @NotBlank(message = "Field Category cannot be null")
     private String category;
 
     @NotBlank(message = "Field Color cannot be blank")

@@ -1,19 +1,20 @@
 package com.decagon.OakLandv1be.controllers;
 
-import com.decagon.OakLandv1be.dto.NewProductRequestDto;
+import com.decagon.OakLandv1be.dto.NewProductDto;
 import com.decagon.OakLandv1be.dto.ProductResponseDto;
 import com.decagon.OakLandv1be.dto.UpdateProductDto;
-import com.decagon.OakLandv1be.entities.Customer;
-import com.decagon.OakLandv1be.entities.Person;
-import com.decagon.OakLandv1be.entities.Product;
-import com.decagon.OakLandv1be.entities.SubCategory;
+import com.decagon.OakLandv1be.entities.*;
 import com.decagon.OakLandv1be.enums.Gender;
 import com.decagon.OakLandv1be.enums.Role;
+import com.decagon.OakLandv1be.exceptions.AlreadyExistsException;
 import com.decagon.OakLandv1be.exceptions.ProductNotFoundException;
+import com.decagon.OakLandv1be.repositries.CategoryRepository;
 import com.decagon.OakLandv1be.repositries.ProductRepository;
+import com.decagon.OakLandv1be.repositries.SubCategoryRepository;
 import com.decagon.OakLandv1be.services.AdminService;
 import com.decagon.OakLandv1be.services.ProductService;
 import com.decagon.OakLandv1be.utils.ApiResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,11 +28,12 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Optional;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-
+@Slf4j
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 class AdminControllerIntegrationTest {
@@ -46,13 +48,18 @@ class AdminControllerIntegrationTest {
     ProductService productService;
     @MockBean
     ProductRepository productRepository;
+    @MockBean
+    SubCategoryRepository subCategoryRepository;
+    @MockBean
+    CategoryRepository categoryRepository;
     private Person person;
     private Customer customer;
     private Product product, updatedProduct;
+    Category category;
+    SubCategory subCategory;
     private UpdateProductDto updateProductDto;
 
-    private NewProductRequestDto newProductDto;
-    private ProductResponseDto newProductResponseDto;
+    private NewProductDto newProductDto;
 
     @BeforeEach
     void setUp() {
@@ -76,20 +83,25 @@ class AdminControllerIntegrationTest {
                 .wallet(null)
                 .build();
 
+        category = Category.builder()
+                .name("Table")
+                .build();
+        subCategory = SubCategory.builder()
+                .name("Coffee Table")
+                .category(category)
+                .build();
 
         product = Product.builder()
                 .name("Oak Cupboard")
                 .price(230_000D)
                 .imageUrl("imageUrl")
                 .availableQty(4)
-                .subCategory(new SubCategory())
+                .subCategory(subCategory)
                 .color("BROWN")
                 .description("This is a valid description of the furniture.")
                 .build();
 
-        product.setId(23L);
-
-        newProductDto = NewProductRequestDto.builder()
+        newProductDto = NewProductDto.builder()
                 .name("Oak Cupboard")
                 .price(230_000D)
                 .imageUrl("imageUrl")
@@ -98,30 +110,6 @@ class AdminControllerIntegrationTest {
                 .color("BROWN")
                 .description("This is a valid description of the furniture.")
                 .build();
-
-        newProductResponseDto = ProductResponseDto.builder()
-                .name("Oak Cupboard")
-                .price(230_000D)
-                .imageUrl("imageUrl")
-                .availableQty(4)
-                .subCategory(new SubCategory())
-                .color("BROWN")
-                .description("This is a valid description of the furniture.")
-
-                .build();
-
-        product = Product.builder()
-                .name("center table")
-                .price(20.0d)
-                .imageUrl("")
-                .availableQty(10)
-                .subCategory(new SubCategory())
-//                .customer(new Customer())
-                .color("blue")
-                .description("new products")
-                .build();
-
-        product.setId(23L);
 
         updateProductDto = UpdateProductDto.builder()
                 .name("Not a center table")
@@ -146,19 +134,26 @@ class AdminControllerIntegrationTest {
                 .build();
     }
 
-//    @Test
-//    void addNewProduct() {
-//        when(productRepository.save(product)).thenReturn(product);
-//       ResponseEntity<ProductResponseDto> apiResponse =
-//               new ResponseEntity<>(newProductResponseDto, HttpStatus.CREATED);
-//
-//        assertEquals(product, productRepository.save(product));
-//
-//        ProductResponseDto testResponse = adminService.addNewProduct(newProductDto);
-//        when(productRepository.save(product)).thenReturn(product);
-//
-//       assertEquals(apiResponse.getStatusCodeValue(), testResponse);
-//    }
+    @Test
+    void addNewProduct() {
+        when(productRepository.existsByName(any())).thenReturn(false);
+        when(categoryRepository.save(category)).thenReturn(category);
+        when(subCategoryRepository.save(subCategory)).thenReturn(subCategory);
+
+        when(productRepository.save(any())).thenReturn(product);
+
+        ApiResponse<NewProductDto> apiResponse = adminService.addNewProduct(newProductDto);
+        log.info("apiResponse: {}", apiResponse);
+        assertNotNull(apiResponse.getData());
+    }
+
+    @Test
+    void addNewProductShouldReturnNameAlreadyExists() {
+        when(productRepository.save(any())).thenReturn(product);
+
+        when(productRepository.existsByName(any())).thenReturn(true);
+        assertThrows(AlreadyExistsException.class, () -> adminService.addNewProduct(newProductDto));
+    }
 
 
     @Test

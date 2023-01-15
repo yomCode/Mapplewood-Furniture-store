@@ -1,6 +1,6 @@
 package com.decagon.OakLandv1be.services.serviceImpl;
 
-import com.decagon.OakLandv1be.dto.NewProductRequestDto;
+import com.decagon.OakLandv1be.dto.NewProductDto;
 import com.decagon.OakLandv1be.dto.OperationStatus;
 import com.decagon.OakLandv1be.dto.ProductResponseDto;
 
@@ -24,9 +24,8 @@ import com.decagon.OakLandv1be.utils.ApiResponse;
 import com.decagon.OakLandv1be.utils.ResponseManager;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -58,41 +57,42 @@ public class AdminServiceImpl implements AdminService {
         }
 
     @Override
-    public ProductResponseDto addNewProduct(NewProductRequestDto newProductRequestDto) {
-        if(productRepository.existsByName(newProductRequestDto.getName()))
+    public ApiResponse<NewProductDto> addNewProduct(NewProductDto newProductDto) {
+        if(productRepository.existsByName(newProductDto.getName()))
             throw new AlreadyExistsException("Product with name '" +
-                    newProductRequestDto.getName() + "' already exists");
+                    newProductDto.getName() + "' already exists");
 
         Category category = categoryRepository.save(Category.builder()
-                        .name(newProductRequestDto.getCategory()).build());
+                        .name(newProductDto.getCategory()).build());
 
         SubCategory subCategory = subCategoryRepository.save(SubCategory.builder()
-                .name(newProductRequestDto.getName())
+                .name(newProductDto.getName())
                 .category(category)
                 .build());
 
         Product product = Product.builder()
-                .name(newProductRequestDto.getName())
-                .price(newProductRequestDto.getPrice())
-                .imageUrl(newProductRequestDto.getImageUrl())
-                .availableQty(newProductRequestDto.getAvailableQty())
+                .name(newProductDto.getName())
+                .price(newProductDto.getPrice())
+                .imageUrl(newProductDto.getImageUrl())
+                .availableQty(newProductDto.getAvailableQty())
                 .subCategory(subCategory)
-                .color(newProductRequestDto.getColor())
-                .description(newProductRequestDto.getDescription())
+                .color(newProductDto.getColor())
+                .description(newProductDto.getDescription())
                 .build();
 
         Product newProduct = productRepository.save(product);
 
-        ProductResponseDto productResponseDto = ProductResponseDto.builder()
+        NewProductDto productResponseDto = NewProductDto.builder()
                 .name(newProduct.getName())
                 .price(newProduct.getPrice())
                 .availableQty(newProduct.getAvailableQty())
-                .subCategory(newProduct.getSubCategory())
+                .subCategory(newProduct.getSubCategory().getName())
+                .category(newProduct.getSubCategory().getCategory().getName())
                 .imageUrl(newProduct.getImageUrl())
                 .color(newProduct.getColor())
                 .description(newProduct.getDescription())
                 .build();
-        return productResponseDto;
+        return new ApiResponse<>("Product Added", productResponseDto, HttpStatus.CREATED);
     }
 
     @Override
