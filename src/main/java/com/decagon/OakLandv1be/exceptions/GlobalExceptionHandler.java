@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(InputMismatchException.class)
-    public ResponseEntity<ErrorResponse> userAlreadyExists(InputMismatchException ne){
+    public ResponseEntity<ErrorResponse> userAlreadyExists(InputMismatchException ne) {
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setMessage(ne.getMessage());
         errorResponse.setDebugMessage("User with provided Id already exist");
@@ -20,7 +20,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ErrorResponse> userNotFound(UserNotFoundException ne){
+    public ResponseEntity<ErrorResponse> userNotFound(UserNotFoundException ne) {
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setMessage(ne.getMessage());
         errorResponse.setDebugMessage("User not found");
@@ -29,7 +29,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(AlreadyExistsException.class)
-    public ResponseEntity<ErrorResponse> alreadyExist(AlreadyExistsException ne){
+    public ResponseEntity<ErrorResponse> alreadyExist(AlreadyExistsException ne) {
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setMessage(ne.getMessage());
         errorResponse.setDebugMessage("Already exists");
@@ -38,7 +38,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ErrorResponse> resourceNotFound(ResourceNotFoundException ne){
+    public ResponseEntity<ErrorResponse> resourceNotFound(ResourceNotFoundException ne) {
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setMessage(ne.getMessage());
         errorResponse.setDebugMessage("Request not found");
@@ -46,17 +46,28 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
+
+    @ExceptionHandler(NotAvailableException.class)
+    public ResponseEntity<ErrorResponse> notAvailable(NotAvailableException ne) {
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setMessage(ne.getMessage());
+        errorResponse.setDebugMessage("Not Available");
+        errorResponse.setStatus(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+}
+
     @ExceptionHandler(ProductNotFoundException.class)
-    public ResponseEntity<ErrorResponse> productNotFound(ProductNotFoundException ne){
+    public ResponseEntity<ErrorResponse> productNotFound(ProductNotFoundException ne) {
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setMessage(ne.getMessage());
         errorResponse.setDebugMessage("Product not found");
         errorResponse.setStatus(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
-     }
-        
+
+    }
+
     @ExceptionHandler(InvalidTokenException.class)
-    public ResponseEntity<ErrorResponse>tokenNotFound (InvalidTokenException ne){
+    public ResponseEntity<ErrorResponse> tokenNotFound(InvalidTokenException ne) {
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setMessage(ne.getMessage());
         errorResponse.setDebugMessage("Token not found");
@@ -65,8 +76,18 @@ public class GlobalExceptionHandler {
 
     }
 
+
+//    @ExceptionHandler({InsufficientBalanceInWalletException.class})
+//    public ResponseEntity<ErrorResponse> InsufficientBalanceInWallet(WalletIdDoesNotExistException ne){
+//        ErrorResponse errorResponse = new ErrorResponse();
+//        errorResponse.setMessage(ne.getMessage());
+//        errorResponse.setDebugMessage("Oops! please fund your wallet");
+//        errorResponse.setStatus(HttpStatus.PAYMENT_REQUIRED);
+//        return new ResponseEntity<>(errorResponse, HttpStatus.PAYMENT_REQUIRED);
+//    }
+
     @ExceptionHandler({InsufficientBalanceInWalletException.class})
-    public ResponseEntity<ErrorResponse> InsufficientBalanceInWallet(InsufficientBalanceInWalletException ne){
+    public ResponseEntity<ErrorResponse> InsufficientBalanceInWallet(InsufficientBalanceInWalletException ne) {
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setMessage(ne.getMessage());
         errorResponse.setDebugMessage("Oops! please fund your wallet");
@@ -75,7 +96,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler({UnauthorizedUserException.class})
-    public ResponseEntity<ErrorResponse> handleUnauthorizedUserException(UnauthorizedUserException ex){
+    public ResponseEntity<ErrorResponse> handleUnauthorizedUserException(UnauthorizedUserException ex) {
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .message(ex.getMessage())
                 .debugMessage("User does not have the right access")
@@ -84,7 +105,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(InvalidAttributeException.class)
-    public ResponseEntity<ErrorResponse>invalidProductAttributes (InvalidAttributeException ie){
+    public ResponseEntity<ErrorResponse> invalidProductAttributes(InvalidAttributeException ie) {
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setMessage(ie.getMessage());
         errorResponse.setDebugMessage("Attribute not valid or does not exist");
@@ -94,7 +115,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse>invalidProductAttributes (MethodArgumentNotValidException ie){
+    public ResponseEntity<ErrorResponse> invalidProductAttributes(MethodArgumentNotValidException ie) {
         ErrorResponse errorResponse = new ErrorResponse();
         String[] errors = ie.getMessage().split(";");
         String errorMessage = errors[errors.length - 1];
@@ -107,7 +128,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(UsernameNotFoundException.class)
-    public ResponseEntity<ErrorResponse> userAlreadyExists(UsernameNotFoundException ne){
+    public ResponseEntity<ErrorResponse> userAlreadyExists(UsernameNotFoundException ne) {
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setMessage(ne.getMessage());
         errorResponse.setDebugMessage(ne.getLocalizedMessage());
@@ -115,8 +136,19 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
+
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<ErrorResponse> notAvailable(UnauthorizedException ne){
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setMessage(ne.getMessage());
+        errorResponse.setDebugMessage("Not Available");
+        errorResponse.setStatus(HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
+    }
+
+
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ErrorResponse>illegalArgumentException (IllegalArgumentException ex){
+    public ResponseEntity<ErrorResponse> illegalArgumentException(IllegalArgumentException ex) {
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setMessage(ex.getMessage());
         errorResponse.setDebugMessage(ex.getLocalizedMessage());
@@ -124,4 +156,14 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
 
     }
+
+    @ExceptionHandler(PasswordMisMatchException.class)
+    public ResponseEntity<ErrorResponse> passwordMismatchException(PasswordMisMatchException ex) {
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setMessage(ex.getMessage());
+        errorResponse.setDebugMessage("Invalid password");
+        errorResponse.setStatus(HttpStatus.CONFLICT);
+        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+    }
 }
+

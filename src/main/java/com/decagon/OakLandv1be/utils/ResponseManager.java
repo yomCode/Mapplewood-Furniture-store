@@ -5,14 +5,14 @@ import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-public class ResponseManager {
+public class ResponseManager<T> {
 
-    public ApiResponse<Object> success(Object data){
+    public ApiResponse<T> success(T data){
         return new ApiResponse<>("Request Successful", true, data);
     }
 
-    public ApiResponse<Object> error(String errorMessage){
-
-        return new ApiResponse<>(errorMessage,false,"null");
-    }
+//    public ApiResponse<T> error(String errorMessage){
+//
+//        return new ApiResponse<>(errorMessage,false,null);
+//    }
 }
