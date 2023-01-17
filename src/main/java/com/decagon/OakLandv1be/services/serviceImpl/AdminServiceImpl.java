@@ -4,7 +4,6 @@ import com.decagon.OakLandv1be.dto.NewProductRequestDto;
 import com.decagon.OakLandv1be.dto.OperationStatus;
 import com.decagon.OakLandv1be.dto.ProductResponseDto;
 
-import com.decagon.OakLandv1be.entities.Category;
 import com.decagon.OakLandv1be.entities.Person;
 import com.decagon.OakLandv1be.dto.UpdateProductDto;
 import com.decagon.OakLandv1be.entities.Product;
@@ -24,9 +23,8 @@ import com.decagon.OakLandv1be.utils.ApiResponse;
 import com.decagon.OakLandv1be.utils.ResponseManager;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -58,18 +56,15 @@ public class AdminServiceImpl implements AdminService {
         }
 
     @Override
-    public ProductResponseDto addNewProduct(NewProductRequestDto newProductRequestDto) {
+    public ApiResponse<ProductResponseDto> addNewProduct(NewProductRequestDto newProductRequestDto) {
         if(productRepository.existsByName(newProductRequestDto.getName()))
             throw new AlreadyExistsException("Product with name '" +
                     newProductRequestDto.getName() + "' already exists");
 
-        Category category = categoryRepository.save(Category.builder()
-                        .name(newProductRequestDto.getCategory()).build());
-
-        SubCategory subCategory = subCategoryRepository.save(SubCategory.builder()
-                .name(newProductRequestDto.getName())
-                .category(category)
-                .build());
+        SubCategory subCategory = subCategoryRepository
+                .findByName(newProductRequestDto.getSubCategory())
+                .orElseThrow(() ->
+                        new ProductNotFoundException("SubCategory does not exist"));
 
         Product product = Product.builder()
                 .name(newProductRequestDto.getName())
@@ -87,12 +82,15 @@ public class AdminServiceImpl implements AdminService {
                 .name(newProduct.getName())
                 .price(newProduct.getPrice())
                 .availableQty(newProduct.getAvailableQty())
-                .subCategory(newProduct.getSubCategory())
+                .subCategory(SubCategory.builder()
+                        .name(subCategory.getName())
+                        .category(subCategory.getCategory())
+                        .build())
                 .imageUrl(newProduct.getImageUrl())
                 .color(newProduct.getColor())
                 .description(newProduct.getDescription())
                 .build();
-        return productResponseDto;
+        return new ApiResponse<>("Product Added", productResponseDto, HttpStatus.CREATED);
     }
 
     @Override
