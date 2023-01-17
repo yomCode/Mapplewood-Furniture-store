@@ -29,7 +29,7 @@ public class JavaMailServiceImplTest {
         ResponseEntity<String> responseEntity =
                 javaMailServiceImpl.sendMail("ilemonamustapha@gmail.com", "A random subject", "A random body");
 
-                Assertions.assertThat(responseEntity.getBody().equals("sent"));
+        Assertions.assertThat(responseEntity.getBody().equals("sent"));
         Assertions.assertThat(responseEntity.getStatusCode().equals(HttpStatus.OK));
     }
 
