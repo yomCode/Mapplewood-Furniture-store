@@ -20,3 +20,4 @@ public class SuperAdmin extends BaseEntity{
     @JoinColumn(name = "wallet_id")
     private Wallet wallet;
 }
+// some changes
