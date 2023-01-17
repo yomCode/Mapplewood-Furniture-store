@@ -63,3 +63,4 @@ application-local.properties
 ### VS Code ###
 .vscode/application-local.properties
 
+application-local.properties

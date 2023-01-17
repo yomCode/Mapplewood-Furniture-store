@@ -90,3 +90,4 @@ public class WalletServiceImplTest {
         assertThrows(UnauthorizedUserException.class, () -> walletService.fundWallet(request));
     }
 }
+
