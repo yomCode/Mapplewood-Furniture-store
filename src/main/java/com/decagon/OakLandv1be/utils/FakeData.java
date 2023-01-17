@@ -14,6 +14,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.math.BigDecimal;
+
 @Configuration
 @RequiredArgsConstructor
 public class FakeData {
@@ -86,7 +88,7 @@ public class FakeData {
                     .person(person)
                     .cart(new Cart())
                     .wallet(Wallet.builder()
-                            .accountBalance(4000D)
+                            .accountBalance(BigDecimal.valueOf(4000))
                             .baseCurrency(BaseCurrency.POUNDS)
                             .build())
                     .build();
