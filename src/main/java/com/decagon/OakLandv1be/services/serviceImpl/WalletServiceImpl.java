@@ -26,7 +26,6 @@ public class WalletServiceImpl implements WalletService {
     private final PersonRepository personRepository;
     private final WalletRepository walletRepository;
     private final TransactionRepository transactionRepository;
-
     private final JavaMailService mailService;
 
     @Override
