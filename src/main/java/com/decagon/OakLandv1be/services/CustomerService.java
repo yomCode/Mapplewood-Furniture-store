@@ -20,5 +20,7 @@ public interface CustomerService {
 
     void addProductToFavorites(Long pid);
 
+    void removeProductFromFavorites(Long pid);
+
     Customer getCurrentlyLoggedInUser();
 }
