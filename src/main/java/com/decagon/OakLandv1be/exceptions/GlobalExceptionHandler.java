@@ -165,5 +165,14 @@ public class GlobalExceptionHandler {
         errorResponse.setStatus(HttpStatus.CONFLICT);
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
+
+    @ExceptionHandler(EmptyListException.class)
+    protected ResponseEntity<ErrorResponse> emptyList(EmptyListException ne){
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setStatus(HttpStatus.NOT_FOUND);
+        errorResponse.setMessage(ne.getMessage());
+        errorResponse.setDebugMessage(ne.getDebugMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
 }
 
