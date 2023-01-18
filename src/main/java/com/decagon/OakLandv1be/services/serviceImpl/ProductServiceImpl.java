@@ -23,6 +23,7 @@ import java.util.List;
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
 
+
     public ProductCustResponseDto fetchASingleProduct(Long product_id) {
         Product product = productRepository.findById(product_id)
                 .orElseThrow(() -> new ProductNotFoundException("This product was not found"));
