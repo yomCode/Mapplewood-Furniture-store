@@ -1,11 +1,9 @@
 package com.decagon.OakLandv1be.entities;
 
+import com.decagon.OakLandv1be.enums.State;
 import lombok.*;
 
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Getter
@@ -18,8 +16,9 @@ public class PickupCenter extends BaseEntity{
 
     private String name;
 
-    private String location;
-    @ManyToOne
+    private String address;
+
+    @Enumerated(EnumType.STRING)
     private State state;
     private String email;
 
