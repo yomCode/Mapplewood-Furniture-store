@@ -43,7 +43,6 @@ public class SecurityConfig {
             "/api/v1/auth/**","/v2/api-docs/**", "/v3/api-docs/**","/configuration/**",
             "/swagger*/**","/swagger-ui/**","/webjars/**", "/swagger-ui.html", "/api/v1/customer/signup","/api/v1/customer/verifyRegistration/**",
              "/api/v1/category/**", "/api/v1/subcategory/**", "/api/v1/finalizeTrans/**"
-           
     };
     private final AppUserDetailsService appUserDetailsService;
     private static final String AUTHORITY_PREFIX = "ROLE_";

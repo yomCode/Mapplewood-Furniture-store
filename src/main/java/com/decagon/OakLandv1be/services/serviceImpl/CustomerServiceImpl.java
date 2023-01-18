@@ -24,7 +24,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -152,6 +151,26 @@ public class CustomerServiceImpl implements CustomerService {
         favorites.add(product);
         person.getCustomer().setFavorites(favorites);
         customerRepository.save(person.getCustomer());
+    }
+    @Override
+    public void removeProductFromFavorites(Long pid) {
+        Product product = productRepository.findById(pid).
+                orElseThrow(() -> new ProductNotFoundException("This product was not found"));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if ((authentication instanceof AnonymousAuthenticationToken))
+            throw new ResourceNotFoundException("Please Login");
+        String email = authentication.getName();
+        Person person = personRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        Set<Product> favorites = person.getCustomer().getFavorites();
+        if (favorites.contains(product)) {
+            throw new AlreadyExistsException("This product is already in favorites");
+        }
+        favorites.remove(product);
+        person.getCustomer().setFavorites(favorites);
+        customerRepository.save(person.getCustomer());
+
 
     }
 

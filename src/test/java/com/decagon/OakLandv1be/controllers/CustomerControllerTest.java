@@ -149,6 +149,17 @@ class CustomerControllerTest {
             e.printStackTrace();
         }
     }
+
+    @Test
+    public void customerToRemoveProductsFromFavorites() throws Exception {
+        Long pid = 1L;
+
+        String requestBody = mapper.writeValueAsString(pid);
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/auth/customer/product/favorites/remove/{pid}", 1L)
+                        .contentType("application/json")
+                        .content(requestBody))
+                .andExpect(status().isAccepted());
+    }
 }
 
 
