@@ -2,6 +2,7 @@ package com.decagon.OakLandv1be.services.serviceImpl;
 
 import com.decagon.OakLandv1be.dto.ProductCustResponseDto;
 import com.decagon.OakLandv1be.entities.Product;
+import com.decagon.OakLandv1be.exceptions.InvalidAttributeException;
 import com.decagon.OakLandv1be.exceptions.ProductNotFoundException;
 import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
 import com.decagon.OakLandv1be.repositries.ProductRepository;
@@ -68,15 +69,22 @@ public class ProductServiceImpl implements ProductService {
     }
 
 
-
     @Override
-    public Page<ProductCustResponseDto> productWithPaginationAndSorting(Integer offset, Integer size, String field) {
-        if(size<1) size=10;
-        if(offset<1) offset=1;
-//        if(field.toLowerCase()!="name"|| field.toLowerCase()!="color"|| field.toLowerCase()!="description"){
-//            throw new InvalidAttributeException("Invalid product" +
-//                " attribute");}
-        return productRepository.findAll(PageRequest.of(offset,size).withSort(Sort.by(field)))
+    public Page<ProductCustResponseDto> productWithPaginationAndSorting(Integer page, Integer size, String sortingField) {
+
+        page=page<0?0:page;
+
+        size=size<10?10:size;
+
+        if(!(sortingField.equalsIgnoreCase("name") || sortingField.equalsIgnoreCase("price")
+        || sortingField.equalsIgnoreCase("color") || sortingField.equalsIgnoreCase("colour"))){
+            sortingField="price";
+        }
+        if(sortingField.equalsIgnoreCase("colour")){
+            sortingField="color";
+        }
+
+        return productRepository.findAll(PageRequest.of(page,size).withSort(Sort.by(sortingField)))
                 .map(Mapper::productToProductResponseDto);
     }
 
