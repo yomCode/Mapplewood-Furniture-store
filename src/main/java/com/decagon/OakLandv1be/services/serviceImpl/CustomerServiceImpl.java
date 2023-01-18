@@ -32,6 +32,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Set;
 import static com.decagon.OakLandv1be.enums.TokenStatus.ACTIVE;
 import static com.decagon.OakLandv1be.enums.TokenStatus.EXPIRED;
@@ -68,7 +69,7 @@ public class CustomerServiceImpl implements CustomerService {
         person.setPassword(passwordEncoder.encode(signupRequestDto.getPassword()));
             Wallet wallet = Wallet.builder()
                     .baseCurrency(BaseCurrency.NAIRA)
-                    .accountBalance(0.00)
+                    .accountBalance(BigDecimal.ZERO)
                     .customer(customer)
                     .build();
 
@@ -89,7 +90,7 @@ public class CustomerServiceImpl implements CustomerService {
             javaMailService.sendMail(signupRequestDto.getEmail(),
                     "Verify your email address",
                     "Hi " + person.getFirstName() + " " + person.getLastName() + ", Thank you for your interest in joining Oakland." +
-                            "To complete your registration, we need you to verify your email address " + "http://localhost:8080/api/v1/auth/customer/verifyRegistration/" + validToken);
+                            "To complete your registration, we need you to verify your email address " + "http://localhost:8080/api/v1/customer/verifyRegistration/" + validToken);
 
             // use the user object to create UserResponseDto Object
              SignupResponseDto signupResponseDto = new SignupResponseDto();

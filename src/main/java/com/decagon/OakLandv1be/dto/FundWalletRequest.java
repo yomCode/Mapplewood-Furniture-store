@@ -1,15 +1,16 @@
 package com.decagon.OakLandv1be.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
+import java.math.BigDecimal;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 public class FundWalletRequest {
 
-    private Double amount;
+    private BigDecimal amount;
+    private String email;
 }

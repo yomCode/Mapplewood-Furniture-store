@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/customer/wallet")
@@ -30,10 +32,8 @@ public class WalletController {
 
     @GetMapping("/balance")
     public ResponseEntity<ApiResponse<Object>> getBalance(){
-        Double response = walletService.getWalletBalance();
-
+        BigDecimal response = walletService.getWalletBalance();
         return new ResponseEntity<>(new ResponseManager().success(response), HttpStatus.OK);
-
     }
 
 }

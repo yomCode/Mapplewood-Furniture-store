@@ -3,6 +3,8 @@ package com.decagon.OakLandv1be.dto;
 
 import lombok.*;
 
+import java.math.BigDecimal;
+
 @Setter
 @Getter
 @Builder
@@ -11,7 +13,7 @@ import lombok.*;
 public class FundWalletResponseDto {
 
     private String fullName;
-    private Double depositAmount;
-    private Double newBalance;
+    private BigDecimal depositAmount;
+    private BigDecimal newBalance;
 
 }

@@ -17,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 
 import static com.decagon.OakLandv1be.enums.TransactionStatus.SUCCESSFUL;
 
@@ -31,14 +32,14 @@ public class WalletServiceImpl implements WalletService {
 
     @Override
     public FundWalletResponseDto fundWallet(FundWalletRequest request) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(!(authentication instanceof AnonymousAuthenticationToken)){
-            String email = authentication.getName();
-            Person person = personRepository.findByEmail(email)
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        if(!(authentication instanceof AnonymousAuthenticationToken)){
+//            String email = authentication.getName();
+            Person person = personRepository.findByEmail(request.getEmail())
                     .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
 
             Wallet wallet = person.getCustomer().getWallet();
-            wallet.setAccountBalance(wallet.getAccountBalance() + request.getAmount());
+            wallet.setAccountBalance(wallet.getAccountBalance().add(request.getAmount()));
             walletRepository.save(wallet);
 
             Transaction transaction = Transaction.builder()
@@ -57,12 +58,13 @@ public class WalletServiceImpl implements WalletService {
                     .fullName(person.getFirstName() + " " + person.getLastName())
                     .depositAmount(request.getAmount())
                     .newBalance(wallet.getAccountBalance()).build();
-        }
-        throw new UnauthorizedUserException("Login to carry out this operation");
+
+       // throw new UnauthorizedUserException("Login to carry out this operation");
     }
 
+
     @Override
-    public Double getWalletBalance() {
+    public BigDecimal getWalletBalance() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
@@ -72,7 +74,7 @@ public class WalletServiceImpl implements WalletService {
                     .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
 
             Wallet wallet = person.getCustomer().getWallet();
-            Double walletBalance = wallet.getAccountBalance();
+            BigDecimal walletBalance = wallet.getAccountBalance();
 
             try {
                 mailService.sendMail(person.getEmail(), "Wallet Balance", "Your wallet is " + walletBalance + wallet.getBaseCurrency());
