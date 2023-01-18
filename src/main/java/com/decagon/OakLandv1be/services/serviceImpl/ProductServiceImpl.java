@@ -64,7 +64,6 @@ public class ProductServiceImpl implements ProductService {
         if(removedProduct == null)
             return new ResponseEntity<>(true, HttpStatus.OK);
         return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
-
     }
 
 
