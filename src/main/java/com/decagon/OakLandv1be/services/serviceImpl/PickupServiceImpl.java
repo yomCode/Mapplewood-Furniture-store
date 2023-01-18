@@ -41,7 +41,7 @@ public class PickupServiceImpl implements PickupService {
     @Override
     public List<PickupCenterResponse> getCenterByStateName(String name) {
         return pickupRepository.findAll().parallelStream()
-                .filter(pickupCenter -> pickupCenter.getState().getName().equalsIgnoreCase(name))
+                .filter(pickupCenter -> pickupCenter.getState().name().equalsIgnoreCase(name))
                 .map(this::responseMapper)
                 .collect(Collectors.toList());
     }
@@ -64,7 +64,7 @@ public class PickupServiceImpl implements PickupService {
                 .state(stateRepository.findByName( pickupCenterRequest.getStateName()).orElseThrow(
                         ()-> new ResourceNotFoundException("State with the name"+pickupCenterRequest.getStateName() +" is not found")))
                 .email(pickupCenterRequest.getEmail())
-                .location(pickupCenterRequest.getLocation())
+                .address(pickupCenterRequest.getLocation())
                 .phone(pickupCenterRequest.getPhone())
                 .build());
         return "Center created successfully";
@@ -81,8 +81,8 @@ public class PickupServiceImpl implements PickupService {
         return PickupCenterResponse.builder()
                 .id(pickup.getId())
                 .name(pickup.getName())
-                .location(pickup.getLocation())
-                .stateName(pickup.getState().getName())
+                .location(pickup.getAddress())
+                .stateName(pickup.getState().name())
                 .email(pickup.getEmail())
                 .phone(pickup.getPhone())
                 .build();
