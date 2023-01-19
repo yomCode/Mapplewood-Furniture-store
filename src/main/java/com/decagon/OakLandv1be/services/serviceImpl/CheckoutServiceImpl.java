@@ -86,7 +86,14 @@ public class CheckoutServiceImpl implements CheckoutService {
     }
     @Override
     public ModeOfDelivery modeOfDelivery(String deliveryMethod){
-        return ModeOfDelivery.valueOf(deliveryMethod.toUpperCase());
+        String method = deliveryMethod.toUpperCase();
+        if (method.equals("PICKUP")) {
+            return ModeOfDelivery.PICKUP;
+        } else if (method.equals("DOORSTEP")) {
+            return ModeOfDelivery.DOORSTEP;
+        } else {
+            throw new IllegalArgumentException("Invalid delivery method: " + deliveryMethod);
+        }
     }
     @Override
     public ResponseEntity<String> addNewAddress(AddressRequestDto addressRequestDto){
