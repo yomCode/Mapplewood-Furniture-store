@@ -25,13 +25,10 @@ class CustomerServiceImplTest {
 
     @InjectMocks
     CustomerServiceImpl customerService;
-
     @Mock
     PersonRepository personRepository;
-
     @Mock
     CustomerRepository customerRepository;
-
     @Mock
     ProductRepository productRepository;
     @Mock
