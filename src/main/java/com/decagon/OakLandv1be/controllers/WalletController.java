@@ -2,7 +2,6 @@ package com.decagon.OakLandv1be.controllers;
 
 
 import com.decagon.OakLandv1be.dto.FundWalletRequest;
-import com.decagon.OakLandv1be.dto.FundWalletResponseDto;
 import com.decagon.OakLandv1be.services.WalletService;
 import com.decagon.OakLandv1be.utils.ApiResponse;
 import com.decagon.OakLandv1be.utils.ResponseManager;

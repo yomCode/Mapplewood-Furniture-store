@@ -148,10 +148,13 @@ public class CustomerServiceImpl implements CustomerService {
         if (favorites.contains(product)){
             throw new AlreadyExistsException("This product is already in favorites");
         }
+
         favorites.add(product);
         person.getCustomer().setFavorites(favorites);
         customerRepository.save(person.getCustomer());
     }
+
+
     @Override
     public void removeProductFromFavorites(Long pid) {
         Product product = productRepository.findById(pid).
