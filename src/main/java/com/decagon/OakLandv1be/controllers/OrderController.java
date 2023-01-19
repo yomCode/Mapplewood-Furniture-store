@@ -15,7 +15,6 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@Data
 @RequestMapping("api/v1/customer")
 public class OrderController {
     private final CheckoutService checkoutService;
