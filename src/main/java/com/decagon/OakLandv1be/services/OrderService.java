@@ -6,5 +6,5 @@ import com.decagon.OakLandv1be.dto.OrderResponseDto;
 import java.util.List;
 
 public interface OrderService {
-    List<OrderResponseDto> viewOrderHistory();
+    List<OrderResponseDto> viewOrderHistory(int pageNo, int pageSize);
 }

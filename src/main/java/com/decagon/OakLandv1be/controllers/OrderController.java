@@ -30,7 +30,8 @@ public class OrderController {
     }
 
     @GetMapping("/order-history")
-    public ResponseEntity<List<OrderResponseDto>> viewOrderHistory(){
-        return ResponseEntity.ok(orderService.viewOrderHistory());
+    public ResponseEntity<List<OrderResponseDto>> viewOrderHistory(@RequestParam int pageNo,
+                                                                   @RequestParam int pageSize){
+        return ResponseEntity.ok(orderService.viewOrderHistory(pageNo, pageSize));
     }
 }

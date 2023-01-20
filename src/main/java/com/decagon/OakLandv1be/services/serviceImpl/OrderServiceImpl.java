@@ -8,13 +8,19 @@ import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
 import com.decagon.OakLandv1be.repositries.CustomerRepository;
 import com.decagon.OakLandv1be.services.OrderService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @AllArgsConstructor
@@ -22,7 +28,7 @@ public class OrderServiceImpl implements OrderService {
     private final CustomerRepository customerRepository;
 
     @Override
-    public List<OrderResponseDto> viewOrderHistory() {
+    public List<OrderResponseDto> viewOrderHistory(int pageNo, int pageSize) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if ((authentication instanceof AnonymousAuthenticationToken))
@@ -30,17 +36,27 @@ public class OrderServiceImpl implements OrderService {
         String email = authentication.getName();
         Customer customer = customerRepository.findByPersonEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        Set<Order> orders = customer.getOrders();
-        if (orders.isEmpty())
+
+        Set<Order> orderList = customer.getOrders();
+        if (orderList.isEmpty())
             throw new EmptyListException("You have no order history");
+
+        List<Order> sortedOrders = orderList.stream().sorted(Comparator.comparing(Order::getCreatedAt)
+                .reversed()).collect(Collectors.toList());
+
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        int start = (int)pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), sortedOrders.size());
+        List<Order> orders = new ArrayList<>(sortedOrders).subList(start, end);
+
         List<OrderResponseDto> orderResponseDtos = new ArrayList<>();
         for (Order order: orders){
-            mapToResponse(orderResponseDtos, order);
+            mapToResponse(order,orderResponseDtos);
         }
         return orderResponseDtos;
     }
 
-    private static void mapToResponse(List<OrderResponseDto> orderResponseDtos, Order order) {
+    private static void mapToResponse(Order order, List<OrderResponseDto> orderResponseDtos) {
         OrderResponseDto orderResponseDto = OrderResponseDto.builder()
                 .items(order.getItems())
                 .address(order.getAddress())
