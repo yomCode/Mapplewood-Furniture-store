@@ -86,14 +86,31 @@ public class CartServiceImpl implements CartService {
     @Override
     public String removeItem(Long itemToRemoveId) {
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if ((authentication instanceof AnonymousAuthenticationToken))
+            throw new ResourceNotFoundException("Please Login");
+        String email = authentication.getName();
+        Person person = personRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
+
+        Cart cart = person.getCustomer().getCart();
+        if (cart == null) throw new ResourceNotFoundException("cart is empty");
+
         Item item = itemRepository.findById(itemToRemoveId)
-                    .orElseThrow(() -> new ResourceNotFoundException("Item does not exist"));
-            itemRepository.delete(item);
-            return "Item successfully deleted";
+                .orElseThrow(() -> new ResourceNotFoundException("Item does not exist"));
+
+        Set<Item> itemsInCart = cart.getItems();
+        if(itemsInCart.contains(item))
+            itemsInCart.remove(item);
+        cart.setItems(itemsInCart);
+        itemRepository.save(item);
+            //itemRepository.delete(item);
+
+            return "item removed successfully";
 
         //search for the logged in user
-        //get his cart
-        //cart
+            //get his cart
+            //cart
 //        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 //        if (!(authentication instanceof AnonymousAuthenticationToken)) {
 //            String email = authentication.getName();
@@ -120,9 +137,8 @@ public class CartServiceImpl implements CartService {
 //                    return "Item successfully deleted";
 //                }
 //                throw new ResourceNotFoundException("Item does not exist");
-////            }
+//          }
 //        }
 //        throw new UnauthorizedUserException("Login to carry out this operation");
-
+        }
     }
-}
