@@ -3,7 +3,7 @@ package com.decagon.OakLandv1be.dto;
 import com.decagon.OakLandv1be.entities.*;
 import com.decagon.OakLandv1be.enums.ModeOfDelivery;
 import lombok.*;
-
+import lombok.Data;
 import java.util.Set;
 
 @Getter
@@ -11,6 +11,7 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 public class OrderResponseDto {
     private ModeOfPayment modeOfPayment;
     private Set<Item> items;
