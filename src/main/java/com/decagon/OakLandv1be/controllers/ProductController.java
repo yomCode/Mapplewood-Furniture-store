@@ -10,7 +10,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -29,5 +31,10 @@ public class ProductController {
     public ResponseEntity<Page<ProductCustResponseDto>> productsByPaginationAndSorted(
             @RequestParam Integer offset, @RequestParam  Integer size, @RequestParam  String sortingField ){
         return  new ResponseEntity<>(productService.productWithPaginationAndSorting(offset, size, sortingField),HttpStatus.OK);
+    }
+
+    @PostMapping("/upload-image/{productId}")
+    public ResponseEntity<Object> uploadProfilePic(@RequestPart MultipartFile productImage, @PathVariable Long productId) throws IOException {
+        return ResponseEntity.ok(productService.uploadProductImage(productId, productImage));
     }
 }
