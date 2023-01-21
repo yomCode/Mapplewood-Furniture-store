@@ -9,18 +9,20 @@ import com.decagon.OakLandv1be.repositries.CustomerRepository;
 import com.decagon.OakLandv1be.repositries.OrderRepository;
 import com.decagon.OakLandv1be.services.OrderService;
 import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -28,8 +30,10 @@ public class OrderServiceImpl implements OrderService {
     private final CustomerRepository customerRepository;
     private final OrderRepository orderRepository;
     private final CustomerServiceImpl customerService;
+
     @Override
     public List<OrderResponseDto> viewOrderHistory(int pageNo, int pageSize) {
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if ((authentication instanceof AnonymousAuthenticationToken))
             throw new ResourceNotFoundException("Please Login");
@@ -70,6 +74,7 @@ public class OrderServiceImpl implements OrderService {
                 .build();
         orderResponseDtos.add(orderResponseDto);
     }
+
 
     @Override
     public OrderResponseDto viewAParticularOrder(Long orderId) {

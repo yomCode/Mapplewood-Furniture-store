@@ -11,13 +11,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@Data
 @RequestMapping("api/v1/customer")
 public class OrderController {
     private final CheckoutService checkoutService;
@@ -37,6 +35,7 @@ public class OrderController {
                                                                    @RequestParam int pageSize){
         return ResponseEntity.ok(orderService.viewOrderHistory(pageNo, pageSize));
     }
+
     @GetMapping("/order/{orderId}")
     public ResponseEntity<OrderResponseDto> viewASingleOrder (@PathVariable("orderId") Long orderId){
        return new ResponseEntity<>(orderService.viewAParticularOrder(orderId), HttpStatus.OK);
