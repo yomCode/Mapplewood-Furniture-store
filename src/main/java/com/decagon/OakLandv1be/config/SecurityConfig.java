@@ -41,7 +41,8 @@ public class SecurityConfig {
 
     private final String[] WHITE_LISTED_URLS = { "/", "/home", "index", "/css/*", "/js/*", "/api/v1/products/**",
             "/api/v1/auth/**","/v2/api-docs/**", "/v3/api-docs/**","/configuration/**",
-            "/swagger*/**","/swagger-ui/**","/webjars/**", "/swagger-ui.html", "/api/v1/auth/customer/signup"
+            "/swagger*/**","/swagger-ui/**","/webjars/**", "/swagger-ui.html", "/api/v1/customer/signup","/api/v1/customer/verifyRegistration/**",
+             "/api/v1/category/**", "/api/v1/subcategory/**", "/api/v1/finalizeTrans/**"
     };
     private final AppUserDetailsService appUserDetailsService;
     private static final String AUTHORITY_PREFIX = "ROLE_";
@@ -55,7 +56,7 @@ public class SecurityConfig {
                     @Override
                     public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                         CorsConfiguration config = new CorsConfiguration();
-                        config.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
+                        config.setAllowedOrigins(Collections.singletonList("http://localhost:3001"));
                         config.setAllowedMethods(Collections.singletonList("*"));
                         config.setAllowCredentials(true);
                         config.setAllowedHeaders(Collections.singletonList("*"));
@@ -67,7 +68,8 @@ public class SecurityConfig {
                 auth.antMatchers(WHITE_LISTED_URLS).permitAll()
                             .antMatchers("/api/v1/super-admin/**").hasRole(SUPERADMIN.name())
                             .antMatchers("/api/v1/admin/**").hasAnyRole(ADMIN.name(), SUPERADMIN.name())
-                            .antMatchers("/api/v1/customer/**").hasAnyRole(CUSTOMER.name())
+                        .antMatchers("/api/v1/category/admin/**", "/api/v1/subcategory/admin/**").hasAnyRole(ADMIN.name(), SUPERADMIN.name())
+                        .antMatchers("/api/v1/customer/**", "/api/v1/auth/update-password").hasAnyRole(CUSTOMER.name())
                             .anyRequest().authenticated();
                 })
                 .oauth2ResourceServer(oauth2ResourceServer ->

@@ -76,6 +76,16 @@ public class GlobalExceptionHandler {
 
     }
 
+
+//    @ExceptionHandler({InsufficientBalanceInWalletException.class})
+//    public ResponseEntity<ErrorResponse> InsufficientBalanceInWallet(WalletIdDoesNotExistException ne){
+//        ErrorResponse errorResponse = new ErrorResponse();
+//        errorResponse.setMessage(ne.getMessage());
+//        errorResponse.setDebugMessage("Oops! please fund your wallet");
+//        errorResponse.setStatus(HttpStatus.PAYMENT_REQUIRED);
+//        return new ResponseEntity<>(errorResponse, HttpStatus.PAYMENT_REQUIRED);
+//    }
+
     @ExceptionHandler({InsufficientBalanceInWalletException.class})
     public ResponseEntity<ErrorResponse> InsufficientBalanceInWallet(InsufficientBalanceInWalletException ne) {
         ErrorResponse errorResponse = new ErrorResponse();
@@ -154,6 +164,15 @@ public class GlobalExceptionHandler {
         errorResponse.setDebugMessage("Invalid password");
         errorResponse.setStatus(HttpStatus.CONFLICT);
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(EmptyListException.class)
+    protected ResponseEntity<ErrorResponse> emptyList(EmptyListException ne){
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setStatus(HttpStatus.NOT_FOUND);
+        errorResponse.setMessage(ne.getMessage());
+        errorResponse.setDebugMessage(ne.getDebugMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 }
 

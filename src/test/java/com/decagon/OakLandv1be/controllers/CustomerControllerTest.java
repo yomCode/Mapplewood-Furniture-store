@@ -1,6 +1,7 @@
 package com.decagon.OakLandv1be.controllers;
 
 import com.decagon.OakLandv1be.OakLandV1BeApplication;
+import com.decagon.OakLandv1be.controllers.CustomerController;
 import com.decagon.OakLandv1be.dto.SignupResponseDto;
 import com.decagon.OakLandv1be.dto.EditProfileRequestDto;
 import com.decagon.OakLandv1be.dto.cartDtos.AddItemToCartDto;
@@ -67,7 +68,11 @@ class CustomerControllerTest {
 //        EditProfileRequestDto editProfileRequestDto = new EditProfileRequestDto();
 //        editProfileRequestDto.setFirstName("Many");
 //        editProfileRequestDto.setLastName("Rob");
+
+//        editProfileRequestDto.setGender(Gender.MALE);
+
 //        editProfileRequestDto.setGender(String.valueOf(Gender.MALE));
+
 //        editProfileRequestDto.setDate_of_birth("11-01-1993");
 //        editProfileRequestDto.setPhone("07068693321");
 //
@@ -76,6 +81,8 @@ class CustomerControllerTest {
 //                        .contentType("application/json").content(requestBody))
 //                .andExpect(status().isOk());
 //    }
+
+//}
 
     @Test
     void CustomerController_AddItemToCart_ReturnResponseEntity() {
@@ -141,6 +148,17 @@ class CustomerControllerTest {
         } catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void customerToRemoveProductsFromFavorites() throws Exception {
+        Long pid = 1L;
+
+        String requestBody = mapper.writeValueAsString(pid);
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/auth/customer/product/favorites/remove/{pid}", 1L)
+                        .contentType("application/json")
+                        .content(requestBody))
+                .andExpect(status().isAccepted());
     }
 }
 

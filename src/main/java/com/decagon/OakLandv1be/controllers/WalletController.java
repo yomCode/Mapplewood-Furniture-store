@@ -2,7 +2,6 @@ package com.decagon.OakLandv1be.controllers;
 
 
 import com.decagon.OakLandv1be.dto.FundWalletRequest;
-import com.decagon.OakLandv1be.dto.FundWalletResponseDto;
 import com.decagon.OakLandv1be.services.WalletService;
 import com.decagon.OakLandv1be.utils.ApiResponse;
 import com.decagon.OakLandv1be.utils.ResponseManager;
@@ -14,6 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.math.BigDecimal;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,10 +31,8 @@ public class WalletController {
 
     @GetMapping("/balance")
     public ResponseEntity<ApiResponse<Object>> getBalance(){
-        Double response = walletService.getWalletBalance();
-
+        BigDecimal response = walletService.getWalletBalance();
         return new ResponseEntity<>(new ResponseManager().success(response), HttpStatus.OK);
-
     }
 
 }

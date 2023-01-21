@@ -50,7 +50,8 @@ public class CartServiceImpl implements CartService {
         Customer loggedInCustomer = customerService.getCurrentlyLoggedInUser();
         Cart cart = loggedInCustomer.getCart();
 
-        Product product = productRepository.findById(productId).orElseThrow(() -> new NotAvailableException("Product not available"));
+        Product product = productRepository.findById(productId).orElseThrow(() -> new NotAvailableException("Product" +
+                " not available"));
 
         if (product.getAvailableQty() == 0)
             throw new NotAvailableException("Product out of stock");

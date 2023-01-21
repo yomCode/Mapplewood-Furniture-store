@@ -24,7 +24,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -33,6 +32,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Set;
 import static com.decagon.OakLandv1be.enums.TokenStatus.ACTIVE;
 import static com.decagon.OakLandv1be.enums.TokenStatus.EXPIRED;
@@ -69,7 +69,7 @@ public class CustomerServiceImpl implements CustomerService {
         person.setPassword(passwordEncoder.encode(signupRequestDto.getPassword()));
             Wallet wallet = Wallet.builder()
                     .baseCurrency(BaseCurrency.NAIRA)
-                    .accountBalance(0.00)
+                    .accountBalance(BigDecimal.ZERO)
                     .customer(customer)
                     .build();
 
@@ -90,7 +90,7 @@ public class CustomerServiceImpl implements CustomerService {
             javaMailService.sendMail(signupRequestDto.getEmail(),
                     "Verify your email address",
                     "Hi " + person.getFirstName() + " " + person.getLastName() + ", Thank you for your interest in joining Oakland." +
-                            "To complete your registration, we need you to verify your email address " + "http://localhost:8080/api/v1/auth/customer/verifyRegistration/" + validToken);
+                            "To complete your registration, we need you to verify your email address " + "http://localhost:8080/api/v1/customer/verifyRegistration/" + validToken);
 
             // use the user object to create UserResponseDto Object
              SignupResponseDto signupResponseDto = new SignupResponseDto();
@@ -148,9 +148,32 @@ public class CustomerServiceImpl implements CustomerService {
         if (favorites.contains(product)){
             throw new AlreadyExistsException("This product is already in favorites");
         }
+
         favorites.add(product);
         person.getCustomer().setFavorites(favorites);
         customerRepository.save(person.getCustomer());
+    }
+
+
+    @Override
+    public void removeProductFromFavorites(Long pid) {
+        Product product = productRepository.findById(pid).
+                orElseThrow(() -> new ProductNotFoundException("This product was not found"));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if ((authentication instanceof AnonymousAuthenticationToken))
+            throw new ResourceNotFoundException("Please Login");
+        String email = authentication.getName();
+        Person person = personRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        Set<Product> favorites = person.getCustomer().getFavorites();
+        if (favorites.contains(product)) {
+            throw new AlreadyExistsException("This product is already in favorites");
+        }
+        favorites.remove(product);
+        person.getCustomer().setFavorites(favorites);
+        customerRepository.save(person.getCustomer());
+
 
     }
 

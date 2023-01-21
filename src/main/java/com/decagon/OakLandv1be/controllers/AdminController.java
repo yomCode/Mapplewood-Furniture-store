@@ -2,7 +2,6 @@ package com.decagon.OakLandv1be.controllers;
 
 import com.decagon.OakLandv1be.dto.UpdateProductDto;
 import com.decagon.OakLandv1be.entities.Product;
-import com.decagon.OakLandv1be.services.ProductService;
 import com.decagon.OakLandv1be.utils.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import com.decagon.OakLandv1be.dto.NewProductRequestDto;
@@ -33,8 +32,8 @@ public class AdminController {
     }
 
     @PostMapping("products/new")
-    ResponseEntity<ProductResponseDto> addNewProduct(@Valid @RequestBody NewProductRequestDto productDto) {
-        return new ResponseEntity<>(adminService.addNewProduct(productDto), HttpStatus.CREATED);
+    ApiResponse<ProductResponseDto> addNewProduct(@Valid @RequestBody NewProductRequestDto productDto) {
+        return adminService.addNewProduct(productDto);
     }
     
     @PutMapping("/deactivate-user/{userId}")

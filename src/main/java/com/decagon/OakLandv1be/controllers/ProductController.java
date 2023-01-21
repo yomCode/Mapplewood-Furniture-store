@@ -9,11 +9,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -27,16 +26,15 @@ public class ProductController {
         return new ResponseEntity<>(productService.fetchASingleProduct(product_id), HttpStatus.OK);
 
     }
-    @GetMapping("/view-all-products")
-    public ResponseEntity<List<ProductCustResponseDto>> viewAllProducts(){
-        List<ProductCustResponseDto> productCustResponseDtos = productService.fetchAllProducts();
-        return new ResponseEntity<>(productCustResponseDtos, HttpStatus.OK);
 
+    @GetMapping("/page-and-sort")
+    public ResponseEntity<Page<ProductCustResponseDto>> productsByPaginationAndSorted(
+            @RequestParam Integer offset, @RequestParam  Integer size, @RequestParam  String sortingField ){
+        return  new ResponseEntity<>(productService.productWithPaginationAndSorting(offset, size, sortingField),HttpStatus.OK);
     }
 
-    @GetMapping("/page-and-sort/{offset}/{size}/{sortingField}")
-    public ResponseEntity<Page<ProductCustResponseDto>> productsByPaginationAndSorted(
-            @PathVariable Integer offset, @PathVariable Integer size,@PathVariable String sortingField ){
-        return  new ResponseEntity<>(productService.productWithPaginationAndSorting(offset, size, sortingField),HttpStatus.OK);
+    @PostMapping("/upload-image/{productId}")
+    public ResponseEntity<Object> uploadProfilePic(@RequestPart MultipartFile productImage, @PathVariable Long productId) throws IOException {
+        return ResponseEntity.ok(productService.uploadProductImage(productId, productImage));
     }
 }
