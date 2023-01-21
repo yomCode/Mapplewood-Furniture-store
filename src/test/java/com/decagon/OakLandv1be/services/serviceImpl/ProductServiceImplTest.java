@@ -53,7 +53,6 @@ class ProductServiceImplTest {
         product3 = Product.builder().name("Bed frame").price(4000.00).imageUrl("hgdhg")
                 .color("white").description("beautiful white bed frame").build();
 
-
         productList.add(product);
         productList.add(product1);
         productList.add(product2);
@@ -77,6 +76,6 @@ class ProductServiceImplTest {
 
         Page<Product> pagedProducts= new PageImpl(productList,Pageable.ofSize(size),4);
         when(productRepository.findAll(PageRequest.of(offset,size).withSort(Sort.by(field)))).thenReturn(pagedProducts);
-        assertNotEquals(productService.productWithPaginationAndSorting(offset,size,"name").getTotalElements(),4);
+        assertEquals(4, productService.productWithPaginationAndSorting(offset,size,field).getTotalElements());
     }
 }

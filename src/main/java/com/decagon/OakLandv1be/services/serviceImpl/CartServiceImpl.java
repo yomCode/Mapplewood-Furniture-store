@@ -71,9 +71,6 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public String removeItem(Long itemToRemoveId) {
-        //search for the logged in user
-        //get his cart
-        //cart
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             String email = authentication.getName();
