@@ -76,15 +76,21 @@ public class ProductServiceImpl implements ProductService {
 
         size=size<10?10:size;
 
-        if(!(sortingField.equalsIgnoreCase("name") || sortingField.equalsIgnoreCase("price")
-        || sortingField.equalsIgnoreCase("color") || sortingField.equalsIgnoreCase("colour"))){
-            sortingField="price";
+        page= Math.max(page, 0);
+        size= Math.max(size, 10);
+        String field=null;
+        if(sortingField.equalsIgnoreCase("color")){
+            field=sortingField;
+        }else if(sortingField.equalsIgnoreCase("colour")){
+            field="color";
+        }else if(sortingField.equalsIgnoreCase("price")){
+            field=sortingField;
+        }else if(sortingField.equalsIgnoreCase("name")){
+            field=sortingField;
+        }else {
+            field="price";
         }
-        if(sortingField.equalsIgnoreCase("colour")){
-            sortingField="color";
-        }
-
-        return productRepository.findAll(PageRequest.of(page,size).withSort(Sort.by(sortingField)))
+        return productRepository.findAll(PageRequest.of(page,size).withSort(Sort.by(field)))
                 .map(Mapper::productToProductResponseDto);
     }
 
