@@ -8,21 +8,16 @@ import com.decagon.OakLandv1be.enums.BaseCurrency;
 import com.decagon.OakLandv1be.enums.Gender;
 import com.decagon.OakLandv1be.enums.Role;
 
-import com.decagon.OakLandv1be.exceptions.AuthorizationException;
 import com.decagon.OakLandv1be.exceptions.InvalidOperationException;
-import com.decagon.OakLandv1be.exceptions.UnauthorizedUserException;
-import com.decagon.OakLandv1be.exceptions.UserNotFoundException;
-import com.decagon.OakLandv1be.repositries.PersonRepository;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
+
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.UUID;
@@ -32,7 +27,7 @@ import java.util.UUID;
 @Component
 public class AdminDetailsService implements CommandLineRunner {
     private final SuperAdminRepository superAdminRepository;
-
+    private final PasswordEncoder passwordEncoder;
 
     @Value("${admin.email}")
     private String adminEmail;
@@ -59,7 +54,7 @@ public class AdminDetailsService implements CommandLineRunner {
                     .role(Role.SUPERADMIN)
                     .gender(Gender.OTHER)
                     .isActive(true)
-                    .password(password)
+                    .password(passwordEncoder.encode(password))
                     .verificationStatus(true)
                     .build();
 

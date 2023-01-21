@@ -3,5 +3,5 @@ google:
 
 
 #Kindly copy these two properties and paste on your local
-#admin.email=oghogho.courage@gmail.com
+#admin.email=oaklandproject2022@gmail.com
 #admin.currency=NAIRA
