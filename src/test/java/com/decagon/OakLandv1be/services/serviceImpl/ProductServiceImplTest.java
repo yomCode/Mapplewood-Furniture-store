@@ -81,6 +81,6 @@ class ProductServiceImplTest {
 
         Page<Product> pagedProducts= new PageImpl(productList,Pageable.ofSize(size),4);
         when(productRepository.findAll(PageRequest.of(offset,size).withSort(Sort.by(field)))).thenReturn(pagedProducts);
-        assertEquals(4, productService.productWithPaginationAndSorting(offset,size,field).getTotalElements());
+        assertEquals(4, productService.productWithPaginationAndSorting(offset,size,field,false).getTotalElements());
     }
 }
