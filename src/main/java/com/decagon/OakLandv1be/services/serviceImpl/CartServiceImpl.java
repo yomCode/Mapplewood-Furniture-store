@@ -79,7 +79,7 @@ public class CartServiceImpl implements CartService {
                     .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
 
             Cart cart = person.getCustomer().getCart();
-            if( cart == null) throw new ResourceNotFoundException("cart is empty");
+            if (cart == null) throw new ResourceNotFoundException("cart is empty");
             Set<Item> itemsInCart = cart.getItems();
             System.out.println(itemsInCart.toString());
             for (Item item : itemsInCart) {

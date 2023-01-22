@@ -15,6 +15,7 @@ public class Mapper {
                 .imageUrl(product.getImageUrl())
                 .color(product.getColor())
                 .description(product.getDescription())
+                .subCategory(product.getSubCategory())
                 .build();
     }
 
