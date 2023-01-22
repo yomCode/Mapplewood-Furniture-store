@@ -34,7 +34,6 @@ import java.util.Map;
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
 
-//    private final UserAuth userAuth;
     private final CloudinaryConfig cloudinaryConfig;
 
     public ProductCustResponseDto fetchASingleProduct(Long product_id) {
@@ -46,6 +45,7 @@ public class ProductServiceImpl implements ProductService {
                 .imageUrl(product.getImageUrl())
                 .color(product.getColor())
                 .description(product.getDescription())
+                .subCategory(product.getSubCategory())
                 .build();
     }
 

@@ -2,6 +2,7 @@ package com.decagon.OakLandv1be.services.serviceImpl;
 
 import com.decagon.OakLandv1be.dto.ProductCustResponseDto;
 import com.decagon.OakLandv1be.dto.ProductResponseDto;
+import com.decagon.OakLandv1be.entities.Category;
 import com.decagon.OakLandv1be.entities.Product;
 import com.decagon.OakLandv1be.entities.SubCategory;
 import com.decagon.OakLandv1be.repositries.ProductRepository;
@@ -15,6 +16,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,6 +35,7 @@ class ProductServiceImplTest {
     private Product product1;
     private Product product2;
     private Product product3;
+    private SubCategory subCategory;
 
     int offset=1;
     int size=2;
@@ -43,8 +46,9 @@ class ProductServiceImplTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        subCategory = new SubCategory();
         product = Product.builder().name("Tall dinning chair").price(2000.00).imageUrl("hgdhg")
-                .color("green").description("strong black").build();
+                .color("green").description("strong black").subCategory(subCategory).build();
 
         product1 = Product.builder().name("Short dinning chair").price(6000.00).imageUrl("imageurl")
                 .color("black").description("black").build();
@@ -61,13 +65,14 @@ class ProductServiceImplTest {
 
 
         productCustResponseDto = ProductCustResponseDto.builder().name("Tall dinning chair").price(2000.00).imageUrl("hgdhg")
-                .color("green").description("strong black").build();
-        when(productRepository.findById(anyLong())).thenReturn(Optional.ofNullable(product));
+                .color("green").description("strong black").subCategory(subCategory).build();
+
 
     }
 
     @Test
     void fetchASingleProduct() {
+        when(productRepository.findById(anyLong())).thenReturn(Optional.of(product));
         Assertions.assertEquals(productCustResponseDto, productService.fetchASingleProduct(anyLong()));
     }
 
