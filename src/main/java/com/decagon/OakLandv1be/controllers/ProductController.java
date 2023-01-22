@@ -28,13 +28,16 @@ public class ProductController {
     }
 
     @GetMapping("/page-and-sort")
-    public ResponseEntity<Page<ProductCustResponseDto>> productsByPaginationAndSorted(
-            @RequestParam Integer offset, @RequestParam  Integer size, @RequestParam  String sortingField ){
-        return  new ResponseEntity<>(productService.productWithPaginationAndSorting(offset, size, sortingField),HttpStatus.OK);
+    public ResponseEntity<Page<ProductCustResponseDto>> productsByPaginationAndSorted(@RequestParam(defaultValue = "0") Integer pageNo,
+                                                                                      @RequestParam(defaultValue = "10") Integer pageSize,
+                                                                                      @RequestParam(defaultValue = "id") String sortBy,
+                                                                                      @RequestParam(defaultValue = "false") boolean isAscending){
+        return  new ResponseEntity<>(productService.productWithPaginationAndSorting(pageNo, pageSize, sortBy,isAscending),HttpStatus.OK);
     }
 
     @PostMapping("/upload-image/{productId}")
     public ResponseEntity<Object> uploadProfilePic(@RequestPart MultipartFile productImage, @PathVariable Long productId) throws IOException {
         return ResponseEntity.ok(productService.uploadProductImage(productId, productImage));
     }
+
 }
