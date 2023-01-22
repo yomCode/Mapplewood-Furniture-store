@@ -10,7 +10,9 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @ToString
 public class CategoryDto {
-
+    @NotNull
+    private Long id;
     @NotNull(message = "Field cannot be missing or empty")
     private String name;
+    private Integer numberOfProducts;
 }

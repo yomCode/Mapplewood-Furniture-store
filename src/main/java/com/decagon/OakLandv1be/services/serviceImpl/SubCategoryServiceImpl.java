@@ -73,7 +73,9 @@ public class SubCategoryServiceImpl implements SubCategoryService {
         Set<SubCategory> subCategoryList = category.getSubCategories();
         Set<SubCategoryDto> subCategoryDtos = new HashSet<>();
         subCategoryList.forEach(subCategory -> {
-            SubCategoryDto subCategoryDto = SubCategoryDto.builder().name(subCategory.getName()).build();
+            SubCategoryDto subCategoryDto = SubCategoryDto.builder()
+                    .id(subCategory.getId())
+                    .name(subCategory.getName()).build();
             subCategoryDtos.add(subCategoryDto);
         });
         return subCategoryDtos;
