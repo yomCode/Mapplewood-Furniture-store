@@ -48,14 +48,4 @@ public class SubCategoryController {
         subCategoryService.deleteSubCategory(subCategoryId);
         return new ResponseEntity<>("SubCategory successfully deleted", HttpStatus.NO_CONTENT);
     }
-
-//    @GetMapping("/{subCategoryId}/allproducts")
-//    public ApiResponse<Page<Product>> fetchProductBySubcategory(
-//                                                     @PathVariable Long subCategoryId,
-//                                                     @RequestParam(defaultValue = "0") Integer pageNo,
-//                                                     @RequestParam(defaultValue = "16") Integer pageSize,
-//                                                     @RequestParam(defaultValue = "id") String sortBy,
-//                                                     @RequestParam(defaultValue = "false") boolean isAscending) {
-//        return subCategoryService.fetchProductsBySubcategory(subCategoryId, pageNo, pageSize, sortBy, isAscending);
-//    }
 }

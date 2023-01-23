@@ -73,6 +73,7 @@ public class CategoryServiceImpl implements CategoryService {
         return category;
     }
 
+<<<<<<< HEAD
     @Override
     public List<CategoryDto> viewAllCategoriesDeviation() {
        List<Category> categoryList = categoryRepository.findAll();
@@ -91,4 +92,7 @@ public class CategoryServiceImpl implements CategoryService {
         });
         return categoryDtoList;
     }
+=======
+
+>>>>>>> develop
 }
