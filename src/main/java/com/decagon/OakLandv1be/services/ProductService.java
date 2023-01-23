@@ -13,9 +13,9 @@ import java.util.List;
 
 public interface ProductService {
     ProductCustResponseDto fetchASingleProduct(Long product_id);
+    Page<ProductCustResponseDto> productWithPaginationAndSorting(Integer page, Integer size, String sortingField,boolean isAscending);
 
-    public Page<ProductCustResponseDto> productWithPaginationAndSorting(Integer offset, Integer size, String field);
-    public List<ProductCustResponseDto> fetchAllProducts();
+    List<ProductCustResponseDto> fetchAllProducts();
 
     String uploadProductImage(long productId, MultipartFile image) throws IOException;
 }
