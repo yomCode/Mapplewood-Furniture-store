@@ -13,13 +13,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.util.List;
 
 @Configuration
 @RequiredArgsConstructor
-public class FakeData {
+public class FakeDb {
 
     private final PasswordEncoder passwordEncoder;
 
