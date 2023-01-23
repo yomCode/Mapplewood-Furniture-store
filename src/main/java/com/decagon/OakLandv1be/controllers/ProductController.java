@@ -1,10 +1,8 @@
 package com.decagon.OakLandv1be.controllers;
 
 import com.decagon.OakLandv1be.dto.ProductCustResponseDto;
-import com.decagon.OakLandv1be.dto.ProductResponseDto;
-import com.decagon.OakLandv1be.entities.Product;
 import com.decagon.OakLandv1be.services.serviceImpl.ProductServiceImpl;
-import com.decagon.OakLandv1be.utils.ApiResponse;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -20,11 +18,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductController {
     private final ProductServiceImpl productService;
-
     @GetMapping("/view/{product_id}")
     public ResponseEntity<ProductCustResponseDto> viewASingleProduct(@PathVariable("product_id") Long product_id){
         return new ResponseEntity<>(productService.fetchASingleProduct(product_id), HttpStatus.OK);
-
     }
 
     @GetMapping("/page-and-sort")
@@ -36,5 +32,15 @@ public class ProductController {
     @PostMapping("/upload-image/{productId}")
     public ResponseEntity<Object> uploadProfilePic(@RequestPart MultipartFile productImage, @PathVariable Long productId) throws IOException {
         return ResponseEntity.ok(productService.uploadProductImage(productId, productImage));
+    }
+
+    @GetMapping("/new-arrival")
+    public ResponseEntity<List<ProductCustResponseDto>> viewNewArrivals(){
+        return new ResponseEntity<>(productService.viewNewArrivalProducts(), HttpStatus.OK);
+    }
+
+    @GetMapping("/best-selling")
+    public ResponseEntity<List<ProductCustResponseDto>> viewBestSelling(){
+        return new ResponseEntity<>(productService.viewBestSellingProducts(), HttpStatus.OK);
     }
 }

@@ -1,5 +1,6 @@
 package com.decagon.OakLandv1be.services;
 
+import com.decagon.OakLandv1be.dto.CategoryDto;
 import com.decagon.OakLandv1be.dto.UpdateProductDto;
 import com.decagon.OakLandv1be.entities.Product;
 import com.decagon.OakLandv1be.utils.ApiResponse;
@@ -15,6 +16,10 @@ public interface ProductService {
     ProductCustResponseDto fetchASingleProduct(Long product_id);
     public Page<ProductCustResponseDto> productWithPaginationAndSorting(Integer offset, Integer size, String field);
     public List<ProductCustResponseDto> fetchAllProducts();
-
     String uploadProductImage(long productId, MultipartFile image) throws IOException;
+    List<ProductCustResponseDto> viewNewArrivalProducts();
+    List<ProductCustResponseDto> viewBestSellingProducts();
+
+
+
 }
