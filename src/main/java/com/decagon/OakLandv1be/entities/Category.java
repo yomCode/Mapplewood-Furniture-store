@@ -2,6 +2,7 @@ package com.decagon.OakLandv1be.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -12,6 +13,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Data
 @ToString
 @Table(name = "category_tbl")
 public class Category extends BaseEntity{

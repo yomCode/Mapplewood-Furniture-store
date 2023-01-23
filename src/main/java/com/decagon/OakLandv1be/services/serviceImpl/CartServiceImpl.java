@@ -88,9 +88,6 @@ public class CartServiceImpl implements CartService {
     public String removeItem(Long itemToRemoveId) {
 
 
-
-
-
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
@@ -100,6 +97,7 @@ public class CartServiceImpl implements CartService {
 
             Cart cart = person.getCustomer().getCart();
             if (cart == null) throw new ResourceNotFoundException("cart is empty");
+
             Item item = itemRepository.findById(itemToRemoveId)
                     .orElseThrow(() -> new ResourceNotFoundException("Item does not exist"));
             Set<Item> itemsInCart = cart.getItems();

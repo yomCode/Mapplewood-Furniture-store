@@ -1,5 +1,6 @@
 package com.decagon.OakLandv1be.controllers;
 
+import com.decagon.OakLandv1be.dto.CustomerProfileDto;
 import com.decagon.OakLandv1be.dto.EditProfileRequestDto;
 import com.decagon.OakLandv1be.dto.SignupRequestDto;
 import com.decagon.OakLandv1be.dto.SignupResponseDto;
@@ -14,12 +15,14 @@ import com.decagon.OakLandv1be.utils.ApiResponse;
 import com.decagon.OakLandv1be.utils.ResponseManager;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.List;
 
 
 @CrossOrigin(origins = "http://localhost:3000")
@@ -46,7 +49,21 @@ public class CustomerController {
         customerService.editProfile(editProfileRequestDto);
         return new ResponseEntity<>("Profile Updated Successfully", HttpStatus.OK);
     }
-    
+
+
+    @GetMapping("/view-profile")
+    public ResponseEntity<CustomerProfileDto> viewProfile (){
+        return new ResponseEntity<>(customerService.viewProfile(), HttpStatus.OK);
+    }
+
+    @GetMapping("/admin/customers-profile/page-sort")
+    public ResponseEntity<Page<CustomerProfileDto>> viewAllProfilesPaginationAndSort(@Valid @RequestParam Integer pageNumber,
+                                                                                     @RequestParam Integer pageSize,
+                                                                                     @RequestParam String sortBy){
+        return new ResponseEntity<>(customerService.viewAllCustomersProfileWithPaginationSorting(pageNumber, pageSize, sortBy),
+                HttpStatus.OK);
+    }
+
     @PostMapping("/cart/item/add/{productId}")
     public ResponseEntity<String> addItemToCart(@PathVariable Long productId, @RequestBody AddItemToCartDto addItemToCartDto) throws AlreadyExistsException {
         String response = cartService.addItemToCart(productId,addItemToCartDto);

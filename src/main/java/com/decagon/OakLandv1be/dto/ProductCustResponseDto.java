@@ -21,4 +21,5 @@ public class ProductCustResponseDto {
     private String color;
 
     private String description;
+    private SubCategory subCategory;
 }
