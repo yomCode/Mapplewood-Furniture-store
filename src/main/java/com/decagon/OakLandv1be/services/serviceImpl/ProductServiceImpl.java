@@ -9,6 +9,7 @@ import com.decagon.OakLandv1be.exceptions.ProductNotFoundException;
 import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
 import com.decagon.OakLandv1be.repositries.ProductRepository;
 import com.decagon.OakLandv1be.services.ProductService;
+import com.decagon.OakLandv1be.utils.ApiResponse;
 import com.decagon.OakLandv1be.utils.Mapper;
 import com.decagon.OakLandv1be.utils.UserAuth;
 import lombok.RequiredArgsConstructor;
@@ -137,6 +138,13 @@ public class ProductServiceImpl implements ProductService {
         fos.write(image.getBytes());
         fos.close();
         return convFile;
+    }
+
+    @Override
+    public ApiResponse<Page<Product>> getAllProducts(Integer pageNo, Integer pageSize, String sortBy, boolean isAscending) {
+        Page<Product> userPage = productRepository.findAll(PageRequest.of(pageNo, pageSize,
+                isAscending ? Sort.Direction.ASC : Sort.Direction.DESC, sortBy));
+        return new ApiResponse<>(("Page: " + userPage.get()), true, userPage);
     }
 
 }

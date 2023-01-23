@@ -28,8 +28,8 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import java.util.Set;
 
+import java.util.Set;
 
 
 @Service
@@ -87,59 +87,65 @@ public class CartServiceImpl implements CartService {
     @Override
     public String removeItem(Long itemToRemoveId) {
 
+
+
+
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if ((authentication instanceof AnonymousAuthenticationToken))
-            throw new ResourceNotFoundException("Please Login");
-        String email = authentication.getName();
-        Person person = personRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
 
-        Cart cart = person.getCustomer().getCart();
-        if (cart == null) throw new ResourceNotFoundException("cart is empty");
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            String email = authentication.getName();
+            Person person = personRepository.findByEmail(email)
+                    .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
 
-        Item item = itemRepository.findById(itemToRemoveId)
-                .orElseThrow(() -> new ResourceNotFoundException("Item does not exist"));
-
-        Set<Item> itemsInCart = cart.getItems();
-        if(itemsInCart.contains(item))
-            itemsInCart.remove(item);
-        cart.setItems(itemsInCart);
-        itemRepository.save(item);
-            //itemRepository.delete(item);
+            Cart cart = person.getCustomer().getCart();
+            if (cart == null) throw new ResourceNotFoundException("cart is empty");
+            Item item = itemRepository.findById(itemToRemoveId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Item does not exist"));
+            Set<Item> itemsInCart = cart.getItems();
+            // for (Item item : itemsInCart) {
+            //if (item.getId() == itemToRemoveId) {
+            if (itemsInCart.contains(item))
+//                    //    if(itemsInCart.contains(item))
+////            itemsInCart.remove(item);
+////        cart.setItems(itemsInCart);
+////        itemRepository.save(item);
+                itemRepository.delete(item);
 
             return "item removed successfully";
 
-        //search for the logged in user
-            //get his cart
-            //cart
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        if (!(authentication instanceof AnonymousAuthenticationToken)) {
-//            String email = authentication.getName();
-//
-//            Person person = personRepository.findByEmail(email)
-//                    .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
-//
-//            Cart cart = person.getCustomer().getCart();
-//            if( cart == null) throw new ResourceNotFoundException("cart is empty");
-//            Item item = itemRepository.findById(itemToRemoveId)
-//                    .orElseThrow(() -> new ResourceNotFoundException("Item does not exist"));
-//            itemRepository.delete(item);
-//            return "Item successfully deleted";
-//
-//            System.out.println(" person is " + person.getCustomer());
-//            Set<Item> itemsInCart = cart.getItems();
-//            for (Item item : itemsInCart) {
-//                if (item.getId() == itemToRemoveId) {
-//                    itemsInCart.remove(item);
-//
-//                    cart.setItems(itemsInCart);
-//                    cartRepository.save(cart);
-//                    personRepository.save(person);
-//                    return "Item successfully deleted";
+//                    //search for the logged in user
+//                    //get his cart
+//                    //cart
+////        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+////        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+////            String email = authentication.getName();
+////
+////            Person person = personRepository.findByEmail(email)
+////                    .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
+////
+////            Cart cart = person.getCustomer().getCart();
+////            if( cart == null) throw new ResourceNotFoundException("cart is empty");
+////            Item item = itemRepository.findById(itemToRemoveId)
+////                    .orElseThrow(() -> new ResourceNotFoundException("Item does not exist"));
+////            itemRepository.delete(item);
+////            return "Item successfully deleted";
+////
+////            System.out.println(" person is " + person.getCustomer());
+////            Set<Item> itemsInCart = cart.getItems();
+////            for (Item item : itemsInCart) {
+////                if (item.getId() == itemToRemoveId) {
+////                    itemsInCart.remove(item);
+////
+////                    cart.setItems(itemsInCart);
+////                    cartRepository.save(cart);
+////                    personRepository.save(person);
+////                    return "Item successfully deleted";
 //                }
 //                throw new ResourceNotFoundException("Item does not exist");
-//          }
-//        }
-//        throw new UnauthorizedUserException("Login to carry out this operation");
+//
+
         }
+        throw new UnauthorizedUserException("User does not exist");
     }
+}

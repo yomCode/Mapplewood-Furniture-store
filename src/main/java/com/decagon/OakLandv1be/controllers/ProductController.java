@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/v1/products")
 @RequiredArgsConstructor
@@ -36,5 +37,13 @@ public class ProductController {
     @PostMapping("/upload-image/{productId}")
     public ResponseEntity<Object> uploadProfilePic(@RequestPart MultipartFile productImage, @PathVariable Long productId) throws IOException {
         return ResponseEntity.ok(productService.uploadProductImage(productId, productImage));
+    }
+
+    @GetMapping("/paginated-all")
+    public ApiResponse<Page<Product>> getAllProducts(@RequestParam(defaultValue = "0") Integer pageNo,
+                                                     @RequestParam(defaultValue = "16") Integer pageSize,
+                                                     @RequestParam(defaultValue = "id") String sortBy,
+                                                     @RequestParam(defaultValue = "false") boolean isAscending) {
+        return productService.getAllProducts(pageNo, pageSize, sortBy, isAscending);
     }
 }
