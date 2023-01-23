@@ -6,6 +6,7 @@ import com.decagon.OakLandv1be.dto.CheckoutResponseDto;
 import com.decagon.OakLandv1be.entities.*;
 import com.decagon.OakLandv1be.enums.DeliveryStatus;
 import com.decagon.OakLandv1be.enums.ModeOfDelivery;
+import com.decagon.OakLandv1be.exceptions.InputMismatchException;
 import com.decagon.OakLandv1be.exceptions.InvalidPaymentMethodException;
 import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
 import com.decagon.OakLandv1be.exceptions.UnauthorizedUserException;
@@ -85,14 +86,11 @@ public class CheckoutServiceImpl implements CheckoutService {
                 () -> new InvalidPaymentMethodException("This payment method is invalid"));
     }
     @Override
-    public ModeOfDelivery modeOfDelivery(String deliveryMethod){
-        String method = deliveryMethod.toUpperCase();
-        if (method.equals("PICKUP")) {
-            return ModeOfDelivery.PICKUP;
-        } else if (method.equals("DOORSTEP")) {
-            return ModeOfDelivery.DOORSTEP;
-        } else {
-            throw new IllegalArgumentException("Invalid delivery method: " + deliveryMethod);
+    public ModeOfDelivery modeOfDelivery(String deliveryMethod) throws InputMismatchException {
+        switch (deliveryMethod.toUpperCase()){
+            case "DOORSTEP": return ModeOfDelivery.DOORSTEP;
+            case "PICKUP": return ModeOfDelivery.PICKUP;
+            default: throw new InputMismatchException("Invalid delivery method");
         }
     }
     @Override
