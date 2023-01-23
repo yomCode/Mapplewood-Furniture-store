@@ -22,7 +22,6 @@ import javax.validation.Valid;
 import java.io.IOException;
 
 
-@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/v1/customer")
 @RequiredArgsConstructor
@@ -50,8 +49,8 @@ public class CustomerController {
     }
 
     @PostMapping("/cart/item/add/{productId}")
-    public ResponseEntity<String> addItemToCart(@PathVariable Long productId, @RequestBody AddItemToCartDto addItemToCartDto) throws AlreadyExistsException {
-        String response = cartService.addItemToCart(productId,addItemToCartDto);
+    public ResponseEntity<String> addItemToCart(@PathVariable Long productId) throws AlreadyExistsException {
+        String response = cartService.addItemToCart(productId);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 

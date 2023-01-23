@@ -116,7 +116,7 @@ class CustomerControllerTest {
             item.setProductName("Oppola");
             item.setImageUrl("www.google.com");
             item.setUnitPrice(40000.00);
-            item.setOrderQty(20);
+            item.setOrderQty(1);
             item.setSubTotal(item.getUnitPrice() * item.getOrderQty());
 
             Cart cart = person.getCustomer().getCart();
@@ -131,16 +131,13 @@ class CustomerControllerTest {
             cart.setItems(cartItemsSet);
             cart.setTotal(40000.0);
 
-            AddItemToCartDto addItemToCartDto = new AddItemToCartDto();
-            addItemToCartDto.setOrderQty(20);
-
             String response = "Item Saved to Cart Successfully";
 
             ApiResponse apiResponse = new ApiResponse<>("Request Successful",true, response);
 
             when(customerService.getCurrentlyLoggedInUser()).thenReturn(customer);
             when(cartRepository.findByCustomer(customer)).thenReturn(cart);
-            when(cartService.addItemToCart(1L,addItemToCartDto)).thenReturn(response);
+            when(cartService.addItemToCart(1L)).thenReturn(response);
             when(responseManager.success(response)).thenReturn(apiResponse);
 
             mockMvc.perform(post("/api/v1/auth/customer/cart/item/add/productId",1L).contentType("application/json"))

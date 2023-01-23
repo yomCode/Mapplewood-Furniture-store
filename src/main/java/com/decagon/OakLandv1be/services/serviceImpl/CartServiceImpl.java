@@ -31,18 +31,16 @@ public class CartServiceImpl implements CartService {
 
 
     @Override
-    public String addItemToCart(Long productId, AddItemToCartDto addItemToCartDto) {
-
+    public String addItemToCart(Long productId) {
         Customer loggedInCustomer = customerService.getCurrentlyLoggedInUser();
         Cart cart = loggedInCustomer.getCart();
 
         Product product = productRepository.findById(productId).orElseThrow(() -> new NotAvailableException("Product" +
                 " not available"));
 
-        if (product.getAvailableQty() == 0)
-            throw new NotAvailableException("Product out of stock");
-        if (addItemToCartDto.getOrderQty() > product.getAvailableQty())
-            throw new NotAvailableException("Requested quantity more than available quantity, for this product");
+        if (product.getAvailableQty() == 0) throw new NotAvailableException("Product out of stock");
+//        if (addItemToCartDto.getOrderQty() > product.getAvailableQty())
+//            throw new NotAvailableException("Requested quantity more than available quantity, for this product");
 
         Set<Item> allCartItems = cart.getItems();
 
@@ -50,8 +48,8 @@ public class CartServiceImpl implements CartService {
         BeanUtils.copyProperties(product, newCartItem);
         newCartItem.setProductName(product.getName());
         newCartItem.setUnitPrice(product.getPrice());
-        newCartItem.setOrderQty(addItemToCartDto.getOrderQty());
-        newCartItem.setSubTotal(addItemToCartDto.getOrderQty() * product.getPrice());
+        newCartItem.setOrderQty(1);
+        newCartItem.setSubTotal(newCartItem.getOrderQty() * product.getPrice());
         allCartItems.add(newCartItem);
 
         cart.setItems(allCartItems);
