@@ -34,7 +34,6 @@ import java.util.Map;
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
 
-//    private final UserAuth userAuth;
     private final CloudinaryConfig cloudinaryConfig;
 
     public ProductCustResponseDto fetchASingleProduct(Long product_id) {
@@ -46,6 +45,7 @@ public class ProductServiceImpl implements ProductService {
                 .imageUrl(product.getImageUrl())
                 .color(product.getColor())
                 .description(product.getDescription())
+                .subCategory(product.getSubCategory())
                 .build();
     }
 
@@ -82,22 +82,9 @@ public class ProductServiceImpl implements ProductService {
 
 
     @Override
-    public Page<ProductCustResponseDto> productWithPaginationAndSorting(Integer page, Integer size, String sortingField) {
-
-        page=page<0?0:page;
-
-        size=size<10?10:size;
-
-        if(!(sortingField.equalsIgnoreCase("name") || sortingField.equalsIgnoreCase("price")
-        || sortingField.equalsIgnoreCase("color") || sortingField.equalsIgnoreCase("colour"))){
-            sortingField="price";
-        }
-        if(sortingField.equalsIgnoreCase("colour")){
-            sortingField="color";
-        }
-
-        return productRepository.findAll(PageRequest.of(page,size).withSort(Sort.by(sortingField)))
-                .map(Mapper::productToProductResponseDto);
+    public Page<ProductCustResponseDto> productWithPaginationAndSorting(Integer page, Integer size, String sortingField,boolean isAscending) {
+        return productRepository.findAll(PageRequest.of(page, size,
+                isAscending ? Sort.Direction.ASC : Sort.Direction.DESC, sortingField)).map(Mapper::productToProductResponseDto);
     }
 
     @Override
@@ -138,5 +125,6 @@ public class ProductServiceImpl implements ProductService {
         fos.close();
         return convFile;
     }
+
 
 }
