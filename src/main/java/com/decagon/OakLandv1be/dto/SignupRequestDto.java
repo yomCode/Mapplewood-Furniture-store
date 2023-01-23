@@ -25,14 +25,10 @@ public class SignupRequestDto {
 
     private String gender;
 
-    @NotBlank(message = "Date of birth is mandatory")
     private String date_of_birth;
 
-    @NotBlank(message = "Phone number is mandatory")
-    @Size(min = 11, max = 14, message = "Phone number must have a minimum length of 11 and maximum of 15")
     private String phoneNumber;
 
-    @NotBlank(message = "Address is mandatory")
     private String address;
 
     @NotBlank(message = "Password is mandatory")

@@ -23,7 +23,7 @@ public class Address extends BaseEntity{
     private String country;
     private Boolean isDefault;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name="customer_id")
     private Customer customer;
 

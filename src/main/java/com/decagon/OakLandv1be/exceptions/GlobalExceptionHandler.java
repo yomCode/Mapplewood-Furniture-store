@@ -7,6 +7,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.Objects;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -117,9 +119,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> invalidProductAttributes(MethodArgumentNotValidException ie) {
         ErrorResponse errorResponse = new ErrorResponse();
-        String[] errors = ie.getMessage().split(";");
-        String errorMessage = errors[errors.length - 1];
 
+        String errorMessage = Objects.requireNonNull(ie.getFieldError()).getDefaultMessage();
         errorResponse.setMessage(errorMessage);
         errorResponse.setDebugMessage("Invalid Input Filled in Field");
         errorResponse.setStatus(HttpStatus.NOT_FOUND);
@@ -136,7 +137,6 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
-
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseEntity<ErrorResponse> notAvailable(UnauthorizedException ne){
         ErrorResponse errorResponse = new ErrorResponse();
@@ -146,7 +146,6 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
 
-
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ErrorResponse> illegalArgumentException(IllegalArgumentException ex) {
         ErrorResponse errorResponse = new ErrorResponse();
@@ -154,7 +153,6 @@ public class GlobalExceptionHandler {
         errorResponse.setDebugMessage(ex.getLocalizedMessage());
         errorResponse.setStatus(HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
-
     }
 
     @ExceptionHandler(PasswordMisMatchException.class)
