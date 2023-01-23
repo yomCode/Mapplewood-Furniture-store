@@ -39,11 +39,4 @@ public class ProductController {
         return ResponseEntity.ok(productService.uploadProductImage(productId, productImage));
     }
 
-    @GetMapping("/paginated-all")
-    public ApiResponse<Page<Product>> getAllProducts(@RequestParam(defaultValue = "0") Integer pageNo,
-                                                     @RequestParam(defaultValue = "16") Integer pageSize,
-                                                     @RequestParam(defaultValue = "id") String sortBy,
-                                                     @RequestParam(defaultValue = "false") boolean isAscending) {
-        return productService.getAllProducts(pageNo, pageSize, sortBy, isAscending);
-    }
 }
