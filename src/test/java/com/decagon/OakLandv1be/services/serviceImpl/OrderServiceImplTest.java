@@ -66,9 +66,5 @@ class OrderServiceImplTest {
         assertEquals(orderResponseDto, actual);
     }
 
-    @Test
-    void viewOrderHistory() {
-    }
-
 
 }
