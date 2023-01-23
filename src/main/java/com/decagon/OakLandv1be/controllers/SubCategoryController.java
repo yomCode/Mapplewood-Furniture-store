@@ -1,10 +1,12 @@
 package com.decagon.OakLandv1be.controllers;
 
 import com.decagon.OakLandv1be.dto.SubCategoryDto;
+import com.decagon.OakLandv1be.entities.Product;
 import com.decagon.OakLandv1be.entities.SubCategory;
 import com.decagon.OakLandv1be.services.SubCategoryService;
 import com.decagon.OakLandv1be.utils.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -46,4 +48,14 @@ public class SubCategoryController {
         subCategoryService.deleteSubCategory(subCategoryId);
         return new ResponseEntity<>("SubCategory successfully deleted", HttpStatus.NO_CONTENT);
     }
+
+//    @GetMapping("/{subCategoryId}/allproducts")
+//    public ApiResponse<Page<Product>> fetchProductBySubcategory(
+//                                                     @PathVariable Long subCategoryId,
+//                                                     @RequestParam(defaultValue = "0") Integer pageNo,
+//                                                     @RequestParam(defaultValue = "16") Integer pageSize,
+//                                                     @RequestParam(defaultValue = "id") String sortBy,
+//                                                     @RequestParam(defaultValue = "false") boolean isAscending) {
+//        return subCategoryService.fetchProductsBySubcategory(subCategoryId, pageNo, pageSize, sortBy, isAscending);
+//    }
 }

@@ -46,4 +46,13 @@ public class ProductController {
         return productService.getAllProducts(pageNo, pageSize, sortBy, isAscending);
     }
 
+    @GetMapping("/subcategory/{subCategoryId}/paginated-all")
+    public ApiResponse<Page<Product>> getAllProductsBySubCategory( @PathVariable Long subCategoryId,
+                                                                 @RequestParam(defaultValue = "0") Integer pageNo,
+                                                                 @RequestParam(defaultValue = "16") Integer pageSize,
+                                                                 @RequestParam(defaultValue = "id") String sortBy,
+                                                                 @RequestParam(defaultValue = "false") boolean isAscending) {
+        return productService.getAllProductsBySubCategory(subCategoryId, pageNo, pageSize, sortBy, isAscending);
+    }
+
 }

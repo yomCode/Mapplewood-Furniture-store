@@ -15,4 +15,5 @@ public class SubCategoryDto {
 
     @NotNull(message = "Field cannot be missing or empty")
     private String name;
+    private Integer size;
 }

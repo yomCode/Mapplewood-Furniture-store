@@ -3,6 +3,7 @@ package com.decagon.OakLandv1be.services.serviceImpl;
 
 import com.decagon.OakLandv1be.dto.SubCategoryDto;
 import com.decagon.OakLandv1be.entities.Category;
+import com.decagon.OakLandv1be.entities.Product;
 import com.decagon.OakLandv1be.entities.SubCategory;
 import com.decagon.OakLandv1be.exceptions.AlreadyExistsException;
 import com.decagon.OakLandv1be.exceptions.EmptyListException;
@@ -12,6 +13,10 @@ import com.decagon.OakLandv1be.repositries.SubCategoryRepository;
 import com.decagon.OakLandv1be.services.SubCategoryService;
 import com.decagon.OakLandv1be.utils.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -75,6 +80,7 @@ public class SubCategoryServiceImpl implements SubCategoryService {
         subCategoryList.forEach(subCategory -> {
             SubCategoryDto subCategoryDto = SubCategoryDto.builder()
                     .id(subCategory.getId())
+                    .size(subCategory.getProducts().size())
                     .name(subCategory.getName()).build();
             subCategoryDtos.add(subCategoryDto);
         });

@@ -14,5 +14,5 @@ public class CategoryDto {
     private Long id;
     @NotNull(message = "Field cannot be missing or empty")
     private String name;
-    private Integer numberOfProducts;
+    private Integer size;
 }

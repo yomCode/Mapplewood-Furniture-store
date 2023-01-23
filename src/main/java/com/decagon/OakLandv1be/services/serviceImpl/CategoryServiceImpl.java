@@ -84,7 +84,8 @@ public class CategoryServiceImpl implements CategoryService {
             int size2 = category.getSubCategories().size();
             CategoryDto categoryDto = CategoryDto.builder()
                     .id(category.getId())
-                    .name(category.getName()).numberOfProducts(size2)
+                    .name(category.getName())
+                    .size(size2)
                     .build();
             categoryDtoList.add(categoryDto);
         });

@@ -14,6 +14,7 @@ import com.decagon.OakLandv1be.utils.Mapper;
 import com.decagon.OakLandv1be.utils.UserAuth;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -35,7 +36,6 @@ import java.util.Map;
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
 
-//    private final UserAuth userAuth;
     private final CloudinaryConfig cloudinaryConfig;
 
     public ProductCustResponseDto fetchASingleProduct(Long product_id) {
@@ -151,6 +151,14 @@ public class ProductServiceImpl implements ProductService {
         Page<Product> userPage = productRepository.findAll(PageRequest.of(pageNo, pageSize,
                 isAscending ? Sort.Direction.ASC : Sort.Direction.DESC, sortBy));
         return new ApiResponse<>(("Page: " + userPage.get()), true, userPage);
+    }
+
+    @Override
+    public ApiResponse<Page<Product>> getAllProductsBySubCategory(Long subCategoryId, Integer pageNo, Integer pageSize, String sortBy, boolean isAscending) {
+        Page<Product> userPage = productRepository.findAllBySubCategoryId(subCategoryId, PageRequest.of(pageNo, pageSize,
+                isAscending ? Sort.Direction.ASC : Sort.Direction.DESC, sortBy));
+        return new ApiResponse<>(("Page: " + userPage.get()), true, userPage);
+
     }
 
 
