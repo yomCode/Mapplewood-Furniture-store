@@ -86,7 +86,8 @@ class SubCategoryServiceImplTest {
      }
     @Test
     void viewAllSubCategories() {
-        subCategoryDtos = Arrays.asList(new SubCategoryDto("Mini Tester"), new SubCategoryDto("Mini Tester"));
+        subCategoryDtos = Arrays.asList(SubCategoryDto.builder().name("Mini Tester").build(),
+                SubCategoryDto.builder().name("Mini Tester").build());
         when(subCategoryRepository.findAll()).thenReturn(subCategoryList);
         when(subCategoryRepository.findAll()).thenReturn(subCategoryList);
         List<SubCategoryDto> subCategoryDtos = subCategoryService.viewAllSubCategories();
