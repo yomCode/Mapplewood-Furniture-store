@@ -16,12 +16,14 @@ import javax.persistence.*;
 public class Address extends BaseEntity{
 
     private String fullName;
+    private String phone;
     private String emailAddress;
     private String street;
     private String state;
     private String country;
+    private Boolean isDefault;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name="customer_id")
     private Customer customer;
 

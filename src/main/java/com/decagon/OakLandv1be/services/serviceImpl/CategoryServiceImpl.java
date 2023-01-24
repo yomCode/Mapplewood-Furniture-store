@@ -2,10 +2,14 @@ package com.decagon.OakLandv1be.services.serviceImpl;
 
 import com.decagon.OakLandv1be.dto.CategoryDto;
 import com.decagon.OakLandv1be.entities.Category;
+import com.decagon.OakLandv1be.entities.Product;
+import com.decagon.OakLandv1be.entities.SubCategory;
 import com.decagon.OakLandv1be.exceptions.AlreadyExistsException;
 import com.decagon.OakLandv1be.exceptions.EmptyListException;
 import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
 import com.decagon.OakLandv1be.repositries.CategoryRepository;
+import com.decagon.OakLandv1be.repositries.ProductRepository;
+import com.decagon.OakLandv1be.repositries.SubCategoryRepository;
 import com.decagon.OakLandv1be.services.CategoryService;
 import com.decagon.OakLandv1be.utils.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -13,11 +17,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
+    private final SubCategoryRepository subCategoryRepository;
+    private final ProductRepository productRepository;
 
     @Override
     public ApiResponse<Category> createCategory(CategoryDto categoryDto) {
@@ -64,5 +71,24 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = categoryRepository.findById(category_id).orElseThrow(() ->
                 new ResourceNotFoundException("This Category does not exist"));
         return category;
+    }
+
+    @Override
+    public List<CategoryDto> viewAllCategoriesDeviation() {
+       List<Category> categoryList = categoryRepository.findAll();
+        if(categoryList.isEmpty())
+            throw new EmptyListException("There are no categories yet", "Kindly create categories");
+
+        List<CategoryDto> categoryDtoList = new ArrayList<>();
+        categoryList.forEach(category -> {
+            int size2 = category.getSubCategories().size();
+            CategoryDto categoryDto = CategoryDto.builder()
+                    .id(category.getId())
+                    .name(category.getName())
+                    .size(size2)
+                    .build();
+            categoryDtoList.add(categoryDto);
+        });
+        return categoryDtoList;
     }
 }

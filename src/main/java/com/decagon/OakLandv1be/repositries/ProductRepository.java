@@ -9,11 +9,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-
 import java.util.List;
 import java.util.stream.DoubleStream;
+import java.util.Set;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
     boolean existsByName(String name);
+
+    @Query(value="SELECT * FROM product_tbl WHERE sub_category_id=?", nativeQuery = true)
+    Page<Product> findAllBySubCategoryId(Long subCategoryId, PageRequest of);
 }
