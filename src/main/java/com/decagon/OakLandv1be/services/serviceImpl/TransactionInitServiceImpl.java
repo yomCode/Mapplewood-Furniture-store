@@ -22,6 +22,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
@@ -39,6 +40,8 @@ public class TransactionInitServiceImpl implements TransactionInitService {
 
     private final WalletService walletService;
 
+    private final HttpServletRequest servletRequest;
+
 
 
     @Override
@@ -53,7 +56,7 @@ public class TransactionInitServiceImpl implements TransactionInitService {
         request.setAmount(amountInKobo);
         request.setEmail(email);
         request.setReference(UUID.randomUUID().toString());
-        request.setCallback_url("http://localhost:8080/api/v1/finalizeTrans/"+request.getReference());
+        request.setCallback_url("http://" + servletRequest.getServerName() + ":" + servletRequest.getServerPort()+ "/api/v1/finalizeTrans/"+request.getReference());
 
 
         apiConnection = new ApiConnection("https://api.paystack.co/transaction/initialize");

@@ -7,6 +7,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -21,4 +22,4 @@ public class SuperAdmin extends BaseEntity{
     private Wallet wallet;
 }
 // some changes
-//chage-2
+//chage-2 

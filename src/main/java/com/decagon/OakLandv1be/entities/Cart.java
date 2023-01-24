@@ -21,7 +21,7 @@ public class Cart extends BaseEntity{
     @OneToMany(mappedBy = "cart" ,cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Item> items = new HashSet<>();
 
-    private Double total;
+    private Double total = 0.0;
 
     @JsonIgnore
     @OneToOne(mappedBy = "cart", cascade = CascadeType.ALL)
