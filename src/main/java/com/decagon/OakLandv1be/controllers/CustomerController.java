@@ -66,7 +66,7 @@ public class CustomerController {
     }
 
     @PostMapping("/cart/item/add/{productId}")
-    public ResponseEntity<String> addItemToCart(@PathVariable Long productId, @RequestBody AddItemToCartDto addItemToCartDto) throws AlreadyExistsException {
+    public ResponseEntity<String> addItemToCart(@Valid @RequestBody AddItemToCartDto addItemToCartDto, @PathVariable Long productId) throws AlreadyExistsException {
         String response = cartService.addItemToCart(productId,addItemToCartDto);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }

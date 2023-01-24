@@ -19,14 +19,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AddressServiceImpl implements AddressService {
 
-    private final UserAuth userAuth;
+   // private final UserAuth userAuth;
     private final PersonRepository personRepository;
     private final AddressRepository addressRepository;
 
 
     @Override
     public AddressResponseDto createAddress(AddressRequestDto request){
-        String email = userAuth.getPrincipal();
+        String email = UserAuth.getPrincipal();
 
         Person person = personRepository.findByEmail(email).orElseThrow();
         Customer customer = person.getCustomer();

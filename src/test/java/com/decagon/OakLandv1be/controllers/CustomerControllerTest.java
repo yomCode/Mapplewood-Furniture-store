@@ -1,47 +1,28 @@
 package com.decagon.OakLandv1be.controllers;
 
 import com.decagon.OakLandv1be.OakLandV1BeApplication;
-import com.decagon.OakLandv1be.controllers.CustomerController;
 import com.decagon.OakLandv1be.dto.CustomerProfileDto;
-import com.decagon.OakLandv1be.dto.SignupResponseDto;
-import com.decagon.OakLandv1be.dto.EditProfileRequestDto;
 import com.decagon.OakLandv1be.dto.cartDtos.AddItemToCartDto;
-import com.decagon.OakLandv1be.dto.cartDtos.CartResponseDto;
-import com.decagon.OakLandv1be.dto.cartDtos.CartItemResponseDto;
 import com.decagon.OakLandv1be.entities.*;
 import com.decagon.OakLandv1be.enums.Gender;
 import com.decagon.OakLandv1be.enums.Role;
 import com.decagon.OakLandv1be.repositries.CartRepository;
-import com.decagon.OakLandv1be.services.CustomerService;
 import com.decagon.OakLandv1be.services.serviceImpl.CartServiceImpl;
 import com.decagon.OakLandv1be.services.serviceImpl.CustomerServiceImpl;
 import com.decagon.OakLandv1be.utils.ApiResponse;
 import com.decagon.OakLandv1be.utils.ResponseManager;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.junit.jupiter.api.Assertions;
-import org.mockito.Mock;
-
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
-
-import static com.decagon.OakLandv1be.enums.ModeOfDelivery.DOORSTEP;
-import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.anyLong;
-
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -83,21 +64,22 @@ class CustomerControllerTest {
 //        EditProfileRequestDto editProfileRequestDto = new EditProfileRequestDto();
 //        editProfileRequestDto.setFirstName("Many");
 //        editProfileRequestDto.setLastName("Rob");
-
-//        editProfileRequestDto.setGender(Gender.MALE);
-
+//
 //        editProfileRequestDto.setGender(String.valueOf(Gender.MALE));
-
+//
+//        editProfileRequestDto.setGender(String.valueOf(Gender.MALE));
+//
 //        editProfileRequestDto.setDate_of_birth("11-01-1993");
 //        editProfileRequestDto.setPhone("07068693321");
-//
+//        doNothing().when(customerService).editProfile(editProfileRequestDto);
 //        String requestBody = mapper.writeValueAsString(editProfileRequestDto);
-//        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/auth/customer/edit-profile")
+//        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/customer/edit-profile", 42L)
 //                        .contentType("application/json").content(requestBody))
-//                .andExpect(status().isOk());
+//                .andExpect(status().isOk())
+//                .andReturn();
 //    }
 
-//}
+
 
     @Test
     void CustomerController_AddItemToCart_ReturnResponseEntity() {

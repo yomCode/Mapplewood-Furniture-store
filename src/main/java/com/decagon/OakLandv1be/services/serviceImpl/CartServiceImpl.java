@@ -1,5 +1,6 @@
 package com.decagon.OakLandv1be.services.serviceImpl;
 
+import com.decagon.OakLandv1be.dto.CartDto;
 import com.decagon.OakLandv1be.dto.cartDtos.AddItemToCartDto;
 import com.decagon.OakLandv1be.entities.*;
 import com.decagon.OakLandv1be.exceptions.NotAvailableException;
@@ -16,6 +17,8 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import java.util.Objects;
 import java.util.Set;
 
 
@@ -83,7 +86,7 @@ public class CartServiceImpl implements CartService {
             Set<Item> itemsInCart = cart.getItems();
             System.out.println(itemsInCart.toString());
             for (Item item : itemsInCart) {
-                if (item.getId() == itemToRemoveId) {
+                if (Objects.equals(item.getId(), itemToRemoveId)) {
                     itemsInCart.remove(item);
 
 
@@ -96,5 +99,16 @@ public class CartServiceImpl implements CartService {
             }
         }
         throw new UnauthorizedUserException("Login to carry out this operation");
+    }
+
+    @Override
+    public CartDto viewCartByCustomer() {
+        Customer loggedInCustomer = customerService.getCurrentlyLoggedInUser();
+        Cart cart = cartRepository.findByCustomer(loggedInCustomer);
+        if (cart.getItems().isEmpty())
+            throw new ResourceNotFoundException("Your Cart is empty!");
+        return CartDto.builder()
+                .items(cart.getItems())
+                .total(cart.getTotal()).build();
     }
 }
