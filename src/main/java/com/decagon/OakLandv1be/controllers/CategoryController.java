@@ -45,4 +45,10 @@ public class CategoryController {
         categoryService.deleteCategory(category_id);
         return new ResponseEntity<>("category successfully deleted", HttpStatus.NO_CONTENT);
     }
+
+    @GetMapping("/all")
+    ResponseEntity<List<CategoryDto>> viewAllCategoriesDeviation (){
+        List<CategoryDto> categoryDtoList = categoryService.viewAllCategoriesDeviation();
+        return new ResponseEntity<>(categoryDtoList, HttpStatus.OK);
+    }
 }
