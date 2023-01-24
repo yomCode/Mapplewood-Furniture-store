@@ -12,9 +12,11 @@ import com.decagon.OakLandv1be.services.AddressService;
 import com.decagon.OakLandv1be.utils.UserUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import static com.decagon.OakLandv1be.utils.UserUtil.extractEmailFromPrincipal;
 
 @Service
 @RequiredArgsConstructor
@@ -26,8 +28,7 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public AddressResponseDto createAddress(AddressRequestDto request){
-        String email = UserUtil.extractEmailFromPrincipal()
-                .orElseThrow(() -> new UnauthorizedException("You are not logged in."));
+        String email = extractEmailFromPrincipal().get();
 
         Person person = personRepository.findByEmail(email).orElseThrow();
         Customer customer = person.getCustomer();
@@ -88,9 +89,12 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    public List<AddressResponseDto> getAllAddress(){
-        List<Address> addressList = addressRepository.findAll();
-        List<AddressResponseDto> addressResponse = new ArrayList<>();
+    public Set<AddressResponseDto> getAllAddress(){
+        String email = extractEmailFromPrincipal().get();
+        Person person = personRepository.findByEmail(email).orElseThrow();
+        Customer customer = person.getCustomer();
+        Set<Address> addressList = customer.getAddressBook();
+        Set<AddressResponseDto> addressResponse = new HashSet<>();
         addressList
                 .forEach(address -> {
                     AddressResponseDto response = AddressResponseDto.builder()
