@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("api/v1/state")
 @RequiredArgsConstructor
 
-public class StateControllerTest1 {
+public class StateController {
 
     private final StatesService statesService;
 
@@ -28,7 +28,7 @@ public class StateControllerTest1 {
 
     @GetMapping("/view_state/{name}")
     @ResponseStatus(HttpStatus.OK)
-    public  void viewState(@PathVariable String nameOfState){statesService.viewStateByName(nameOfState);
+    public  void viewState(@PathVariable String nameOfState) { statesService.viewStateByName(nameOfState);
     }
 
 
