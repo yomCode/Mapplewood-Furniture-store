@@ -33,7 +33,6 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtGra
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
-
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -70,6 +69,7 @@ public class SecurityConfig {
             config.setMaxAge(3600L);
             return config;
         }).and().csrf(AbstractHttpConfigurer::disable)
+
                 .authorizeHttpRequests((auth) -> {
                 auth.antMatchers(WHITE_LISTED_URLS).permitAll()
                             .antMatchers("/api/v1/super-admin/**").hasRole(SUPERADMIN.name())

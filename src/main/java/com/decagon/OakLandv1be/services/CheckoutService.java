@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 
 public interface CheckoutService {
     ResponseEntity<CheckoutResponseDto> cartCheckout(CheckoutDto checkoutDto);
+
     ModeOfPayment modeOfPayment(String modeOfPayment);
 
     ModeOfDelivery modeOfDelivery(String deliveryMethod);
