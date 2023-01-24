@@ -125,5 +125,19 @@ public class ProductServiceImpl implements ProductService {
         return convFile;
     }
 
+    @Override
+    public ApiResponse<Page<Product>> getAllProducts(Integer pageNo, Integer pageSize, String sortBy, boolean isAscending) {
+        Page<Product> userPage = productRepository.findAll(PageRequest.of(pageNo, pageSize,
+                isAscending ? Sort.Direction.ASC : Sort.Direction.DESC, sortBy));
+        return new ApiResponse<>(("Page: " + userPage.get()), true, userPage);
+    }
+
+    @Override
+    public ApiResponse<Page<Product>> getAllProductsBySubCategory(Long subCategoryId, Integer pageNo, Integer pageSize, String sortBy, boolean isAscending) {
+        Page<Product> userPage = productRepository.findAllBySubCategoryId(subCategoryId, PageRequest.of(pageNo, pageSize,
+                isAscending ? Sort.Direction.ASC : Sort.Direction.DESC, sortBy));
+        return new ApiResponse<>(("Page: " + userPage.get()), true, userPage);
+
+    }
 
 }

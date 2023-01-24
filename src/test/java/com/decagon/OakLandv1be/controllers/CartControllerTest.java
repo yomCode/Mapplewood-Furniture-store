@@ -1,65 +1,87 @@
-//package com.decagon.OakLandv1be.controllers;
+package com.decagon.OakLandv1be.controllers;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import com.decagon.OakLandv1be.services.CartService;
+import com.decagon.OakLandv1be.utils.ApiResponse;
+import com.decagon.OakLandv1be.utils.ResponseManager;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+@ExtendWith(MockitoExtension.class)
+
+class CartControllerTest {
+
+
+    @Mock
+    private CartService cartService;
+
+    @Mock
+    private ResponseManager responseManager;
+
+    @InjectMocks
+    private CartController cartController;
+
+    private MockMvc mockMvc;
+
+    @BeforeEach
+    public void setUp() {
+        mockMvc = MockMvcBuilders.standaloneSetup(cartController).build();
+    }
+
+    @Test
+    public void testDeleteItem() throws Exception {
+        // Set up mock service response
+        when(responseManager.success("Item removed successfully")).thenReturn(new ApiResponse<>("success", "Item removed successfully",HttpStatus.OK));
+
+        // Perform DELETE request to delete item
+        mockMvc.perform(delete("/api/v1/cart/item/delete/1"))
+                .andExpect(status().isOk());
+
+        // Verify that cartService.removeItem was called with the correct itemId
+        verify(cartService).removeItem(1L);
+
+        // Verify that responseManager.success was called with the correct message
+        verify(responseManager).success("Item removed successfully");
+    }
+
+//    @Mock
+//    private CartService cartService;
 //
+//    @InjectMocks
+//    private CartController cartController;
 //
-//import com.decagon.OakLandv1be.entities.Cart;
-//import com.decagon.OakLandv1be.entities.Customer;
-//import com.decagon.OakLandv1be.entities.Item;
-//import com.decagon.OakLandv1be.entities.Person;
-//import com.decagon.OakLandv1be.services.serviceImpl.CartServiceImpl;
-//import org.junit.jupiter.api.Test;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-//import org.springframework.boot.test.mock.mockito.MockBean;
-//import org.springframework.http.MediaType;
-//import org.springframework.test.context.ContextConfiguration;
-//import org.springframework.test.web.servlet.MockMvc;
-//import org.springframework.test.web.servlet.MvcResult;
-//import org.springframework.test.web.servlet.RequestBuilder;
-//import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-//
-//import java.util.HashSet;
-//import java.util.Set;
-//
-//import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-//@WebMvcTest
-//@ContextConfiguration(classes = CartController.class)
-//class CartControllerTest {
-//    @Autowired
 //    private MockMvc mockMvc;
-//    @MockBean
-//    private CartServiceImpl cartService;
 //
-//    private Customer customer;
-//    private Person person;
-//    private Item item;
+//    @BeforeEach
+//    public void setUp() {
+//        mockMvc = MockMvcBuilders.standaloneSetup(cartController).build();
+//    }
 //
 //    @Test
-//    public void removeItemFromCart() throws Exception {
-//        Set<Item> itemsSet = new HashSet<>();
-//        Cart cart = new Cart();
-//        cart.setId(1L);
-//        cart.setItems(itemsSet);
-//        customer = Customer.builder()
-//                .person(person)
-//                .cart(cart)
-//                .wallet(null)
-//                .build();
-//        item = Item.builder()
-//                .productName("cushion wood")
-//                .cart(null)
-//                .order(null)
-//                .imageUrl("img/url")
-//                .orderQty(3)
-//                .unitPrice(200.00)
-//                .subTotal(600.00)
-//                .build();
-//        item.setId(1L);
-//
-//        RequestBuilder requestBuilder = MockMvcRequestBuilders
-//                .delete("/api/v1/cart/item/delete/{itemId}",1L)
-//                .contentType(MediaType.APPLICATION_JSON);
-//        MvcResult mvcResult = mockMvc.perform(requestBuilder)
-//                .andExpect(status().isOk())
-//                .andReturn();
+//    public void deleteItem_whenItemIdExist_returnsOk() throws Exception {
+//        // arrange
+//        Long itemId = 1L;
+//        when(cartService.removeItem(eq(itemId))).thenReturn("Item deleted");
+//        // act
+//        mockMvc.perform(delete("/api/v1/cart/item/delete/{itemId}", itemId)
+//                        .contentType(MediaType.APPLICATION_JSON))
+//                .andExpect(status().isOk());
+//        // assert
+//        verify(cartService).removeItem(eq(itemId));
 //    }
-//}
+
+
+}
+
+

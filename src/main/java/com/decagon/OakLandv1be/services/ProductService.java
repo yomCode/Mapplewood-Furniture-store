@@ -16,6 +16,10 @@ public interface ProductService {
 
     List<ProductCustResponseDto> fetchAllProducts();
 
+    public List<ProductCustResponseDto> fetchAllProducts();
+    ApiResponse<Page<Product>> getAllProducts(Integer pageNo, Integer pageSize, String sortBy, boolean isAscending);
 
     String uploadProductImage(long productId, MultipartFile image) throws IOException;
+
+    ApiResponse<Page<Product>> getAllProductsBySubCategory(Long subCategoryId, Integer pageNo, Integer pageSize, String sortBy, boolean isAscending);
 }
