@@ -13,4 +13,6 @@ public interface CategoryService {
 
     ApiResponse<Category> editCategory(CategoryDto categoryDto, Long category_id);
     Category fetchASingleCategory(Long category_id);
+
+    List<CategoryDto> viewAllCategoriesDeviation();
 }

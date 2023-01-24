@@ -24,13 +24,11 @@ public class AddressController {
         return ResponseEntity.ok(addressService.updateAddress(addressId, request));
     }
 
-
     @GetMapping("/setDefault/{addressId}")
     public ResponseEntity<Object> setAsDefault(@PathVariable Long addressId){
         addressService.setAsDefault(addressId);
         return ResponseEntity.ok("Address set to default");
     }
-
 
     @DeleteMapping("/delete/{addressId}")
     public ResponseEntity<Object> deleteAddress(@PathVariable Long addressId){
@@ -38,10 +36,8 @@ public class AddressController {
         return ResponseEntity.ok("Address deleted");
     }
 
-
     @GetMapping("/all")
     public ResponseEntity<Object> getAllAddress(){
         return ResponseEntity.ok(addressService.getAllAddress());
     }
-
 }

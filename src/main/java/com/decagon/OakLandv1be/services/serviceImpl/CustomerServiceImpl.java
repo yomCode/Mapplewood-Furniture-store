@@ -125,10 +125,10 @@ public class CustomerServiceImpl implements CustomerService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         customer.setFirstName(editProfileRequestDto.getFirstName());
         customer.setLastName(editProfileRequestDto.getLastName());
-        customer.setGender(Gender.valueOf(editProfileRequestDto.getGender().toUpperCase()));
         customer.setEmail(editProfileRequestDto.getEmail());
         customer.setPhone(editProfileRequestDto.getPhone());
         customer.setDate_of_birth(editProfileRequestDto.getDate_of_birth());
+        customer.setAddress(editProfileRequestDto.getAddress());
 
         personRepository.save(customer);
     }

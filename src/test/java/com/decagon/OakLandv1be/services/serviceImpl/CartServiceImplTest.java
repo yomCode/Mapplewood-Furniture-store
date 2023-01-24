@@ -1,6 +1,5 @@
 package com.decagon.OakLandv1be.services.serviceImpl;
 
-
 import com.decagon.OakLandv1be.dto.cartDtos.AddItemToCartDto;
 
 import com.decagon.OakLandv1be.entities.*;
@@ -119,6 +118,7 @@ class CartServiceImplTest {
        when(itemRepository.findById(2L)).thenReturn(Optional.of(item));
         cartService.removeItem(item.getId());
         verify(itemRepository).deleteById(item.getId());
+
     }
 
 }

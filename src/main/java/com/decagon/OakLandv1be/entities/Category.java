@@ -13,7 +13,6 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Data
 @ToString
 @Table(name = "category_tbl")
 public class Category extends BaseEntity{
