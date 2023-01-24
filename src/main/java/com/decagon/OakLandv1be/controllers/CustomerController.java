@@ -6,20 +6,17 @@ import com.decagon.OakLandv1be.dto.SignupRequestDto;
 import com.decagon.OakLandv1be.dto.SignupResponseDto;
 import com.decagon.OakLandv1be.dto.cartDtos.AddItemToCartDto;
 import com.decagon.OakLandv1be.dto.cartDtos.CartItemResponseDto;
-
 import com.decagon.OakLandv1be.entities.Customer;
 import com.decagon.OakLandv1be.exceptions.AlreadyExistsException;
 import com.decagon.OakLandv1be.services.CartService;
 import com.decagon.OakLandv1be.services.CustomerService;
 import com.decagon.OakLandv1be.utils.ApiResponse;
 import com.decagon.OakLandv1be.utils.ResponseManager;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
@@ -73,6 +70,5 @@ public class CustomerController {
     public ResponseEntity<String> addFavorites(@PathVariable Long pid){
         customerService.addProductToFavorites(pid);
         return new ResponseEntity<>("Product added to favourites successfully", HttpStatus.ACCEPTED);
-
     }
 }
