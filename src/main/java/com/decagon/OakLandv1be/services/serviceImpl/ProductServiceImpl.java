@@ -4,14 +4,12 @@ import com.cloudinary.utils.ObjectUtils;
 import com.decagon.OakLandv1be.config.CloudinaryConfig;
 import com.decagon.OakLandv1be.dto.ProductCustResponseDto;
 import com.decagon.OakLandv1be.entities.Product;
-import com.decagon.OakLandv1be.exceptions.InvalidAttributeException;
 import com.decagon.OakLandv1be.exceptions.ProductNotFoundException;
 import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
 import com.decagon.OakLandv1be.repositries.ProductRepository;
 import com.decagon.OakLandv1be.services.ProductService;
 import com.decagon.OakLandv1be.utils.ApiResponse;
 import com.decagon.OakLandv1be.utils.Mapper;
-import com.decagon.OakLandv1be.utils.UserAuth;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -127,5 +125,19 @@ public class ProductServiceImpl implements ProductService {
         return convFile;
     }
 
+    @Override
+    public ApiResponse<Page<Product>> getAllProducts(Integer pageNo, Integer pageSize, String sortBy, boolean isAscending) {
+        Page<Product> userPage = productRepository.findAll(PageRequest.of(pageNo, pageSize,
+                isAscending ? Sort.Direction.ASC : Sort.Direction.DESC, sortBy));
+        return new ApiResponse<>(("Page: " + userPage.get()), true, userPage);
+    }
+
+    @Override
+    public ApiResponse<Page<Product>> getAllProductsBySubCategory(Long subCategoryId, Integer pageNo, Integer pageSize, String sortBy, boolean isAscending) {
+        Page<Product> userPage = productRepository.findAllBySubCategoryId(subCategoryId, PageRequest.of(pageNo, pageSize,
+                isAscending ? Sort.Direction.ASC : Sort.Direction.DESC, sortBy));
+        return new ApiResponse<>(("Page: " + userPage.get()), true, userPage);
+
+    }
 
 }

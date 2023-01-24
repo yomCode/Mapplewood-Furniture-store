@@ -23,7 +23,7 @@ public class Product extends BaseEntity{
 
     private Integer availableQty;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "subCategory_id")
     private SubCategory subCategory;
 

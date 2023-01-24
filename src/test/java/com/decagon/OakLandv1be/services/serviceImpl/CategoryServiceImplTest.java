@@ -70,7 +70,7 @@ class CategoryServiceImplTest {
 
     @Test
     void viewAllCategories() {
-        categoryDtoList = Arrays.asList(new CategoryDto("Tester"), new CategoryDto("Tester"));
+        categoryDtoList = Arrays.asList(CategoryDto.builder().name("Tester").build(), CategoryDto.builder().name("Tester").build());
         when(categoryRepository.findAll()).thenReturn(categoryList);
         List<CategoryDto> actualCategoryDtoList = categoryService.viewAllCategories();
         assertEquals(categoryDtoList, actualCategoryDtoList);
