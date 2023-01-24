@@ -43,13 +43,13 @@ public class FakeDb {
                         .phone("9859595959")
                         .isActive(true)
                         .verificationStatus(true)
-//                        .password(passwordEncoder.encode("password123"))
+                        .password(passwordEncoder.encode("password123"))
                         .address("No Address")
                         .role(Role.CUSTOMER)
                         .customer(customer)
                         .password(passwordEncoder.encode("password123453"))
-//                        .address("No Address")
-//                        .role(Role.ADMIN)
+                        .address("No Address")
+                        .role(Role.ADMIN)
                         .isActive(true)
                         .build();
                 personRepository.save(person);
@@ -243,7 +243,6 @@ public class FakeDb {
                 SubCategory modern3 = subCategoryRepository.findById(17L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
                 SubCategory modern4 = subCategoryRepository.findById(18L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
                 SubCategory dresser1 = subCategoryRepository.findById(19L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
-
                 SubCategory dresser2 = subCategoryRepository.findById(20L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
 
                 SubCategory dresser3 = subCategoryRepository.findById(21L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));

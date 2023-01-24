@@ -17,7 +17,7 @@ import java.util.Set;
 @Table(name = "customer_tbl")
 public class Customer extends BaseEntity{
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "person_id")
     private Person person;
 
@@ -42,7 +42,7 @@ public class Customer extends BaseEntity{
     private Set<Product> favorites = new HashSet<>();
 
     @JsonIgnore
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER)
     private Set<Address> addressBook;
     private boolean isActive = true;
 }

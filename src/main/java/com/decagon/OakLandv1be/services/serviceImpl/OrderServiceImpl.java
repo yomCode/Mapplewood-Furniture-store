@@ -6,7 +6,9 @@ import com.decagon.OakLandv1be.entities.Order;
 import com.decagon.OakLandv1be.exceptions.EmptyListException;
 import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
 import com.decagon.OakLandv1be.repositries.CustomerRepository;
+import com.decagon.OakLandv1be.repositries.OrderRepository;
 import com.decagon.OakLandv1be.services.OrderService;
+import lombok.RequiredArgsConstructor;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,9 +25,11 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
     private final CustomerRepository customerRepository;
+    private final OrderRepository orderRepository;
+    private final CustomerServiceImpl customerService;
 
     @Override
     public List<OrderResponseDto> viewOrderHistory(int pageNo, int pageSize) {
@@ -69,5 +73,23 @@ public class OrderServiceImpl implements OrderService {
                 .grandTotal(order.getGrandTotal())
                 .build();
         orderResponseDtos.add(orderResponseDto);
+    }
+
+
+    @Override
+    public OrderResponseDto viewAParticularOrder(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+        return OrderResponseDto.builder()
+                .modeOfPayment(order.getModeOfPayment())
+                .items(order.getItems())
+                .deliveryFee(order.getDeliveryFee())
+                .modeOfDelivery(order.getModeOfDelivery())
+                .delivery(order.getDelivery())
+                .grandTotal(order.getGrandTotal())
+                .discount(order.getDiscount())
+                .address(order.getAddress())
+                .transaction(order.getTransaction())
+                .build();
     }
 }
