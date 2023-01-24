@@ -9,7 +9,7 @@ import java.util.Set;
 
 @Repository
 public interface AddressService {
-    AddressResponseDto createAddress(AddressRequestDto request);
+    String createAddress(AddressRequestDto request);
 
     String updateAddress(Long address_id, AddressRequestDto request);
 

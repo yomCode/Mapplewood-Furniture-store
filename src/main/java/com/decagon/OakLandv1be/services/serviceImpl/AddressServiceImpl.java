@@ -5,6 +5,7 @@ import com.decagon.OakLandv1be.dto.AddressResponseDto;
 import com.decagon.OakLandv1be.entities.Address;
 import com.decagon.OakLandv1be.entities.Customer;
 import com.decagon.OakLandv1be.entities.Person;
+import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
 import com.decagon.OakLandv1be.repositries.AddressRepository;
 import com.decagon.OakLandv1be.repositries.PersonRepository;
 import com.decagon.OakLandv1be.services.AddressService;
@@ -25,10 +26,10 @@ public class AddressServiceImpl implements AddressService {
 
 
     @Override
-    public AddressResponseDto createAddress(AddressRequestDto request){
+    public String createAddress(AddressRequestDto request){
         String email = extractEmailFromPrincipal().get();
 
-        Person person = personRepository.findByEmail(email).orElseThrow();
+        Person person = personRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("User not found"));
         Customer customer = person.getCustomer();
 
         Address address = Address.builder()
@@ -41,12 +42,7 @@ public class AddressServiceImpl implements AddressService {
                 .phone(request.getPhone())
                 .build();
         addressRepository.save(address);
-        return AddressResponseDto.builder()
-                .fullName(address.getFullName())
-                .address(address.getStreet() + ", " + address.getState() + " " + address.getCountry())
-                .phone(address.getPhone())
-                .isDefault(address.getIsDefault())
-                .build();
+        return "Address saved succesfully";
     }
 
 
@@ -89,7 +85,7 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public Set<AddressResponseDto> getAllAddress(){
         String email = extractEmailFromPrincipal().get();
-        Person person = personRepository.findByEmail(email).orElseThrow();
+        Person person = personRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException(("User not found")));
         Customer customer = person.getCustomer();
         Set<Address> addressList = customer.getAddressBook();
         Set<AddressResponseDto> addressResponse = new HashSet<>();
@@ -108,7 +104,7 @@ public class AddressServiceImpl implements AddressService {
 
 
     protected Address getAddress(Long addressId){
-        return addressRepository.findById(addressId).orElseThrow();
+        return addressRepository.findById(addressId).orElseThrow(() -> new ResourceNotFoundException("Address not found"));
     }
 
 
