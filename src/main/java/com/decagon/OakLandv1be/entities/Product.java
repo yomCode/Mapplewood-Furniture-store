@@ -23,7 +23,7 @@ public class Product extends BaseEntity{
 
     private Integer availableQty;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "subCategory_id")
     private SubCategory subCategory;
 
@@ -32,6 +32,6 @@ public class Product extends BaseEntity{
     private String description;
 
     @JsonIgnore
-    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "product", orphanRemoval = true)
     private Item item;
 }
