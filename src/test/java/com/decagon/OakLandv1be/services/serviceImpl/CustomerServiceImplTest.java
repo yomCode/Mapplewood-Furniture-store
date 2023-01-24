@@ -49,10 +49,9 @@ class CustomerServiceImplTest {
     Customer customer;
     Set<Product> favorites;
 
-    List<Product> productList=new ArrayList<>();
+//    List<Product> productList=new ArrayList<>();
 
 
-    String field ="name";
 
 
 

@@ -69,7 +69,7 @@ public class CustomerController {
         return new ResponseEntity<>("Product deleted from favourites successfully", HttpStatus.ACCEPTED);
     }
 
-    @GetMapping("/view/{product_id}")
+    @GetMapping("/product/favorite/view/{product_id}")
     public ResponseEntity<ProductCustResponseDto> viewASingleFavorite(@PathVariable Long product_id) {
         return new ResponseEntity<>(customerService.viewASingleFavorite(product_id), HttpStatus.OK);
     }
