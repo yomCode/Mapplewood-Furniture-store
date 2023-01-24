@@ -27,6 +27,7 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.security.Principal;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/auth")
@@ -51,6 +52,7 @@ public class AuthenticationController {
 
         if(authentication != null)
             return new ApiResponse<>("Login Successful",
+
                     true, tokenService.generateToken(authentication), HttpStatus.OK);
 
         return new ApiResponse<>("Invalid Username or Password",

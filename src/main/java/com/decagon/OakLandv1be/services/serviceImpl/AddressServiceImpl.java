@@ -5,10 +5,10 @@ import com.decagon.OakLandv1be.dto.AddressResponseDto;
 import com.decagon.OakLandv1be.entities.Address;
 import com.decagon.OakLandv1be.entities.Customer;
 import com.decagon.OakLandv1be.entities.Person;
+import com.decagon.OakLandv1be.exceptions.UnauthorizedException;
 import com.decagon.OakLandv1be.repositries.AddressRepository;
 import com.decagon.OakLandv1be.repositries.PersonRepository;
 import com.decagon.OakLandv1be.services.AddressService;
-import com.decagon.OakLandv1be.utils.UserAuth;
 import com.decagon.OakLandv1be.utils.UserUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,15 +20,14 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class AddressServiceImpl implements AddressService {
-
-   // private final UserUtil userUtil;
     private final PersonRepository personRepository;
     private final AddressRepository addressRepository;
 
 
     @Override
     public AddressResponseDto createAddress(AddressRequestDto request){
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        String email = UserUtil.extractEmailFromPrincipal()
+                .orElseThrow(() -> new UnauthorizedException("You are not logged in."));
 
         Person person = personRepository.findByEmail(email).orElseThrow();
         Customer customer = person.getCustomer();

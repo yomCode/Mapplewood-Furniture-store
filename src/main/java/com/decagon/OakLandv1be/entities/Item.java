@@ -25,7 +25,7 @@ public class Item extends BaseEntity{
 //    @JoinColumn(name = "customer_id")
 //    private Customer customer;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "cart_id")
     private Cart cart;
 
@@ -33,7 +33,7 @@ public class Item extends BaseEntity{
     @JoinColumn(name = "order_id")
     private Order order;
 
-    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.DETACH})
+    @OneToOne
     @JoinColumn(name = "product_id")
     private Product product;
 }
