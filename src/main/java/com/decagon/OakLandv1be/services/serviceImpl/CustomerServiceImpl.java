@@ -1,8 +1,10 @@
 package com.decagon.OakLandv1be.services.serviceImpl;
 
 
+import com.decagon.OakLandv1be.config.CloudinaryConfig;
 import com.decagon.OakLandv1be.config.tokens.TokenService;
 import com.decagon.OakLandv1be.dto.EditProfileRequestDto;
+import com.decagon.OakLandv1be.dto.ProductCustResponseDto;
 import com.decagon.OakLandv1be.dto.SignupRequestDto;
 import com.decagon.OakLandv1be.dto.SignupResponseDto;
 import com.decagon.OakLandv1be.entities.*;
@@ -19,9 +21,12 @@ import com.decagon.OakLandv1be.repositries.*;
 import com.decagon.OakLandv1be.services.CustomerService;
 import com.decagon.OakLandv1be.services.JavaMailService;
 import com.decagon.OakLandv1be.utils.ApiResponse;
+import com.decagon.OakLandv1be.utils.Mapper;
 import com.decagon.OakLandv1be.utils.ResponseManager;
+import com.decagon.OakLandv1be.utils.UserUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -33,7 +38,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+
 import static com.decagon.OakLandv1be.enums.TokenStatus.ACTIVE;
 import static com.decagon.OakLandv1be.enums.TokenStatus.EXPIRED;
 
@@ -50,6 +59,7 @@ public class CustomerServiceImpl implements CustomerService {
     private final ResponseManager responseManager;
 
     private final ProductRepository productRepository;
+
 
 
     @Override
@@ -184,4 +194,65 @@ public class CustomerServiceImpl implements CustomerService {
         Person loggedInUser = personRepository.findByEmail(loggedInUserEmail).orElseThrow(() -> new UserNotFoundException("No user with this email"));
         return loggedInUser.getCustomer();
     }
+
+    @Override
+    public ProductCustResponseDto viewASingleFavorite(Long product_id) {
+        String email = UserUtil.extractEmailFromPrincipal()
+                .orElseThrow(() -> new UserNotFoundException("user does not exist"));
+        Customer customer = customerRepository.findByPersonEmail(email).orElseThrow
+                (()-> new UserNotFoundException("user not found"));
+
+        Set<Product> favorites = customer.getFavorites();
+        Product product = productRepository.findById(product_id).orElseThrow(()-> new ProductNotFoundException("product"+ product_id+"not available"));
+        if(!favorites.contains(product)){
+            throw new ResourceNotFoundException("Products not found in the favorites");
+        }
+        return ProductCustResponseDto.builder()
+                .name(product.getName())
+                .price(product.getPrice())
+                .imageUrl(product.getImageUrl())
+                .color(product.getColor())
+                .description(product.getDescription())
+                .build();
+    }
+
+    @Override
+    public Page<ProductCustResponseDto> viewFavouritesByPagination(Integer pageNo, Integer pageSize, String sortBy) {
+        String email = UserUtil.extractEmailFromPrincipal()
+                .orElseThrow(() -> new UserNotFoundException("user does not exist"));
+        Customer customer = customerRepository.findByPersonEmail(email).orElseThrow
+                (() -> new UserNotFoundException("user not found"));
+        List<Product> products = new ArrayList<>(customer.getFavorites());
+
+        List<ProductCustResponseDto> productCustResponseDtos = new ArrayList<>();
+
+        products.forEach(product -> {
+            productCustResponseDtos.add(
+                    ProductCustResponseDto.builder()
+                    .name(product.getName())
+                    .price(product.getPrice())
+                    .imageUrl(product.getImageUrl())
+                    .color(product.getColor())
+                    .description(product.getDescription())
+                    .build()
+            );
+        });
+
+
+        PageRequest pageable = PageRequest.of(pageNo, pageSize, Sort.Direction.DESC, sortBy);
+
+        int max = (pageSize*(pageNo+1)>products.size()) ?
+                productCustResponseDtos.size(): pageSize*(pageNo+1);
+
+        Page<ProductCustResponseDto> page = new PageImpl<>
+                (productCustResponseDtos.subList(pageNo*pageSize, max), pageable,
+                        productCustResponseDtos.size());
+
+        return page;
+
+    }
 }
+
+
+
+
