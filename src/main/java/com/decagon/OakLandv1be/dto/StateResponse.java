@@ -15,6 +15,5 @@ import java.util.Set;
 public class StateResponse {
     private Long id;
     private String name;
-    private String abbreviation;
     private Set<PickupCenter> pickupCenters;
 }
