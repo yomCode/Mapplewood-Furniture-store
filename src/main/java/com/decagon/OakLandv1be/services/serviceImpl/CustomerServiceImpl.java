@@ -29,6 +29,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -51,6 +52,7 @@ public class CustomerServiceImpl implements CustomerService {
     private final TokenRepository tokenRepository;
     private final ResponseManager responseManager;
     private final ProductRepository productRepository;
+    private final HttpServletRequest request;
 
 
     @Override
@@ -91,7 +93,7 @@ public class CustomerServiceImpl implements CustomerService {
         javaMailService.sendMail(signupRequestDto.getEmail(),
                 "Verify your email address",
                 "Hi " + person.getFirstName() + " " + person.getLastName() + ", Thank you for your interest in joining Oakland." +
-                        "To complete your registration, we need you to verify your email address " + "http://localhost:8080/api/v1/customer/verifyRegistration/" + validToken);
+                        "To complete your registration, we need you to verify your email address " + "http://" + request.getServerName() + ":3000" + "/verifyRegistration?token=" + validToken);
 
         // use the user object to create UserResponseDto Object
         SignupResponseDto signupResponseDto = new SignupResponseDto();

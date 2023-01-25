@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.util.List;
 
 
-@CrossOrigin(origins = "http://localhost:3000")
+
 @RestController
 @RequestMapping("/api/v1/customer")
 @RequiredArgsConstructor
@@ -39,8 +39,8 @@ public class CustomerController {
         customerService.saveCustomer(signupRequestDto);
         return new ResponseEntity<>(responseManager.success("Registration Successful! Check your mail for activation link"),HttpStatus.CREATED);
     }
-    @GetMapping("/verifyRegistration/{token}")
-    public ResponseEntity<ApiResponse> verifyAccount(@PathVariable String token){
+    @GetMapping("/verifyRegistration")
+    public ResponseEntity<ApiResponse> verifyAccount(@RequestParam("token") String token){
         return customerService.verifyRegistration(token);
     }
     
