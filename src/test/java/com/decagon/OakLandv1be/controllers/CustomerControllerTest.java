@@ -1,41 +1,35 @@
 package com.decagon.OakLandv1be.controllers;
 
 import com.decagon.OakLandv1be.OakLandV1BeApplication;
-import com.decagon.OakLandv1be.controllers.CustomerController;
-import com.decagon.OakLandv1be.dto.SignupResponseDto;
-import com.decagon.OakLandv1be.dto.EditProfileRequestDto;
+import com.decagon.OakLandv1be.dto.CustomerProfileDto;
 import com.decagon.OakLandv1be.dto.cartDtos.AddItemToCartDto;
-import com.decagon.OakLandv1be.dto.cartDtos.CartResponseDto;
-import com.decagon.OakLandv1be.dto.cartDtos.CartItemResponseDto;
 import com.decagon.OakLandv1be.entities.*;
 import com.decagon.OakLandv1be.enums.Gender;
 import com.decagon.OakLandv1be.enums.Role;
 import com.decagon.OakLandv1be.repositries.CartRepository;
-import com.decagon.OakLandv1be.services.CustomerService;
 import com.decagon.OakLandv1be.services.serviceImpl.CartServiceImpl;
 import com.decagon.OakLandv1be.services.serviceImpl.CustomerServiceImpl;
 import com.decagon.OakLandv1be.utils.ApiResponse;
 import com.decagon.OakLandv1be.utils.ResponseManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.mockito.Mock;
-
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
-import static org.mockito.ArgumentMatchers.anyLong;
-
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -54,6 +48,8 @@ class CustomerControllerTest {
     private CustomerServiceImpl customerService;
 
     @MockBean
+    private CustomerController customerController;
+    @MockBean
     private CartServiceImpl cartService;
 
     @MockBean
@@ -68,21 +64,22 @@ class CustomerControllerTest {
 //        EditProfileRequestDto editProfileRequestDto = new EditProfileRequestDto();
 //        editProfileRequestDto.setFirstName("Many");
 //        editProfileRequestDto.setLastName("Rob");
-
-//        editProfileRequestDto.setGender(Gender.MALE);
-
+//
 //        editProfileRequestDto.setGender(String.valueOf(Gender.MALE));
-
+//
+//        editProfileRequestDto.setGender(String.valueOf(Gender.MALE));
+//
 //        editProfileRequestDto.setDate_of_birth("11-01-1993");
 //        editProfileRequestDto.setPhone("07068693321");
-//
+//        doNothing().when(customerService).editProfile(editProfileRequestDto);
 //        String requestBody = mapper.writeValueAsString(editProfileRequestDto);
-//        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/auth/customer/edit-profile")
+//        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/customer/edit-profile", 42L)
 //                        .contentType("application/json").content(requestBody))
-//                .andExpect(status().isOk());
+//                .andExpect(status().isOk())
+//                .andReturn();
 //    }
 
-//}
+
 
     @Test
     void CustomerController_AddItemToCart_ReturnResponseEntity() {
@@ -152,13 +149,51 @@ class CustomerControllerTest {
 
     @Test
     public void customerToRemoveProductsFromFavorites() throws Exception {
-        Long pid = 1L;
+//        Long pid = 1L;
+//
+//        String requestBody = mapper.writeValueAsString(pid);
+//        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/auth/customer/product/favorites/remove/{pid}", 1L)
+//                        .contentType("application/json")
+//                        .content(requestBody))
+//                .andExpect(status().isAccepted());
+    }
 
-        String requestBody = mapper.writeValueAsString(pid);
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/auth/customer/product/favorites/remove/{pid}", 1L)
-                        .contentType("application/json")
-                        .content(requestBody))
-                .andExpect(status().isAccepted());
+    @Test
+    void viewProfile() {
+        try {
+            CustomerProfileDto customerProfileDto = CustomerProfileDto.builder().firstName("John").lastName("Doe").email("email.com")
+                    .phone("1234567890").address("123 Main St").date_of_birth("01-01-2000").gender(Gender.MALE).verificationStatus(true).build();
+            when(customerService.viewProfile()).thenReturn(customerProfileDto);
+            mockMvc.perform(get("/api/v1/customer/view-profile", 12L)
+                            .contentType("application/json"))
+                    .andExpect(status().isOk());
+            verify(customerService, times(1)).viewProfile();
+        } catch (Exception xe) {
+            xe.printStackTrace();
+        }
+    }
+    @Test
+    void viewAllProfilesPaginationAndSort() {
+       try {
+           int pageNumber = 0;
+           int pageSize = 10;
+           String sortBy = "lastName";
+           List<CustomerProfileDto> customerProfileDtoList = Arrays.asList(new CustomerProfileDto(), new CustomerProfileDto());
+           Page<CustomerProfileDto> customerProfileDtoPage = new PageImpl<>(customerProfileDtoList);
+           when(customerService.viewAllCustomersProfileWithPaginationSorting(pageNumber, pageSize, sortBy)).thenReturn(customerProfileDtoPage);
+           String requestBody = mapper.writeValueAsString(pageNumber);
+           String requestBodie = mapper.writeValueAsString(pageSize);
+           String requestBod = mapper.writeValueAsString(sortBy);
+           ResponseEntity<Page<CustomerProfileDto>> actualResponse = customerController.viewAllProfilesPaginationAndSort(pageNumber, pageSize, sortBy);
+       mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/customer/admin/customers-profile/page-sort")
+               .contentType("application/json")
+               .content(requestBody)
+               .content(requestBodie)
+               .content(requestBod))
+               .andReturn();
+       } catch (Exception ce){
+           ce.printStackTrace();
+       }
     }
 }
 

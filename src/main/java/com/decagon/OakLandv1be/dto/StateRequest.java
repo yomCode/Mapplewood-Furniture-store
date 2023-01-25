@@ -9,7 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class StateRequest {
-    private String name;
-    private String abbreviation;
+public class
+StateRequest {
+    private String nameOfState;
+
 }

@@ -3,40 +3,60 @@ package com.decagon.OakLandv1be.controllers;
 import com.decagon.OakLandv1be.dto.ProductCustResponseDto;
 import com.decagon.OakLandv1be.dto.ProductResponseDto;
 import com.decagon.OakLandv1be.entities.Product;
+import com.decagon.OakLandv1be.services.ProductService;
 import com.decagon.OakLandv1be.services.serviceImpl.ProductServiceImpl;
 import com.decagon.OakLandv1be.utils.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/v1/products")
 @RequiredArgsConstructor
 public class ProductController {
-    private final ProductServiceImpl productService;
+    private final ProductService productService;
 
     @GetMapping("/view/{product_id}")
     public ResponseEntity<ProductCustResponseDto> viewASingleProduct(@PathVariable("product_id") Long product_id){
         return new ResponseEntity<>(productService.fetchASingleProduct(product_id), HttpStatus.OK);
 
     }
-    @GetMapping("/view-all-products")
-    public ResponseEntity<List<ProductCustResponseDto>> viewAllProducts(){
-        List<ProductCustResponseDto> productCustResponseDtos = productService.fetchAllProducts();
-        return new ResponseEntity<>(productCustResponseDtos, HttpStatus.OK);
 
+    @GetMapping("/page-and-sort")
+    public ResponseEntity<Page<ProductCustResponseDto>> productsByPaginationAndSorted(@RequestParam(defaultValue = "0") Integer pageNo,
+                                                                                      @RequestParam(defaultValue = "10") Integer pageSize,
+                                                                                      @RequestParam(defaultValue = "id") String sortBy,
+                                                                                      @RequestParam(defaultValue = "false") boolean isAscending){
+        return  new ResponseEntity<>(productService.productWithPaginationAndSorting(pageNo, pageSize, sortBy,isAscending),HttpStatus.OK);
     }
 
-    @GetMapping("/page-and-sort/{offset}/{size}/{sortingField}")
-    public ResponseEntity<Page<ProductCustResponseDto>> productsByPaginationAndSorted(
-            @PathVariable Integer offset, @PathVariable Integer size,@PathVariable String sortingField ){
-        return  new ResponseEntity<>(productService.productWithPaginationAndSorting(offset, size, sortingField),HttpStatus.OK);
+    @PostMapping("/upload-image/{productId}")
+    public ResponseEntity<Object> uploadProfilePic(@RequestPart MultipartFile productImage, @PathVariable Long productId) throws IOException {
+        return ResponseEntity.ok(productService.uploadProductImage(productId, productImage));
     }
+
+    @GetMapping("/paginated-all")
+    public ApiResponse<Page<Product>> getAllProducts(@RequestParam(defaultValue = "0") Integer pageNo,
+                                                     @RequestParam(defaultValue = "16") Integer pageSize,
+                                                     @RequestParam(defaultValue = "id") String sortBy,
+                                                     @RequestParam(defaultValue = "false") boolean isAscending) {
+        return productService.getAllProducts(pageNo, pageSize, sortBy, isAscending);
+    }
+
+    @GetMapping("/subcategory/{subCategoryId}/paginated-all")
+    public ApiResponse<Page<Product>> getAllProductsBySubCategory( @PathVariable Long subCategoryId,
+                                                                 @RequestParam(defaultValue = "0") Integer pageNo,
+                                                                 @RequestParam(defaultValue = "16") Integer pageSize,
+                                                                 @RequestParam(defaultValue = "id") String sortBy,
+                                                                 @RequestParam(defaultValue = "false") boolean isAscending) {
+        return productService.getAllProductsBySubCategory(subCategoryId, pageNo, pageSize, sortBy, isAscending);
+    }
+
 }

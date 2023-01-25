@@ -31,6 +31,7 @@ public class PickupServiceImpl implements PickupService {
     private final PickupRepository pickupRepository;
     private final PersonRepository personRepository;
     private final StateRepository stateRepository;
+
     @Override
     public PickupCenterResponse getCenterByName(String name) {
         PickupCenter pickup= pickupRepository.findByName(name).orElseThrow(
@@ -41,7 +42,7 @@ public class PickupServiceImpl implements PickupService {
     @Override
     public List<PickupCenterResponse> getCenterByStateName(String name) {
         return pickupRepository.findAll().parallelStream()
-                .filter(pickupCenter -> pickupCenter.getState().name().equalsIgnoreCase(name))
+                .filter(pickupCenter -> pickupCenter.getState().getName().toUpperCase().equals(name))
                 .map(this::responseMapper)
                 .collect(Collectors.toList());
     }
@@ -61,8 +62,9 @@ public class PickupServiceImpl implements PickupService {
 
         pickupRepository.save(PickupCenter.builder()
                 .name(pickupCenterRequest.getName())
-                .state(stateRepository.findByName( pickupCenterRequest.getStateName()).orElseThrow(
-                        ()-> new ResourceNotFoundException("State with the name"+pickupCenterRequest.getStateName() +" is not found")))
+                .state(stateRepository.findByName(pickupCenterRequest.getStateName()).orElseThrow(
+                        ()-> new ResourceNotFoundException("No state with the name {}",pickupCenterRequest.getStateName().toUpperCase())
+                ))
                 .email(pickupCenterRequest.getEmail())
                 .address(pickupCenterRequest.getLocation())
                 .phone(pickupCenterRequest.getPhone())
@@ -82,7 +84,7 @@ public class PickupServiceImpl implements PickupService {
                 .id(pickup.getId())
                 .name(pickup.getName())
                 .location(pickup.getAddress())
-                .stateName(pickup.getState().name())
+                .stateName(pickup.getState().getName())
                 .email(pickup.getEmail())
                 .phone(pickup.getPhone())
                 .build();
