@@ -1,13 +1,12 @@
 package com.decagon.OakLandv1be.services.serviceImpl;
 
 import com.decagon.OakLandv1be.dto.ProductCustResponseDto;
-import com.decagon.OakLandv1be.entities.Customer;
-import com.decagon.OakLandv1be.entities.Person;
-import com.decagon.OakLandv1be.entities.Product;
+import com.decagon.OakLandv1be.entities.*;
 import com.decagon.OakLandv1be.exceptions.UserNotFoundException;
 import com.decagon.OakLandv1be.repositries.CustomerRepository;
 import com.decagon.OakLandv1be.repositries.PersonRepository;
 import com.decagon.OakLandv1be.repositries.ProductRepository;
+import com.decagon.OakLandv1be.utils.UserUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;;
@@ -45,6 +44,8 @@ class CustomerServiceImplTest {
     Authentication authentication;
     @Mock
     SecurityContext securityContext;
+    @InjectMocks
+    UserUtil userUtil;
 
     
     private Person person;
@@ -57,6 +58,8 @@ class CustomerServiceImplTest {
     private CustomerProfileDto customerProfileDto;
     private List<Person> personList;
 
+    List<Product> productList = new ArrayList<>();
+
     ProductCustResponseDto productCustResponseDto;
 
 
@@ -64,7 +67,7 @@ class CustomerServiceImplTest {
     Integer pageSize = 2;
     String sortBy = "lastName";
 
-//    List<Product> productList=new ArrayList<>();
+
 
 
 
@@ -111,20 +114,38 @@ class CustomerServiceImplTest {
         verify(customerRepository, times(1)).save(person.getCustomer());
         assertTrue(favorites.contains(product));
     }
+
     @Test
-    void viewFavoriteByPagination(){
+    public void testViewFavouritesByPagination() {
+        // Create a mock instance of UserUtil
+        UserUtil userUtil = mock(UserUtil.class);
+        // set the behavior of extractEmailFromPrincipal() method to return a test email
+        when(userUtil.extractEmailFromPrincipal()).thenReturn(Optional.of("test@example.com"));
 
+        // Create a mock customer with some favorite products
+        Customer customer = new Customer();
+        Set<Product> products = customer.getFavorites();
+//        List<Product> favorites = new ArrayList<>();
+        favorites.add(new Product("favour",200.00,"nnnn",2,new SubCategory(),"RED","CENTER TABLE",new Item()));
+        favorites.add(new Product("favour",200.00,"nnnn",2,new SubCategory(),"RED","CENTER TABLE",new Item()));
+        favorites.add(new Product("favour",200.00,"nnnn",2,new SubCategory(),"RED","CENTER TABLE",new Item()));
+        customer.setFavorites(products);
 
-//        Page<Product> favouriteProduct= new PageImpl(productList, Pageable.ofSize(favorites.size()),4);
-//        when(productRepository.findAll(PageRequest.of(1,2, Sort.Direction.DESC).
-//                        withSort(Sort.by(field)))).thenReturn(favouriteProduct);
-//        assertNotEquals(customerService.viewFavouritesByPagination(1,2,"name")
-//                .getTotalElements(),4);
+        // Mock the customerRepository to return the mock customer when findByPersonEmail is called
+        when(customerRepository.findByPersonEmail("test@example.com")).thenReturn(Optional.of(customer));
 
+        // Call the viewFavouritesByPagination method with pageNo = 0, pageSize = 2, and sortBy = "name"
+        Page<ProductCustResponseDto> page = customerService.viewFavouritesByPagination(0, 2, "name");
 
+        // Verify that the customerRepository's findByPersonEmail method was called with the correct email
+        verify(customerRepository).findByPersonEmail("test@example.com");
 
+        // Verify that the returned page has the correct size and content
+        assertEquals(2, page.getSize());
+        assertEquals(3, page.getTotalElements());
+        assertEquals("product1", page.getContent().get(0).getName());
+        assertEquals("product2", page.getContent().get(1).getName());
     }
-
 
     @Test
     void viewProfile() {

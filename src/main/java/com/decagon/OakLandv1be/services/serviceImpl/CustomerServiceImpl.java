@@ -222,28 +222,65 @@ public class CustomerServiceImpl implements CustomerService {
         products.forEach(product -> {
             productCustResponseDtos.add(
                     ProductCustResponseDto.builder()
-                    .name(product.getName())
-                    .price(product.getPrice())
-                    .imageUrl(product.getImageUrl())
-                    .color(product.getColor())
-                    .description(product.getDescription())
-                    .build()
+                            .name(product.getName())  // make sure this is the correct method call
+                            .price(product.getPrice())
+                            .imageUrl(product.getImageUrl())
+                            .color(product.getColor())
+                            .description(product.getDescription())
+                            .build()
             );
         });
 
-
         PageRequest pageable = PageRequest.of(pageNo, pageSize, Sort.Direction.DESC, sortBy);
 
+        int minimum = pageNo*pageSize;
         int max = (pageSize*(pageNo+1)>products.size()) ?
-                productCustResponseDtos.size(): pageSize*(pageNo+1);
+                products.size(): pageSize*(pageNo+1);
 
         Page<ProductCustResponseDto> page = new PageImpl<>
-                (productCustResponseDtos.subList(pageNo*pageSize, max), pageable,
+                (productCustResponseDtos.subList(minimum, max), pageable,
                         productCustResponseDtos.size());
 
         return page;
-
     }
+
+
+
+
+//    @Override
+//    public Page<ProductCustResponseDto> viewFavouritesByPagination(Integer pageNo, Integer pageSize, String sortBy) {
+//        String email = UserUtil.extractEmailFromPrincipal()
+//                .orElseThrow(() -> new UserNotFoundException("user does not exist"));
+//        Customer customer = customerRepository.findByPersonEmail(email).orElseThrow
+//                (() -> new UserNotFoundException("user not found"));
+//        List<Product> products = new ArrayList<>(customer.getFavorites());
+//
+//        List<ProductCustResponseDto> productCustResponseDtos = new ArrayList<>();
+//
+//        products.forEach(product -> {
+//            productCustResponseDtos.add(
+//                    ProductCustResponseDto.builder()
+//                    .name(product.getName())
+//                    .price(product.getPrice())
+//                    .imageUrl(product.getImageUrl())
+//                    .color(product.getColor())
+//                    .description(product.getDescription())
+//                    .build()
+//            );
+//        });
+//
+//
+//        PageRequest pageable = PageRequest.of(pageNo, pageSize, Sort.Direction.DESC, sortBy);
+//
+//        int max = (pageSize*(pageNo+1)>products.size()) ?
+//                productCustResponseDtos.size(): pageSize*(pageNo+1);
+//
+//        Page<ProductCustResponseDto> page = new PageImpl<>
+//                (productCustResponseDtos.subList(pageNo*pageSize, max), pageable,
+//                        productCustResponseDtos.size());
+//
+//        return page;
+//    }
 
 
 

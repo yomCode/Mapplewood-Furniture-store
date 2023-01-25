@@ -31,32 +31,32 @@ public class FakeDb {
                                                SubCategoryRepository subCategoryRepository,
                                                CategoryRepository categoryRepository) {
         return argument -> {
-            if (!personRepository.existsByEmail("bennyson1@gmail.com")) {
-             Customer customer = new Customer();
-             
-                Person person = Person.builder()
-                        .firstName("Benson")
-                        .lastName("Malik")
-                        .email("bennyson1@gmail.com")
-                        .gender(Gender.MALE)
-                        .date_of_birth("13-08-1990")
-                        .phone("9859595959")
-                        .isActive(true)
-                        .verificationStatus(true)
-                        .password(passwordEncoder.encode("password123"))
-                        .address("No Address")
-                        .role(Role.CUSTOMER)
-                        .customer(customer)
-                        .password(passwordEncoder.encode("password123453"))
-                        .address("No Address")
-                        .role(Role.ADMIN)
-                        .isActive(true)
-                        .build();
-                personRepository.save(person);
-
-                customer.setPerson(person);
-                customerRepository.save(customer);
-            }
+//            if (!personRepository.existsByEmail("bennyson1@gmail.com")) {
+//             Customer customer = new Customer();
+//
+//                Person person = Person.builder()
+//                        .firstName("Benson")
+//                        .lastName("Malik")
+//                        .email("bennyson1@gmail.com")
+//                        .gender(Gender.MALE)
+//                        .date_of_birth("13-08-1990")
+//                        .phone("9859595959")
+//                        .isActive(true)
+//                        .verificationStatus(true)
+//                        .password(passwordEncoder.encode("password123"))
+//                        .address("No Address")
+//                        .role(Role.CUSTOMER)
+//                        .customer(customer)
+//                        .password(passwordEncoder.encode("password123453"))
+//                        .address("No Address")
+//                        .role(Role.ADMIN)
+//                        .isActive(true)
+//                        .build();
+//                personRepository.save(person);
+//
+//                customer.setPerson(person);
+//                customerRepository.save(customer);
+//            }
 
             if(!categoryRepository.existsById(1L)) {
 
