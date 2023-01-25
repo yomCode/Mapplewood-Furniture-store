@@ -32,9 +32,6 @@ public class WalletServiceImpl implements WalletService {
 
     @Override
     public FundWalletResponseDto fundWallet(FundWalletRequest request) {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        if(!(authentication instanceof AnonymousAuthenticationToken)){
-//            String email = authentication.getName();
             Person person = personRepository.findByEmail(request.getEmail())
                     .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
 
