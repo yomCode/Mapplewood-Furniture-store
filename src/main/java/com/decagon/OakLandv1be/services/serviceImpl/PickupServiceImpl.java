@@ -5,13 +5,13 @@ import com.decagon.OakLandv1be.dto.PickupCenterResponse;
 import com.decagon.OakLandv1be.entities.Person;
 import com.decagon.OakLandv1be.entities.PickupCenter;
 import com.decagon.OakLandv1be.enums.Role;
-import com.decagon.OakLandv1be.enums.State;
 import com.decagon.OakLandv1be.exceptions.AlreadyExistsException;
 import com.decagon.OakLandv1be.exceptions.AuthorizationException;
 import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
 import com.decagon.OakLandv1be.exceptions.UserNotFoundException;
 import com.decagon.OakLandv1be.repositries.PersonRepository;
 import com.decagon.OakLandv1be.repositries.PickupRepository;
+import com.decagon.OakLandv1be.repositries.StateRepository;
 import com.decagon.OakLandv1be.services.PickupService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 public class PickupServiceImpl implements PickupService {
     private final PickupRepository pickupRepository;
     private final PersonRepository personRepository;
+    private final StateRepository stateRepository;
 
     @Override
     public PickupCenterResponse getCenterByName(String name) {
@@ -41,7 +42,7 @@ public class PickupServiceImpl implements PickupService {
     @Override
     public List<PickupCenterResponse> getCenterByStateName(String name) {
         return pickupRepository.findAll().parallelStream()
-                .filter(pickupCenter -> pickupCenter.getState().name().equalsIgnoreCase(name))
+                .filter(pickupCenter -> pickupCenter.getState().getName().toUpperCase().equals(name))
                 .map(this::responseMapper)
                 .collect(Collectors.toList());
     }
@@ -61,7 +62,9 @@ public class PickupServiceImpl implements PickupService {
 
         pickupRepository.save(PickupCenter.builder()
                 .name(pickupCenterRequest.getName())
-                .state(State.valueOf(pickupCenterRequest.getStateName()))
+                .state(stateRepository.findByName(pickupCenterRequest.getStateName()).orElseThrow(
+                        ()-> new ResourceNotFoundException("No state with the name {}",pickupCenterRequest.getStateName().toUpperCase())
+                ))
                 .email(pickupCenterRequest.getEmail())
                 .address(pickupCenterRequest.getLocation())
                 .phone(pickupCenterRequest.getPhone())
@@ -81,7 +84,7 @@ public class PickupServiceImpl implements PickupService {
                 .id(pickup.getId())
                 .name(pickup.getName())
                 .location(pickup.getAddress())
-                .stateName(pickup.getState().name())
+                .stateName(pickup.getState().getName())
                 .email(pickup.getEmail())
                 .phone(pickup.getPhone())
                 .build();
