@@ -2,7 +2,7 @@ package com.decagon.OakLandv1be.services.serviceImpl;
 
 import com.decagon.OakLandv1be.dto.PickupCenterResponse;
 import com.decagon.OakLandv1be.entities.PickupCenter;
-import com.decagon.OakLandv1be.enums.State;
+import com.decagon.OakLandv1be.entities.State;
 import com.decagon.OakLandv1be.repositries.PickupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,12 +37,12 @@ class PickupServiceImplTest {
         pickupCenter1 = new PickupCenter();
         pickupCenter1.setName("Roban Stores");
         pickupCenter1.setAddress("12 Roban St");
-        pickupCenter1.setState(State.LAGOS);
+        pickupCenter1.setState(State.builder().name("LAGOS").build());
 
         pickupCenter2 = new PickupCenter();
         pickupCenter2.setName("Zain Pharmacy");
         pickupCenter2.setAddress("3 Zain St");
-        pickupCenter2.setState(State.IBADAN);
+        pickupCenter1.setState(State.builder().name("EDO").build());
 
         pickupCenters.add(pickupCenter1);
         pickupCenters.add(pickupCenter2);
