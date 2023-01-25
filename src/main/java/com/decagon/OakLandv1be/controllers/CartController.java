@@ -21,7 +21,7 @@ public class CartController {
     private final ResponseManager responseManager;
 
     @DeleteMapping("/item/delete/{itemId}")
-    public ResponseEntity<ApiResponse<String>> deleteItem(@PathVariable Long itemId){
+    public ResponseEntity<ApiResponse> deleteItem(@PathVariable Long itemId){
        cartService.removeItem(itemId);
         return new ResponseEntity<>( responseManager.success("Item removed successfully"), HttpStatus.OK);
     }
