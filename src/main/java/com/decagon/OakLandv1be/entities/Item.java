@@ -17,7 +17,7 @@ public class Item extends BaseEntity{
     private String productName;
     private String imageUrl;
 
-    @NotBlank(message = "Kindly specify the quantity you desire, for this product")
+//    @NotBlank(message = "Kindly specify the quantity you desire, for this product")
     private Integer orderQty;
     private Double unitPrice;
     private Double subTotal;
@@ -26,15 +26,15 @@ public class Item extends BaseEntity{
 //    @JoinColumn(name = "customer_id")
 //    private Customer customer;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "cart_id")
     private Cart cart;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "order_id")
     private Order order;
 
-    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.DETACH})
+    @OneToOne
     @JoinColumn(name = "product_id")
     private Product product;
 }

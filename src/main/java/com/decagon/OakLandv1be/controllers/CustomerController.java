@@ -7,6 +7,7 @@ import com.decagon.OakLandv1be.dto.cartDtos.AddItemToCartDto;
 import com.decagon.OakLandv1be.dto.cartDtos.CartItemResponseDto;
 
 import com.decagon.OakLandv1be.entities.Customer;
+import com.decagon.OakLandv1be.entities.Item;
 import com.decagon.OakLandv1be.exceptions.AlreadyExistsException;
 import com.decagon.OakLandv1be.services.CartService;
 import com.decagon.OakLandv1be.services.CustomerService;
@@ -20,6 +21,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.List;
+import java.util.Set;
 
 
 @CrossOrigin(origins = "http://localhost:3000")
@@ -66,4 +69,11 @@ public class CustomerController {
         customerService.removeProductFromFavorites(pid);
         return new ResponseEntity<>("Product deleted from favourites successfully", HttpStatus.ACCEPTED);
     }
+
+    @GetMapping("/cart/item/view-all")
+    public ResponseEntity<List<CartItemResponseDto>> fetchProductsFromCustomerCart() {
+        List<CartItemResponseDto> items = cartService.fetchProductsFromCustomerCart();
+        return new ResponseEntity<>(items, HttpStatus.OK);
+    }
+
 }
