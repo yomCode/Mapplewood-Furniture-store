@@ -41,13 +41,9 @@ public class Customer extends BaseEntity{
     @OneToMany(cascade = CascadeType.ALL)
     private Set<Product> favorites = new HashSet<>();
 
-//    @JsonIgnore
-//    @OneToMany(mappedBy = "customer", orphanRemoval = true, fetch = FetchType.EAGER)
-//    private Set<Address> addressBook;
-//    private boolean isActive = true;
-
     @JsonIgnore
-    @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "customer", orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<Address> addressBook;
     private boolean isActive = true;
+
 }
