@@ -1,5 +1,6 @@
 package com.decagon.OakLandv1be.services.serviceImpl;
 
+import com.decagon.OakLandv1be.dto.CartDto;
 import com.decagon.OakLandv1be.dto.cartDtos.AddItemToCartDto;
 import com.decagon.OakLandv1be.entities.*;
 import com.decagon.OakLandv1be.exceptions.NotAvailableException;
@@ -7,29 +8,24 @@ import com.decagon.OakLandv1be.repositries.*;
 import com.decagon.OakLandv1be.services.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
-
 import com.decagon.OakLandv1be.entities.Cart;
 import com.decagon.OakLandv1be.entities.Item;
 import com.decagon.OakLandv1be.entities.Person;
-import com.decagon.OakLandv1be.entities.Token;
 import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
 import com.decagon.OakLandv1be.exceptions.UnauthorizedUserException;
 import com.decagon.OakLandv1be.repositries.CartRepository;
 import com.decagon.OakLandv1be.repositries.ItemRepository;
 import com.decagon.OakLandv1be.repositries.PersonRepository;
 import com.decagon.OakLandv1be.repositries.TokenRepository;
-import com.decagon.OakLandv1be.services.CartService;
-import lombok.RequiredArgsConstructor;
-import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
-import com.decagon.OakLandv1be.exceptions.UnauthorizedUserException;
 import com.decagon.OakLandv1be.services.CustomerService;
 
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
 import java.util.Set;
+
+
 
 
 @Service
@@ -145,5 +141,16 @@ public class CartServiceImpl implements CartService {
 
         }
         throw new UnauthorizedUserException("User does not exist");
+    }
+
+    @Override
+    public CartDto viewCartByCustomer() {
+        Customer loggedInCustomer = customerService.getCurrentlyLoggedInUser();
+        Cart cart = cartRepository.findByCustomer(loggedInCustomer);
+        if (cart.getItems().isEmpty())
+            throw new ResourceNotFoundException("Your Cart is empty!");
+        return CartDto.builder()
+                .items(cart.getItems())
+                .total(cart.getTotal()).build();
     }
 }

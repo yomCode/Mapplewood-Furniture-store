@@ -61,7 +61,7 @@ class SubCategoryControllerTest {
                             .content(requestBody))
                     .andExpect(status().isCreated())
                     .andReturn();
-        }catch (Exception ce){
+        }catch (Exception ce) {
             ce.printStackTrace();
         }
     }

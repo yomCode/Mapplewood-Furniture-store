@@ -1,6 +1,5 @@
 package com.decagon.OakLandv1be.entities;
 
-import com.decagon.OakLandv1be.enums.State;
 import lombok.*;
 
 import javax.persistence.*;
@@ -15,13 +14,12 @@ import javax.persistence.*;
 public class PickupCenter extends BaseEntity{
 
     private String name;
-
     private String address;
-
-    @Enumerated(EnumType.STRING)
-    private State state;
     private String email;
-
     private String phone;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "states_id")
+    private State state;
 
 }

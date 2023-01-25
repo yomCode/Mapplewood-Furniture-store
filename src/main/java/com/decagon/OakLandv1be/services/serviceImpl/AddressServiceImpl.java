@@ -20,7 +20,6 @@ import static com.decagon.OakLandv1be.utils.UserUtil.extractEmailFromPrincipal;
 @Service
 @RequiredArgsConstructor
 public class AddressServiceImpl implements AddressService {
-
     private final PersonRepository personRepository;
     private final AddressRepository addressRepository;
 
