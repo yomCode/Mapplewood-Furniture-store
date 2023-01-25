@@ -24,6 +24,6 @@ public class Cart extends BaseEntity{
     private Double total = 0.0;
 
     @JsonIgnore
-    @OneToOne(mappedBy = "cart")
+    @OneToOne(mappedBy = "cart", cascade = CascadeType.ALL)
     private Customer customer;
 }

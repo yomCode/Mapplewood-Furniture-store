@@ -6,22 +6,16 @@ import com.decagon.OakLandv1be.exceptions.NotAvailableException;
 import com.decagon.OakLandv1be.repositries.*;
 import com.decagon.OakLandv1be.services.CartService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
 
 import com.decagon.OakLandv1be.entities.Cart;
 import com.decagon.OakLandv1be.entities.Item;
 import com.decagon.OakLandv1be.entities.Person;
-import com.decagon.OakLandv1be.entities.Token;
 import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
 import com.decagon.OakLandv1be.exceptions.UnauthorizedUserException;
 import com.decagon.OakLandv1be.repositries.CartRepository;
 import com.decagon.OakLandv1be.repositries.ItemRepository;
 import com.decagon.OakLandv1be.repositries.PersonRepository;
 import com.decagon.OakLandv1be.repositries.TokenRepository;
-import com.decagon.OakLandv1be.services.CartService;
-import lombok.RequiredArgsConstructor;
-import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
-import com.decagon.OakLandv1be.exceptions.UnauthorizedUserException;
 import com.decagon.OakLandv1be.services.CustomerService;
 
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -29,6 +23,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 
@@ -58,31 +54,29 @@ public class CartServiceImpl implements CartService {
         } else if(allCartItems.contains(product.getItem())){
             throw new AlreadyExistsException(product.getName() + " already in cart");
         }
-//        for(Item item : allCartItems){
-//            if(item.getProduct().getId() == productId){
-//                throw new AlreadyExistsException(product.getName() + " already in cart");
-//            }
-//            break;
-//        }
-        Item newCartItem = new Item();
-        BeanUtils.copyProperties(product, newCartItem);
-        newCartItem.setProductName(product.getName());
-        newCartItem.setUnitPrice(product.getPrice());
-        newCartItem.setOrderQty(1);
+
+        Item newCartItem = Item.builder()
+                .imageUrl(product.getImageUrl())
+                .productName(product.getName())
+                .unitPrice(product.getPrice())
+                .orderQty(1)
+                .product(product)
+                .cart(cart)
+                .build();
         newCartItem.setSubTotal(newCartItem.getOrderQty() * product.getPrice());
+
         itemRepository.save(newCartItem);
         allCartItems.add(newCartItem);
 
         cart.setItems(allCartItems);
-        cartRepository.save(cart);
-
-        Double cartTotal = cart.getTotal();
+        Double cartTotal = 0.0;
 
         for (Item item : cart.getItems()) {
             cartTotal += item.getSubTotal();
         }
 
         cart.setTotal(cartTotal);
+        cartRepository.save(cart);
         customerRepository.save(loggedInCustomer);
         return "Item Saved to Cart Successfully";
     }
@@ -90,8 +84,6 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public String removeItem(Long itemToRemoveId) {
-
-
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
@@ -113,9 +105,7 @@ public class CartServiceImpl implements CartService {
 ////        cart.setItems(itemsInCart);
 ////        itemRepository.save(item);
                 itemRepository.delete(item);
-
             return "item removed successfully";
-
 //                    //search for the logged in user
 //                    //get his cart
 //                    //cart
@@ -146,49 +136,86 @@ public class CartServiceImpl implements CartService {
 //                }
 //                throw new ResourceNotFoundException("Item does not exist");
 //
-
         }
         throw new UnauthorizedUserException("User does not exist");
     }
 
     @Override
-    public String addToItemQuantity(Long itemId) {
+    public String addToItemQuantity(Long productId) {
         Customer loggedInCustomer = customerService.getCurrentlyLoggedInUser();
         Cart cart = loggedInCustomer.getCart();
         Set<Item> cartItems = cart.getItems();
+        String response = "";
 
-        for(Item item : cartItems) {
-            if(item.getId() == itemId){
-                Product product = productRepository.findByItem(item);
-                if(product.getAvailableQty() == 0) throw new NotAvailableException(product.getName() + " out of stock");
-                item.setOrderQty(item.getOrderQty() + 1);
-                item.setSubTotal(item.getUnitPrice() * item.getOrderQty());
+        Item foundItem = itemRepository.findByProductId(productId);
+
+        synchronized (cartItems) {
+            for (Item item : cartItems) {
+                if (item.getProduct().getId() == foundItem.getProduct().getId()) {
+                    if (foundItem.getProduct().getAvailableQty() == 0)
+                        throw new NotAvailableException(foundItem.getProduct().getName() + " out of stock");
+                    foundItem.setOrderQty(item.getOrderQty() + 1);
+                    foundItem.setSubTotal(item.getUnitPrice() * item.getOrderQty());
+
+                    Double cartTotal = cart.getTotal();
+                    cartTotal += foundItem.getUnitPrice();
+                    cart.setTotal(cartTotal);
+
+                    itemRepository.save(foundItem);
+                    cartRepository.save(cart);
+                } else {
+                    throw new NotAvailableException("Product not in cart");
+                }
             }
         }
-        customerRepository.save(loggedInCustomer);
         return "Item quantity updated successfully";
     }
 
     @Override
     public String reduceItemQuantity(Long itemId) {
         String response = "";
-
+        Item foundItem = itemRepository.findById(itemId).orElseThrow(() -> new NotAvailableException("Item not available"));
         Customer loggedInCustomer = customerService.getCurrentlyLoggedInUser();
         Cart cart = loggedInCustomer.getCart();
         Set<Item> cartItems = cart.getItems();
         for(Item item : cartItems) {
-            if(item.getId() == itemId){
-                if(item.getOrderQty() == 1) {
-                    removeItem(itemId);
-                    response += item.getProductName() + " removed from cart";
-                }
-
+            if(item.getProduct().getId() == foundItem.getProduct().getId()){
                 item.setOrderQty(item.getOrderQty() - 1);
                 item.setSubTotal(item.getUnitPrice() * item.getOrderQty());
+                itemRepository.save(item);
+
+                cart.setTotal(cart.getTotal() - item.getUnitPrice());
+                cartRepository.save(cart);
                 response += item.getProductName() + " quantity updated successfully";
             }
-        }
+
+            if(item.getOrderQty() == 0) {
+                itemRepository.delete(item);
+                response += item.getProductName() + " removed from cart";
+            }
+        };
         customerRepository.save(loggedInCustomer);
         return response;
+    }
+
+    @Override
+    public String clearCart(){
+        Customer loggedInCustomer = customerService.getCurrentlyLoggedInUser();
+        Cart cart = loggedInCustomer.getCart();
+        Set<Item> cartItems = cart.getItems();
+        cartItems.clear();
+        cart.setItems(cartItems);
+        cart.setTotal(0.0);
+        cartRepository.save(cart);
+        itemRepository.deleteAll();
+        return "Cart cleared successfully";
+    }
+
+    @Override
+    public List<Item> getAllCartItems(){
+        Set<Item> cartItems = customerService.getCurrentlyLoggedInUser().getCart().getItems();
+        List<Item> cartItemsList = new ArrayList<>();
+        cartItemsList.addAll(cartItems);
+        return cartItemsList;
     }
 }
