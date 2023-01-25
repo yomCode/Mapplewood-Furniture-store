@@ -31,32 +31,32 @@ public class FakeDb {
                                                SubCategoryRepository subCategoryRepository,
                                                CategoryRepository categoryRepository) {
         return argument -> {
-            if (!personRepository.existsByEmail("bennyson1@gmail.com")) {
-             Customer customer = new Customer();
-             
-                Person person = Person.builder()
-                        .firstName("Benson")
-                        .lastName("Malik")
-                        .email("bennyson1@gmail.com")
-                        .gender(Gender.MALE)
-                        .date_of_birth("13-08-1990")
-                        .phone("9859595959")
-                        .isActive(true)
-                        .verificationStatus(true)
-                        .password(passwordEncoder.encode("password123"))
-                        .address("No Address")
-                        .role(Role.CUSTOMER)
-                        .customer(customer)
-                        .password(passwordEncoder.encode("password123453"))
-                        .address("No Address")
-                        .role(Role.ADMIN)
-                        .isActive(true)
-                        .build();
-                personRepository.save(person);
-
-                customer.setPerson(person);
-                customerRepository.save(customer);
-            }
+//            if (!personRepository.existsByEmail("bennyson1@gmail.com")) {
+//             Customer customer = new Customer();
+//
+//                Person person = Person.builder()
+//                        .firstName("Benson")
+//                        .lastName("Malik")
+//                        .email("bennyson1@gmail.com")
+//                        .gender(Gender.MALE)
+//                        .date_of_birth("13-08-1990")
+//                        .phone("9859595959")
+//                        .isActive(true)
+//                        .verificationStatus(true)
+//                        .password(passwordEncoder.encode("password123"))
+//                        .address("No Address")
+//                        .role(Role.CUSTOMER)
+//                        .customer(customer)
+//                        .password(passwordEncoder.encode("password123453"))
+//                        .address("No Address")
+//                        .role(Role.ADMIN)
+//                        .isActive(true)
+//                        .build();
+//                personRepository.save(person);
+//
+//                customer.setPerson(person);
+//                customerRepository.save(customer);
+//            }
 
             if(!categoryRepository.existsById(1L)) {
 
@@ -248,6 +248,7 @@ public class FakeDb {
                 SubCategory dresser3 = subCategoryRepository.findById(21L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
                 SubCategory dresser4 = subCategoryRepository.findById(22L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
                 SubCategory lamp1 = subCategoryRepository.findById(23L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
+
                 SubCategory lamp2 = subCategoryRepository.findById(24L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
                 SubCategory lamp3 = subCategoryRepository.findById(25L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
 

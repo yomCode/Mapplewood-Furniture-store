@@ -2,6 +2,7 @@ package com.decagon.OakLandv1be.services;
 
 import com.decagon.OakLandv1be.dto.CustomerProfileDto;
 import com.decagon.OakLandv1be.dto.EditProfileRequestDto;
+import com.decagon.OakLandv1be.dto.ProductCustResponseDto;
 import com.decagon.OakLandv1be.dto.SignupRequestDto;
 import com.decagon.OakLandv1be.dto.SignupResponseDto;
 
@@ -27,6 +28,9 @@ public interface CustomerService {
 
     Customer getCurrentlyLoggedInUser();
 
+    ProductCustResponseDto viewASingleFavorite(Long product_id);
+
+    Page<ProductCustResponseDto> viewFavouritesByPagination(Integer pageNo, Integer pageSize, String sortBy);
     CustomerProfileDto viewProfile();
 
     Page<CustomerProfileDto> viewAllCustomersProfileWithPaginationSorting(Integer pageNumber, Integer pageSize, String sortBy);
