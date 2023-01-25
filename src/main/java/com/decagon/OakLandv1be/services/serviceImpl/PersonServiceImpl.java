@@ -79,6 +79,7 @@ public class PersonServiceImpl implements PersonService {
                 .orElseThrow(() -> new UserNotFoundException("user does not exist"));
             String oldPassword = updatePasswordDto.getOldPassword();
             String newPassword = updatePasswordDto.getNewPassword();
+            String confirmNewPassword = updatePasswordDto.getConfirmNewPassword();
 
             Person person = personRepository.findByEmail(email)
                     .orElseThrow(() -> new UserNotFoundException("This user does not exist"));
@@ -86,6 +87,8 @@ public class PersonServiceImpl implements PersonService {
             String dbPassword = person.getPassword();
             if (!passwordEncoder.matches(oldPassword, dbPassword))
                 throw new PasswordMisMatchException("Passwords do not match!");
+            if(!confirmNewPassword.equals(newPassword))
+                updatePasswordDto.setConfirmNewPassword(newPassword);
 
             person.setPassword(passwordEncoder.encode(newPassword));
             personRepository.save(person);

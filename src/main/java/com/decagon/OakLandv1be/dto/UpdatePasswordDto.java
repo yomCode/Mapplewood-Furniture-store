@@ -20,6 +20,8 @@ public class UpdatePasswordDto {
     @NotBlank(message = "newPassword should not be blank")
      private String newPassword;
 
+    @NotBlank(message = "confirmNewPassword should not be blank")
+    private String confirmNewPassword;
 
     }
 
