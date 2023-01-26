@@ -62,7 +62,7 @@ class AuthenticationControllerTest {
         person.setId(1L);
 
         updatePasswordDto =
-                new UpdatePasswordDto("password123", "wordpass321");
+                new UpdatePasswordDto("password123", "wordpass321","wordpass321");
     }
 
     @Test
