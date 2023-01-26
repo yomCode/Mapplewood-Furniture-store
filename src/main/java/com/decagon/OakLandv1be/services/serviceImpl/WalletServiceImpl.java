@@ -114,8 +114,8 @@ public class WalletServiceImpl implements WalletService {
                     .firstName(person.getFirstName())
                     .lastName(person.getLastName())
                     .email(person.getEmail())
-                    .walletBalance(wallet.getAccountBalance())
-                    .baseCurrency(currencyString)
+                    .walletBalance(currencyString)
+                    .baseCurrency(String.valueOf(wallet.getBaseCurrency()))
                     .build();
 
         }
