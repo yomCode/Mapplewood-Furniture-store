@@ -2,12 +2,9 @@ package com.decagon.OakLandv1be.controllers;
 
 import com.decagon.OakLandv1be.dto.CustomerProfileDto;
 import com.decagon.OakLandv1be.dto.EditProfileRequestDto;
+import com.decagon.OakLandv1be.dto.ProductCustResponseDto;
 import com.decagon.OakLandv1be.dto.SignupRequestDto;
-import com.decagon.OakLandv1be.dto.SignupResponseDto;
 import com.decagon.OakLandv1be.dto.cartDtos.AddItemToCartDto;
-import com.decagon.OakLandv1be.dto.cartDtos.CartItemResponseDto;
-
-import com.decagon.OakLandv1be.entities.Customer;
 import com.decagon.OakLandv1be.exceptions.AlreadyExistsException;
 import com.decagon.OakLandv1be.services.CartService;
 import com.decagon.OakLandv1be.services.CustomerService;
@@ -22,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.List;
 
 
 @CrossOrigin(origins = "http://localhost:3000")
@@ -65,8 +61,8 @@ public class CustomerController {
     }
 
     @PostMapping("/cart/item/add/{productId}")
-    public ResponseEntity<String> addItemToCart(@Valid @RequestBody AddItemToCartDto addItemToCartDto, @PathVariable Long productId) throws AlreadyExistsException {
-        String response = cartService.addItemToCart(productId,addItemToCartDto);
+    public ResponseEntity<String> addItemToCart(@PathVariable Long productId, @RequestBody AddItemToCartDto addItemToCartDto) throws AlreadyExistsException {
+        String response = cartService.addItemToCart(productId, addItemToCartDto);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
@@ -76,4 +72,17 @@ public class CustomerController {
         return new ResponseEntity<>("Product added to favourites successfully", HttpStatus.ACCEPTED);
 
     }
+
+    @GetMapping("/product/favorite/view/{product_id}")
+    public ResponseEntity<ProductCustResponseDto> viewASingleFavorite(@PathVariable Long product_id) {
+        return new ResponseEntity<>(customerService.viewASingleFavorite(product_id), HttpStatus.OK);
+    }
+    @GetMapping("/product/favorites/viewAllFavorites")
+    public ResponseEntity<Page<ProductCustResponseDto>> viewFavouritesByPagination(@RequestParam(defaultValue = "0") Integer pageNo,
+                                                                                    @RequestParam(defaultValue = "16") Integer pageSize,
+                                                                                    @RequestParam(defaultValue = "id") String sortBy){
+        return new ResponseEntity<>(customerService.viewFavouritesByPagination(pageNo, pageSize, sortBy),HttpStatus.OK);
+
+    }
+
 }
