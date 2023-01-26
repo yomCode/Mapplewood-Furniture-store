@@ -32,8 +32,8 @@ public class PaymentController {
     }
 
 
-    @GetMapping("/finalizeTrans/{reference}")
-    public ResponseEntity<String> finalizePayment(@PathVariable String reference){
+    @GetMapping("/finalizeTrans")
+    public ResponseEntity<String> finalizePayment(@RequestParam("reference") String reference){
         return new ResponseEntity<>(service.finalizeTransaction(reference), HttpStatus.OK);
     }
 
