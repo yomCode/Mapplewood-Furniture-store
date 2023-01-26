@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("api/v1/cart")
 public class CartController {
     private final CartService cartService;
-    private final ResponseManager responseManager;
+
 
     @DeleteMapping("/item/delete/{itemId}")
-    public ResponseEntity<ApiResponse> deleteItem(@PathVariable Long itemId){
+    public ResponseEntity<String> deleteItem(@PathVariable Long itemId){
        cartService.removeItem(itemId);
-        return new ResponseEntity<>( responseManager.success("Item removed successfully"), HttpStatus.OK);
+        return new ResponseEntity<>( "Item removed successfully", HttpStatus.OK);
     }
 
     @GetMapping("/view")
