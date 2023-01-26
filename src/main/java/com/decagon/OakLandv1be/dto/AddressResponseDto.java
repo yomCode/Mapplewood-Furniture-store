@@ -10,8 +10,12 @@ import lombok.*;
 @Builder
 public class AddressResponseDto {
 
+    private Long id;
     private String fullName;
-    private String address;
+    private String street;
+    private String state;
+    private String country;
     private String phone;
+    private String emailAddress;
     private Boolean isDefault;
 }

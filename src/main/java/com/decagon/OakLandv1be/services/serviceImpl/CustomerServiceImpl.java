@@ -30,6 +30,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -56,6 +57,7 @@ public class CustomerServiceImpl implements CustomerService {
 
 
     @Override
+    @Transactional
     public SignupResponseDto saveCustomer(SignupRequestDto signupRequestDto) throws AlreadyExistsException, IOException {
         boolean emailExist = personRepository.existsByEmail(signupRequestDto.getEmail());
         if (emailExist)

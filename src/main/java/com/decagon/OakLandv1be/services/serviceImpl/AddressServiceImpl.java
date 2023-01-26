@@ -39,6 +39,7 @@ public class AddressServiceImpl implements AddressService {
                 .country(request.getCountry())
                 .isDefault(false)
                 .phone(request.getPhone())
+                .emailAddress(request.getEmailAddress())
                 .build();
         addressRepository.save(address);
         return "Address saved succesfully";
@@ -91,8 +92,11 @@ public class AddressServiceImpl implements AddressService {
         addressList
                 .forEach(address -> {
                     AddressResponseDto response = AddressResponseDto.builder()
+                            .id(address.getId())
                             .fullName(address.getFullName())
-                            .address(address.getStreet() + ", " + address.getState() + " " + address.getCountry())
+                            .street(address.getStreet())
+                            .state(address.getState())
+                            .country(address.getCountry())
                             .phone(address.getPhone())
                             .isDefault(address.getIsDefault())
                             .build();
@@ -101,8 +105,23 @@ public class AddressServiceImpl implements AddressService {
         return addressResponse;
     }
 
+    @Override
+    public AddressResponseDto viewAddress(Long addressId){
+        Address address = getAddress(addressId);
+        return AddressResponseDto.builder()
+                .id(address.getId())
+                .fullName(address.getFullName())
+                .phone(address.getPhone())
+                .emailAddress(address.getEmailAddress())
+                .street(address.getStreet())
+                .state(address.getState())
+                .country(address.getCountry())
+                .isDefault(address.getIsDefault())
+                .build();
+    }
 
-    protected Address getAddress(Long addressId){
+
+    public Address getAddress(Long addressId){
         return addressRepository.findById(addressId).orElseThrow(() -> new ResourceNotFoundException("Address not found"));
     }
 
