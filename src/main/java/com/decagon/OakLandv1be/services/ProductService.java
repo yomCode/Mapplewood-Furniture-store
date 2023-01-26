@@ -15,8 +15,8 @@ public interface ProductService {
     ProductCustResponseDto fetchASingleProduct(Long product_id);
 
     Page<ProductCustResponseDto> productWithPaginationAndSorting(Integer page, Integer size, String sortingField,boolean isAscending);
-
-    List<ProductCustResponseDto> fetchAllProducts();
+    public List<ProductCustResponseDto> fetchAllProducts();
+   // List<ProductCustResponseDto> fetchAllProducts();
 
     ApiResponse<Page<Product>> getAllProducts(Integer pageNo, Integer pageSize, String sortBy, boolean isAscending);
 
