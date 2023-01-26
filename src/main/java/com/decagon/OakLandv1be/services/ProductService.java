@@ -16,9 +16,11 @@ public interface ProductService {
 
     Page<ProductCustResponseDto> productWithPaginationAndSorting(Integer page, Integer size, String sortingField,boolean isAscending);
 
+
     public List<ProductCustResponseDto> fetchAllProducts();
 
     void deleteProductImage(String publicUrl);
+
 
     ApiResponse<Page<Product>> getAllProducts(Integer pageNo, Integer pageSize, String sortBy, boolean isAscending);
 

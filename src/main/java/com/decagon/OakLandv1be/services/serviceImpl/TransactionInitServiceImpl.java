@@ -58,6 +58,7 @@ public class TransactionInitServiceImpl implements TransactionInitService {
         request.setReference(UUID.randomUUID().toString());
         request.setCallback_url("http://" + servletRequest.getServerName() + ":3000" + "/confirm-payment?reference=" + request.getReference());
 
+
         apiConnection = new ApiConnection("https://api.paystack.co/transaction/initialize");
 
         ApiQuery query = new ApiQuery();
