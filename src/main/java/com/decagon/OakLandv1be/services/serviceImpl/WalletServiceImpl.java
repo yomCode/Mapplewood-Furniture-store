@@ -2,6 +2,7 @@ package com.decagon.OakLandv1be.services.serviceImpl;
 
 import com.decagon.OakLandv1be.dto.FundWalletRequest;
 import com.decagon.OakLandv1be.dto.FundWalletResponseDto;
+import com.decagon.OakLandv1be.dto.WalletInfoResponseDto;
 import com.decagon.OakLandv1be.entities.*;
 import com.decagon.OakLandv1be.exceptions.InsufficientBalanceInWalletException;
 import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
@@ -44,31 +45,31 @@ public class WalletServiceImpl implements WalletService {
 
     @Override
     public FundWalletResponseDto fundWallet(FundWalletRequest request) {
-            Person person = personRepository.findByEmail(request.getEmail())
-                    .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
+        Person person = personRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
 
-            Wallet wallet = person.getCustomer().getWallet();
-            wallet.setAccountBalance(wallet.getAccountBalance().add(request.getAmount()));
-            walletRepository.save(wallet);
+        Wallet wallet = person.getCustomer().getWallet();
+        wallet.setAccountBalance(wallet.getAccountBalance().add(request.getAmount()));
+        walletRepository.save(wallet);
 
-            Transaction transaction = Transaction.builder()
-                            .wallet(wallet)
-                                    .status(SUCCESSFUL).build();
-            transactionRepository.save(transaction);
+        Transaction transaction = Transaction.builder()
+                .wallet(wallet)
+                .status(SUCCESSFUL).build();
+        transactionRepository.save(transaction);
 
-            try {
-                mailService.sendMail(person.getEmail(), "Wallet deposit", "Your wallet has been credited with "
-                        + request.getAmount() + ". Your new balance is now " + wallet.getAccountBalance());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+        try {
+            mailService.sendMail(person.getEmail(), "Wallet deposit", "Your wallet has been credited with "
+                    + request.getAmount() + ". Your new balance is now " + wallet.getAccountBalance());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
-            return FundWalletResponseDto.builder()
-                    .fullName(person.getFirstName() + " " + person.getLastName())
-                    .depositAmount(request.getAmount())
-                    .newBalance(wallet.getAccountBalance()).build();
+        return FundWalletResponseDto.builder()
+                .fullName(person.getFirstName() + " " + person.getLastName())
+                .depositAmount(request.getAmount())
+                .newBalance(wallet.getAccountBalance()).build();
 
-       // throw new UnauthorizedUserException("Login to carry out this operation");
+        // throw new UnauthorizedUserException("Login to carry out this operation");
     }
 
 
@@ -159,4 +160,27 @@ public class WalletServiceImpl implements WalletService {
 //        Customer customer=loggedInPerson.getCustomer();
 
 
+    @Override
+    public WalletInfoResponseDto viewWalletInfo() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            String email = authentication.getName();
+
+            Person person = personRepository.findByEmail(email)
+                    .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
+            Wallet wallet = person.getCustomer().getWallet();
+
+            return WalletInfoResponseDto.builder()
+                    .firstName(person.getFirstName())
+                    .lastName(person.getLastName())
+                    .email(person.getEmail())
+                    .walletBalance(wallet.getAccountBalance())
+                    .baseCurrency(String.valueOf(wallet.getBaseCurrency()))
+                    .build();
+
+        }
+
+        throw new UnauthorizedUserException("User does not have access");
+    }
 }
