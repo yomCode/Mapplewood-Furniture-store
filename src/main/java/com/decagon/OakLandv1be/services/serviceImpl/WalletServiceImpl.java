@@ -146,7 +146,7 @@ public class WalletServiceImpl implements WalletService {
         ).getCustomer().getWallet();
     }
 
-    //get the currently logged in customer
+    //get the currently logged in customer//
 
 //        String customerEmail= UserUtil.extractEmailFromPrincipal().orElseThrow(
 //                ()->new UsernameNotFoundException("Please login to continue")
