@@ -32,7 +32,7 @@ public class CustomerController {
         return new ResponseEntity<>(responseManager.success("Registration Successful! Check your mail for activation link"),HttpStatus.CREATED);
     }
 
-    @GetMapping("/verifyRegistration")
+    @GetMapping("/customer/verifyRegistration")
     public ResponseEntity<ApiResponse> verifyAccount(@RequestParam("token") String token){
         return customerService.verifyRegistration(token);
     }
