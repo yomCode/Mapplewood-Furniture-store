@@ -35,4 +35,10 @@ public class WalletController {
         return new ResponseEntity<>(new ResponseManager().success(response), HttpStatus.OK);
     }
 
+    @GetMapping("/info")
+    public ApiResponse<Object> walletInfo(){
+
+        return new ApiResponse<>("Request successful", walletService.viewWalletInfo(), HttpStatus.OK);
+    }
+
 }

@@ -35,8 +35,9 @@ public class CustomerController {
         customerService.saveCustomer(signupRequestDto);
         return new ResponseEntity<>(responseManager.success("Registration Successful! Check your mail for activation link"),HttpStatus.CREATED);
     }
-    @GetMapping("/customer/verifyRegistration/{token}")
-    public ResponseEntity<ApiResponse> verifyAccount(@PathVariable String token){
+
+    @GetMapping("/verifyRegistration")
+    public ResponseEntity<ApiResponse> verifyAccount(@RequestParam("token") String token){
         return customerService.verifyRegistration(token);
     }
     
