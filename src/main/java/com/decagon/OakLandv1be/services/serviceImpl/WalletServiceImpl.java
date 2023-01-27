@@ -138,15 +138,9 @@ public class WalletServiceImpl implements WalletService {
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-
-
             return true;
-
         }
-
         throw new InsufficientBalanceInWalletException("Insufficient balance, Please fund your wallet.");
-
-
     }
 
 
