@@ -74,7 +74,7 @@ public class CustomerController {
 
     }
 
-    @GetMapping("/cart/item/view-all")
+    @GetMapping("customer/cart/item/view-all")
     public ResponseEntity<List<CartItemResponseDto>> fetchProductsFromCustomerCart() {
         List<CartItemResponseDto> items = cartService.fetchProductsFromCustomerCart();
         return new ResponseEntity<>(items, HttpStatus.OK);
