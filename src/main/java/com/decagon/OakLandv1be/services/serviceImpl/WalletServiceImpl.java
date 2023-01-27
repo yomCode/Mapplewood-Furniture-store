@@ -24,6 +24,10 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 import static com.decagon.OakLandv1be.enums.TransactionStatus.SUCCESSFUL;
 
@@ -171,12 +175,22 @@ public class WalletServiceImpl implements WalletService {
                     .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
             Wallet wallet = person.getCustomer().getWallet();
 
+            NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("en", "NG"));
+            DecimalFormat df = (DecimalFormat) nf;
+            df.applyPattern("¤###,###.00");
+
+            String currencyString = df.format(wallet.getAccountBalance());
+
+            DecimalFormatSymbols symbols = new DecimalFormatSymbols(new Locale("en", "NG"));
+            symbols.setCurrencySymbol("₦");
+
+
             return WalletInfoResponseDto.builder()
                     .firstName(person.getFirstName())
                     .lastName(person.getLastName())
                     .email(person.getEmail())
                     .walletBalance(wallet.getAccountBalance())
-                    .baseCurrency(String.valueOf(wallet.getBaseCurrency()))
+                    .baseCurrency(currencyString)
                     .build();
 
         }
