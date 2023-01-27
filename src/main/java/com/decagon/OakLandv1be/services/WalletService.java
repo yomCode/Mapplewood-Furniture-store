@@ -13,5 +13,7 @@ public interface WalletService {
 
     BigDecimal getWalletBalance();
 
+    Boolean processPayment(BigDecimal grandTotal);
+
     WalletInfoResponseDto viewWalletInfo();
 }

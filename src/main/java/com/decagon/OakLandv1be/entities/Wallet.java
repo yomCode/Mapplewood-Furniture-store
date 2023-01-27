@@ -31,5 +31,10 @@ public class Wallet extends BaseEntity{
     @OneToOne(mappedBy = "wallet", cascade = CascadeType.ALL)
     private Customer customer;
 
+    @JsonIgnore
+    @OneToOne(mappedBy = "wallet", cascade = CascadeType.ALL)
+    private SuperAdmin superAdmin;
+
+
 
 }
