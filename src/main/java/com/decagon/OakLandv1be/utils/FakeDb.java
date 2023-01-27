@@ -44,17 +44,13 @@ public class FakeDb {
                         .isActive(true)
                         .verificationStatus(true)
                         .password(passwordEncoder.encode("password123"))
-                        .address("No Address")
                         .role(Role.CUSTOMER)
                         .customer(customer)
-                        .password(passwordEncoder.encode("password123453"))
                         .address("No Address")
-                        .role(Role.ADMIN)
-                        .isActive(true)
                         .build();
                 personRepository.save(person);
 
-                customer.setPerson(person);
+                //customer.setPerson(person);
                 customerRepository.save(customer);
             }
 

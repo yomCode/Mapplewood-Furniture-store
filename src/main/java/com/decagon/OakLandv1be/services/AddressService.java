@@ -5,6 +5,7 @@ import com.decagon.OakLandv1be.dto.AddressResponseDto;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface AddressService {
@@ -16,5 +17,5 @@ public interface AddressService {
 
     void DeleteAddress(Long addressId);
 
-    List<AddressResponseDto> getAllAddress();
+    Set<AddressResponseDto> getAllAddress();
 }

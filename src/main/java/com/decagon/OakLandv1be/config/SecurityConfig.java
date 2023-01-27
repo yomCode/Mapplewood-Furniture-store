@@ -33,7 +33,6 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtGra
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
-
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -70,12 +69,13 @@ public class SecurityConfig {
             config.setMaxAge(3600L);
             return config;
         }).and().csrf(AbstractHttpConfigurer::disable)
+
                 .authorizeHttpRequests((auth) -> {
                 auth.antMatchers(WHITE_LISTED_URLS).permitAll()
                             .antMatchers("/api/v1/super-admin/**").hasRole(SUPERADMIN.name())
                             .antMatchers("/api/v1/admin/**", "/api/v1/customer/admin/**").hasAnyRole(ADMIN.name(), SUPERADMIN.name())
                         .antMatchers("/api/v1/category/admin/**", "/api/v1/subcategory/admin/**").hasAnyRole(ADMIN.name(), SUPERADMIN.name())
-                        .antMatchers("/api/v1/customer/**", "/api/v1/auth/update-password").hasAnyRole(CUSTOMER.name())
+                        .antMatchers("/api/v1/customer/**", "/api/v1/auth/update-password", "api/v1/cart/**").hasAnyRole(CUSTOMER.name())
                             .anyRequest().authenticated();
                 })
                 .oauth2ResourceServer(oauth2ResourceServer ->
@@ -122,34 +122,34 @@ public class SecurityConfig {
         return provider;
     }
 
-//    @Bean
-//    public CommandLineRunner commandLineRunner(PersonRepository personRepository, CustomerRepository customerRepository) {
-//        return args -> {
-//            Person person = Person.builder()
-//                    .firstName("Maria")
-//                    .lastName("Girl")
-//                    .password(passwordEncoder.encode("password1234"))
-//                    .email("maria@gmail.com")
-//                    .gender(Gender.OTHER)
-//                    .date_of_birth("12-09-1997")
-//                    .phone("78573944844")
-//                    .verificationStatus(true)
-//                    .address("Foolish")
-//                    .role(Role.ADMIN)
-//                    .isActive(true)
-//                    .build();
-//
-//            Customer customer = Customer.builder()
-//                    .person(person)
-//                    .cart(new Cart())
-//                    .wallet(Wallet.builder()
-//                            .accountBalance(BigDecimal.valueOf(4000D))
-//                            .baseCurrency(BaseCurrency.POUNDS)
-//                            .build())
-//                    .build();
-//
-//            personRepository.save(person);
-////            customerRepository.save(customer);
-//        };
-//    }
+    @Bean
+    public CommandLineRunner commandLineRunner(PersonRepository personRepository, CustomerRepository customerRepository) {
+        return args -> {
+            Person person = Person.builder()
+                    .firstName("Maria")
+                    .lastName("Girl")
+                    .password(passwordEncoder.encode("password1234"))
+                    .email("maria@gmail.com")
+                    .gender(Gender.OTHER)
+                    .date_of_birth("12-09-1997")
+                    .phone("78573944844")
+                    .verificationStatus(true)
+                    .address("Foolish")
+                    .role(Role.ADMIN)
+                    .isActive(true)
+                    .build();
+
+            Customer customer = Customer.builder()
+                    .person(person)
+                    .cart(new Cart())
+                    .wallet(Wallet.builder()
+                            .accountBalance(BigDecimal.valueOf(4000D))
+                            .baseCurrency(BaseCurrency.POUNDS)
+                            .build())
+                    .build();
+
+            personRepository.save(person);
+//            customerRepository.save(customer);
+        };
+    }
 }
