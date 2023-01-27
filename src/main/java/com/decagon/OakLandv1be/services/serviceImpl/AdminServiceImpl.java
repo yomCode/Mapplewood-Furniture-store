@@ -96,7 +96,7 @@ public class AdminServiceImpl implements AdminService {
         Product product = productRepository.findById(product_id)
                 .orElseThrow(()-> new ResourceNotFoundException("Product not found"));
 
-        productRepository.deleteById(product_id);
+        productRepository.delete(product);
         return manager.success(new OperationStatus(OperationName.DELETE.name(), OperationResult.SUCCESS.name()));
     }
 
@@ -124,11 +124,17 @@ public class AdminServiceImpl implements AdminService {
                 orElseThrow(()->
                         new ProductNotFoundException("Product does not exist"));
 
+        SubCategory subCategory = subCategoryRepository
+                .findByName(updateproductDto.getSubCategory())
+                .orElseThrow(() ->
+                        new ProductNotFoundException("SubCategory does not exist"));
+
+
         product.setName(updateproductDto.getName());
         product.setPrice(updateproductDto.getPrice());
         product.setImageUrl(updateproductDto.getImageUrl());
         product.setAvailableQty(updateproductDto.getAvailableQty());
-        product.setSubCategory(updateproductDto.getSubCategory());
+        product.setSubCategory(subCategory);
         product.setColor(updateproductDto.getColor());
         product.setDescription(updateproductDto.getDescription());
 

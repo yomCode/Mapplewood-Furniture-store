@@ -55,7 +55,7 @@ public class TransactionInitServiceImpl implements TransactionInitService {
         request.setAmount(amountInKobo);
         request.setEmail(email);
         request.setReference(UUID.randomUUID().toString());
-        request.setCallback_url("http://" + servletRequest.getServerName() + ":" + servletRequest.getServerPort()+ "/api/v1/finalizeTrans/"+request.getReference());
+        request.setCallback_url("http://" + servletRequest.getServerName() + ":3000" + "/confirm-payment?reference=" + request.getReference());
 
 
         apiConnection = new ApiConnection("https://api.paystack.co/transaction/initialize");
@@ -73,7 +73,6 @@ public class TransactionInitServiceImpl implements TransactionInitService {
         transactionRepository.save(transaction);
 
         return apiConnection.connectAndQuery(query);
-
     }
 
 

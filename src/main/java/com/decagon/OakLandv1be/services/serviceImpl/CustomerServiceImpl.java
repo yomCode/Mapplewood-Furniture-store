@@ -1,9 +1,11 @@
 package com.decagon.OakLandv1be.services.serviceImpl;
 
 
+import com.decagon.OakLandv1be.config.CloudinaryConfig;
 import com.decagon.OakLandv1be.config.tokens.TokenService;
 import com.decagon.OakLandv1be.dto.CustomerProfileDto;
 import com.decagon.OakLandv1be.dto.EditProfileRequestDto;
+import com.decagon.OakLandv1be.dto.ProductCustResponseDto;
 import com.decagon.OakLandv1be.dto.SignupRequestDto;
 import com.decagon.OakLandv1be.dto.SignupResponseDto;
 import com.decagon.OakLandv1be.entities.*;
@@ -18,6 +20,7 @@ import com.decagon.OakLandv1be.services.JavaMailService;
 import com.decagon.OakLandv1be.utils.ApiResponse;
 import com.decagon.OakLandv1be.utils.Mapper;
 import com.decagon.OakLandv1be.utils.ResponseManager;
+import com.decagon.OakLandv1be.utils.UserUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.*;
@@ -28,7 +31,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
+import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -51,9 +55,12 @@ public class CustomerServiceImpl implements CustomerService {
     private final TokenRepository tokenRepository;
     private final ResponseManager responseManager;
     private final ProductRepository productRepository;
+    private final HttpServletRequest request;
+
 
 
     @Override
+    @Transactional
     public SignupResponseDto saveCustomer(SignupRequestDto signupRequestDto) throws AlreadyExistsException, IOException {
         boolean emailExist = personRepository.existsByEmail(signupRequestDto.getEmail());
         if (emailExist)
@@ -91,7 +98,8 @@ public class CustomerServiceImpl implements CustomerService {
         javaMailService.sendMail(signupRequestDto.getEmail(),
                 "Verify your email address",
                 "Hi " + person.getFirstName() + " " + person.getLastName() + ", Thank you for your interest in joining Oakland." +
-                        "To complete your registration, we need you to verify your email address " + "http://localhost:8080/api/v1/customer/verifyRegistration/" + validToken);
+
+                        "To complete your registration, we need you to verify your email address \n" + "http://" + request.getServerName() + ":3000" + "/verifyRegistration?token=" + validToken);
 
         // use the user object to create UserResponseDto Object
         SignupResponseDto signupResponseDto = new SignupResponseDto();
@@ -185,6 +193,103 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    public ProductCustResponseDto viewASingleFavorite(Long product_id) {
+        String email = UserUtil.extractEmailFromPrincipal()
+                .orElseThrow(() -> new UserNotFoundException("user does not exist"));
+        Customer customer = customerRepository.findByPersonEmail(email).orElseThrow
+                (()-> new UserNotFoundException("user not found"));
+
+        Set<Product> favorites = customer.getFavorites();
+        Product product = productRepository.findById(product_id).orElseThrow(()-> new ProductNotFoundException("product"+ product_id+"not available"));
+        if(!favorites.contains(product)){
+            throw new ResourceNotFoundException("Products not found in the favorites");
+        }
+        return ProductCustResponseDto.builder()
+                .name(product.getName())
+                .price(product.getPrice())
+                .imageUrl(product.getImageUrl())
+                .color(product.getColor())
+                .description(product.getDescription())
+                .build();
+    }
+
+    @Override
+    public Page<ProductCustResponseDto> viewFavouritesByPagination(Integer pageNo, Integer pageSize, String sortBy) {
+        String email = UserUtil.extractEmailFromPrincipal()
+                .orElseThrow(() -> new UserNotFoundException("user does not exist"));
+        Customer customer = customerRepository.findByPersonEmail(email).orElseThrow
+                (() -> new UserNotFoundException("user not found"));
+        List<Product> products = new ArrayList<>(customer.getFavorites());
+
+        List<ProductCustResponseDto> productCustResponseDtos = new ArrayList<>();
+
+        products.forEach(product -> {
+            productCustResponseDtos.add(
+                    ProductCustResponseDto.builder()
+                            .name(product.getName())  // make sure this is the correct method call
+                            .price(product.getPrice())
+                            .imageUrl(product.getImageUrl())
+                            .color(product.getColor())
+                            .description(product.getDescription())
+                            .build()
+            );
+        });
+
+        PageRequest pageable = PageRequest.of(pageNo, pageSize, Sort.Direction.DESC, sortBy);
+
+        int minimum = pageNo*pageSize;
+        int max = (pageSize*(pageNo+1)>products.size()) ?
+                products.size(): pageSize*(pageNo+1);
+
+        Page<ProductCustResponseDto> page = new PageImpl<>
+                (productCustResponseDtos.subList(minimum, max), pageable,
+                        productCustResponseDtos.size());
+
+        return page;
+    }
+
+
+
+
+//    @Override
+//    public Page<ProductCustResponseDto> viewFavouritesByPagination(Integer pageNo, Integer pageSize, String sortBy) {
+//        String email = UserUtil.extractEmailFromPrincipal()
+//                .orElseThrow(() -> new UserNotFoundException("user does not exist"));
+//        Customer customer = customerRepository.findByPersonEmail(email).orElseThrow
+//                (() -> new UserNotFoundException("user not found"));
+//        List<Product> products = new ArrayList<>(customer.getFavorites());
+//
+//        List<ProductCustResponseDto> productCustResponseDtos = new ArrayList<>();
+//
+//        products.forEach(product -> {
+//            productCustResponseDtos.add(
+//                    ProductCustResponseDto.builder()
+//                    .name(product.getName())
+//                    .price(product.getPrice())
+//                    .imageUrl(product.getImageUrl())
+//                    .color(product.getColor())
+//                    .description(product.getDescription())
+//                    .build()
+//            );
+//        });
+//
+//
+//        PageRequest pageable = PageRequest.of(pageNo, pageSize, Sort.Direction.DESC, sortBy);
+//
+//        int max = (pageSize*(pageNo+1)>products.size()) ?
+//                productCustResponseDtos.size(): pageSize*(pageNo+1);
+//
+//        Page<ProductCustResponseDto> page = new PageImpl<>
+//                (productCustResponseDtos.subList(pageNo*pageSize, max), pageable,
+//                        productCustResponseDtos.size());
+//
+//        return page;
+//    }
+
+
+
+
+
     public CustomerProfileDto viewProfile() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String loggedInUserEmail = authentication.getName();
@@ -204,17 +309,11 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Page<CustomerProfileDto> viewAllCustomersProfileWithPaginationSorting(Integer pageNumber, Integer pageSize, String sortBy) {
-        pageNumber = pageNumber < 0 ? 0 : pageNumber;
-        pageSize = pageSize < 10 ? 10 : pageSize;
-        List<Customer> customers = customerRepository.findAll();
-        if(customers.isEmpty()){
-            throw new EmptyListException("There are no customers registered yet");
-        }
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy));
-        Page<Person> personPage = personRepository.findAll(pageable);
-        List<CustomerProfileDto> customerProfileDtos = personPage.getContent().stream()
+    public Page<CustomerProfileDto> viewAllCustomersProfileWithPaginationSorting(Integer pageNo, Integer pageSize, String sortBy) {
+        List<Person> personPage = personRepository.findAll();
+        List<CustomerProfileDto> customerProfileDtos = personPage.stream()
                 .map(person -> CustomerProfileDto.builder()
+                        .id(person.getId())
                         .firstName(person.getFirstName())
                         .lastName(person.getLastName())
                         .email(person.getEmail())
@@ -225,7 +324,10 @@ public class CustomerServiceImpl implements CustomerService {
                         .address(person.getAddress())
                         .build())
                 .collect(Collectors.toList());
-        return new PageImpl<>(customerProfileDtos, pageable, personPage.getTotalElements());
+
+        PageRequest pageable = PageRequest.of(pageNo, pageSize, Sort.Direction.DESC, sortBy);
+        int max = Math.min(pageSize * (pageNo + 1), customerProfileDtos.size());
+        return new PageImpl<> (customerProfileDtos.subList(pageNo*pageSize, max), pageable, customerProfileDtos.size());
     }
 }
 

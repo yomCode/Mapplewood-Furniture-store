@@ -32,7 +32,7 @@ public class AdminDetailsService implements CommandLineRunner {
     private final SuperAdminRepository superAdminRepository;
     private final PasswordEncoder passwordEncoder;
 
-    @Value("${admin.email}")
+    @Value("${admin.super.email}")
     private String adminEmail;
 
     @Value("${admin.currency}")

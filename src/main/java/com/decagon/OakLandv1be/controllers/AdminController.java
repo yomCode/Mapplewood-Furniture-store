@@ -31,7 +31,7 @@ public class AdminController {
 
     }
 
-    @PostMapping("products/new")
+    @PostMapping("/products/new")
     ApiResponse<ProductResponseDto> addNewProduct(@Valid @RequestBody NewProductRequestDto productDto) {
         return adminService.addNewProduct(productDto);
     }
@@ -43,7 +43,7 @@ public class AdminController {
     }
 
     @DeleteMapping("/products/delete/{product_id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+//    @ResponseStatus(HttpStatus.NO_CONTENT)
     ApiResponse<OperationStatus> deleteProduct(@PathVariable Long product_id){
         return adminService.deleteProduct(product_id);
     }

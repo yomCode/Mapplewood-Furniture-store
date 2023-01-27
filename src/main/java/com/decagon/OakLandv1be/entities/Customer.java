@@ -45,4 +45,6 @@ public class Customer extends BaseEntity{
     @OneToMany(mappedBy = "customer",  fetch = FetchType.EAGER)
     private Set<Address> addressBook;
     private boolean isActive = true;
+
+
 }

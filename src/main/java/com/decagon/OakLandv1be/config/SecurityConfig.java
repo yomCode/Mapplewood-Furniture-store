@@ -73,13 +73,11 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests((auth) -> {
                 auth.antMatchers(WHITE_LISTED_URLS).permitAll()
-                            .antMatchers("/api/v1/super-admin/**").hasRole(SUPERADMIN.name())
-                            
-
-
+                        .antMatchers("/api/v1/super-admin/**").hasRole(SUPERADMIN.name())
+                        .antMatchers("/api/v1/admin/**", "/api/v1/customer/admin/**").hasAnyRole(ADMIN.name(), SUPERADMIN.name())
                         .antMatchers("/api/v1/category/admin/**", "/api/v1/subcategory/admin/**").hasAnyRole(ADMIN.name(), SUPERADMIN.name())
                         .antMatchers("/api/v1/customer/**", "/api/v1/auth/update-password", "api/v1/cart/**").hasAnyRole(CUSTOMER.name())
-                            .anyRequest().authenticated();
+                        .anyRequest().authenticated();
                 })
                 .oauth2ResourceServer(oauth2ResourceServer ->
                         oauth2ResourceServer
@@ -152,7 +150,6 @@ public class SecurityConfig {
                     .build();
 
             personRepository.save(person);
-//            customerRepository.save(customer);
         };
     }
 }

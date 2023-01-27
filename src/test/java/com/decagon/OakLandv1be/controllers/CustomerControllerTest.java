@@ -1,6 +1,7 @@
 package com.decagon.OakLandv1be.controllers;
 
 import com.decagon.OakLandv1be.OakLandV1BeApplication;
+import com.decagon.OakLandv1be.dto.ProductCustResponseDto;
 import com.decagon.OakLandv1be.dto.CustomerProfileDto;
 import com.decagon.OakLandv1be.dto.cartDtos.AddItemToCartDto;
 import com.decagon.OakLandv1be.entities.*;
@@ -17,22 +18,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ContextConfiguration;
+
+import static org.mockito.ArgumentMatchers.anyLong;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 @WebMvcTest(CustomerController.class)
 @AutoConfigureMockMvc(addFilters = false)
 @ContextConfiguration(classes = OakLandV1BeApplication.class)
@@ -40,7 +47,7 @@ class CustomerControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-    
+
     @Autowired
     private ObjectMapper mapper;
 
@@ -57,6 +64,8 @@ class CustomerControllerTest {
 
     @MockBean
     private ResponseManager responseManager;
+
+    List<Product> productList = new ArrayList<>();
 
 
 //    @Test
@@ -83,7 +92,7 @@ class CustomerControllerTest {
 
     @Test
     void CustomerController_AddItemToCart_ReturnResponseEntity() {
-        try{
+        try {
             Person person = new Person();
             person.setGender(Gender.FEMALE);
             person.setPhone("1234");
@@ -118,7 +127,7 @@ class CustomerControllerTest {
 
             Cart cart = person.getCustomer().getCart();
 
-            if(cart == null){
+            if (cart == null) {
                 cart = new Cart();
                 cart.setCustomer(customer);
             }
@@ -133,16 +142,16 @@ class CustomerControllerTest {
 
             String response = "Item Saved to Cart Successfully";
 
-            ApiResponse apiResponse = new ApiResponse<>("Request Successful",true, response);
+            ApiResponse apiResponse = new ApiResponse<>("Request Successful", true, response);
 
             when(customerService.getCurrentlyLoggedInUser()).thenReturn(customer);
             when(cartRepository.findByCustomer(customer)).thenReturn(cart);
-            when(cartService.addItemToCart(1L,addItemToCartDto)).thenReturn(response);
+            when(cartService.addItemToCart(1L, addItemToCartDto)).thenReturn(response);
             when(responseManager.success(response)).thenReturn(apiResponse);
 
-            mockMvc.perform(post("/api/v1/auth/customer/cart/item/add/productId",1L).contentType("application/json"))
+            mockMvc.perform(post("/api/v1/auth/customer/cart/item/add/productId", 1L).contentType("application/json"))
                     .andExpect(status().isCreated());
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -184,7 +193,7 @@ class CustomerControllerTest {
            String requestBody = mapper.writeValueAsString(pageNumber);
            String requestBodie = mapper.writeValueAsString(pageSize);
            String requestBod = mapper.writeValueAsString(sortBy);
-           ResponseEntity<Page<CustomerProfileDto>> actualResponse = customerController.viewAllProfilesPaginationAndSort(pageNumber, pageSize, sortBy);
+           ApiResponse<Page<CustomerProfileDto>> actualResponse = customerController.viewAllProfilesPaginationAndSort(pageNumber, pageSize, sortBy);
        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/customer/admin/customers-profile/page-sort")
                .contentType("application/json")
                .content(requestBody)
@@ -195,6 +204,34 @@ class CustomerControllerTest {
            ce.printStackTrace();
        }
     }
-}
+
+    @Test
+    void viewASingleFavorite() {
+        try {
+            Product product = new Product();
+            product.setId(2L);
+            product.setName("center table");
+            product.setImageUrl("image");
+            product.setColor("red");
+            product.setPrice(1000.00);
+            product.setDescription("round shape center table");
+            ProductCustResponseDto productCustResponseDto = ProductCustResponseDto.builder()
+                    .name("foreign chair")
+                    .price(200.00)
+                    .color("red")
+                    .imageUrl("cccc")
+                    .description("center chair")
+                    .build();
+            when(customerService.viewASingleFavorite(anyLong()))
+                    .thenReturn(productCustResponseDto);
+            mockMvc.perform(MockMvcRequestBuilders.get("/Api/v1/customer/view/{product_id}", 2L).
+                    contentType("Application/Json"));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+    }}
+
+
 
 
