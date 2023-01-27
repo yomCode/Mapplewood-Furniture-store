@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CustomerProfileDto {
+    private Long id;
     private String firstName;
     private String lastName;
     private String email;
