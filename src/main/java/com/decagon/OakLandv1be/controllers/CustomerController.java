@@ -4,22 +4,18 @@ import com.decagon.OakLandv1be.dto.CustomerProfileDto;
 import com.decagon.OakLandv1be.dto.EditProfileRequestDto;
 import com.decagon.OakLandv1be.dto.ProductCustResponseDto;
 import com.decagon.OakLandv1be.dto.SignupRequestDto;
-import com.decagon.OakLandv1be.dto.cartDtos.AddItemToCartDto;
 import com.decagon.OakLandv1be.exceptions.AlreadyExistsException;
 import com.decagon.OakLandv1be.services.CartService;
 import com.decagon.OakLandv1be.services.CustomerService;
 import com.decagon.OakLandv1be.utils.ApiResponse;
 import com.decagon.OakLandv1be.utils.ResponseManager;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
 import java.io.IOException;
-
 
 
 @RestController
@@ -62,9 +58,9 @@ public class CustomerController {
                 HttpStatus.OK);
     }
 
-    @PostMapping("/customer/cart/item/add/{productId}")
-    public ResponseEntity<String> addItemToCart(@PathVariable Long productId, @RequestBody AddItemToCartDto addItemToCartDto) throws AlreadyExistsException {
-        String response = cartService.addItemToCart(productId, addItemToCartDto);
+    @PostMapping("/cart/item/add/{productId}")
+    public ResponseEntity<String> addItemToCart(@PathVariable Long productId) throws AlreadyExistsException {
+        String response = cartService.addItemToCart(productId);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
@@ -72,7 +68,6 @@ public class CustomerController {
     public ResponseEntity<String> addFavorites(@PathVariable Long pid){
         customerService.addProductToFavorites(pid);
         return new ResponseEntity<>("Product added to favourites successfully", HttpStatus.ACCEPTED);
-
     }
 
     @GetMapping("/customer/products/favorites/view/{product_id}")
