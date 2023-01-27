@@ -16,7 +16,7 @@ public class WalletInfoResponseDto {
     private String firstName;
     private String lastName;
     private String email;
-    private BigDecimal walletBalance;
+    private String walletBalance;
     private String baseCurrency;
 
 }
