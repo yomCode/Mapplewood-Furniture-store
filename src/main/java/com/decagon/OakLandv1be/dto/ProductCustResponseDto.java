@@ -15,6 +15,7 @@ public class ProductCustResponseDto {
     private String name;
 
     private Double price;
+    private Integer availableQty;
 
     private String imageUrl;
 
