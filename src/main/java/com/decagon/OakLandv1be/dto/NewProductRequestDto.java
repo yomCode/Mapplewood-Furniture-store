@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Range;
 
+import javax.persistence.Column;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
 
@@ -28,9 +29,6 @@ public class NewProductRequestDto {
 
     @NotBlank(message="Field SubCategory cannot be null")
     private String subCategory;
-
-    @NotBlank(message = "Field Category cannot be null")
-    private String category;
 
     @NotBlank(message = "Field Color cannot be blank")
     private String color;

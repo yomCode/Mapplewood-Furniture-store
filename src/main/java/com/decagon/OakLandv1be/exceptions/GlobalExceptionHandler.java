@@ -1,5 +1,6 @@
 package com.decagon.OakLandv1be.exceptions;
 
+import org.apache.http.auth.InvalidCredentialsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -77,16 +78,6 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
 
     }
-
-
-//    @ExceptionHandler({InsufficientBalanceInWalletException.class})
-//    public ResponseEntity<ErrorResponse> InsufficientBalanceInWallet(WalletIdDoesNotExistException ne){
-//        ErrorResponse errorResponse = new ErrorResponse();
-//        errorResponse.setMessage(ne.getMessage());
-//        errorResponse.setDebugMessage("Oops! please fund your wallet");
-//        errorResponse.setStatus(HttpStatus.PAYMENT_REQUIRED);
-//        return new ResponseEntity<>(errorResponse, HttpStatus.PAYMENT_REQUIRED);
-//    }
 
     @ExceptionHandler({InsufficientBalanceInWalletException.class})
     public ResponseEntity<ErrorResponse> InsufficientBalanceInWallet(InsufficientBalanceInWalletException ne) {
@@ -172,5 +163,15 @@ public class GlobalExceptionHandler {
         errorResponse.setDebugMessage(ne.getDebugMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<ErrorResponse> invalidCredentialsException(InvalidCredentialsException ne){
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setStatus(HttpStatus.UNAUTHORIZED);
+        errorResponse.setMessage(ne.getMessage());
+        errorResponse.setDebugMessage("");
+       return  new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
+    }
+
 }
 

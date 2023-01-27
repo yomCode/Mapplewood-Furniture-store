@@ -23,10 +23,7 @@ public class UpdateProductDto {
     private Integer availableQty;
 
     @NotBlank(message = "The subCategory cannot be blank")
-    private SubCategory subCategory;
-
-    @NotBlank(message = "The Category cannot be blank")
-    private Category category;
+    private String subCategory;
 
     @NotBlank(message = "The colour cannot be blank" )
     private String color;

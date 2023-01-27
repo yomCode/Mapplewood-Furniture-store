@@ -32,6 +32,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -54,6 +55,7 @@ public class CustomerServiceImpl implements CustomerService {
     private final TokenRepository tokenRepository;
     private final ResponseManager responseManager;
     private final ProductRepository productRepository;
+    private final HttpServletRequest request;
 
 
 
@@ -95,7 +97,7 @@ public class CustomerServiceImpl implements CustomerService {
         javaMailService.sendMail(signupRequestDto.getEmail(),
                 "Verify your email address",
                 "Hi " + person.getFirstName() + " " + person.getLastName() + ", Thank you for your interest in joining Oakland." +
-                        "To complete your registration, we need you to verify your email address " + "http://localhost:8080/api/v1/customer/verifyRegistration/" + validToken);
+                        "To complete your registration, we need you to verify your email address \n" + "http://" + request.getServerName() + ":3000" + "/verifyRegistration?token=" + validToken);
 
         // use the user object to create UserResponseDto Object
         SignupResponseDto signupResponseDto = new SignupResponseDto();
@@ -305,17 +307,11 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Page<CustomerProfileDto> viewAllCustomersProfileWithPaginationSorting(Integer pageNumber, Integer pageSize, String sortBy) {
-        pageNumber = pageNumber < 0 ? 0 : pageNumber;
-        pageSize = pageSize < 10 ? 10 : pageSize;
-        List<Customer> customers = customerRepository.findAll();
-        if(customers.isEmpty()){
-            throw new EmptyListException("There are no customers registered yet");
-        }
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy));
-        Page<Person> personPage = personRepository.findAll(pageable);
-        List<CustomerProfileDto> customerProfileDtos = personPage.getContent().stream()
+    public Page<CustomerProfileDto> viewAllCustomersProfileWithPaginationSorting(Integer pageNo, Integer pageSize, String sortBy) {
+        List<Person> personPage = personRepository.findAll();
+        List<CustomerProfileDto> customerProfileDtos = personPage.stream()
                 .map(person -> CustomerProfileDto.builder()
+                        .id(person.getId())
                         .firstName(person.getFirstName())
                         .lastName(person.getLastName())
                         .email(person.getEmail())
@@ -326,7 +322,10 @@ public class CustomerServiceImpl implements CustomerService {
                         .address(person.getAddress())
                         .build())
                 .collect(Collectors.toList());
-        return new PageImpl<>(customerProfileDtos, pageable, personPage.getTotalElements());
+
+        PageRequest pageable = PageRequest.of(pageNo, pageSize, Sort.Direction.DESC, sortBy);
+        int max = Math.min(pageSize * (pageNo + 1), customerProfileDtos.size());
+        return new PageImpl<> (customerProfileDtos.subList(pageNo*pageSize, max), pageable, customerProfileDtos.size());
     }
 }
 
