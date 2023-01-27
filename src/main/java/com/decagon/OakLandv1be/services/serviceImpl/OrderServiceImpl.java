@@ -10,9 +10,7 @@ import com.decagon.OakLandv1be.repositries.OrderRepository;
 import com.decagon.OakLandv1be.services.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -92,4 +90,29 @@ public class OrderServiceImpl implements OrderService {
                 .transaction(order.getTransaction())
                 .build();
     }
+
+    @Override
+    public Page<OrderResponseDto> viewAllOrdersPaginated(Integer pageNo, Integer pageSize, String sortBy, boolean isAscending) {
+        List<Order> orders = orderRepository.findAll();
+
+        List<OrderResponseDto> orderResponseDtos =
+                orders.stream()
+                        .map(order -> OrderResponseDto.builder()
+                                .modeOfPayment(order.getModeOfPayment())
+                                .items(order.getItems())
+                                .deliveryFee(order.getDeliveryFee())
+                                .modeOfDelivery(order.getModeOfDelivery())
+                                .delivery(order.getDelivery())
+                                .grandTotal(order.getGrandTotal())
+                                .discount(order.getDiscount())
+                                .address(order.getAddress())
+                                .transaction(order.getTransaction())
+                .build()).collect(Collectors.toList());
+
+        PageRequest pageable = PageRequest.of(pageNo, pageSize, Sort.Direction.DESC, sortBy);
+        int max = Math.min(pageSize * (pageNo + 1), orderResponseDtos.size());
+        return new PageImpl<>(orderResponseDtos.subList(pageNo*pageSize, max), pageable, orderResponseDtos.size());
+    }
+
+
 }

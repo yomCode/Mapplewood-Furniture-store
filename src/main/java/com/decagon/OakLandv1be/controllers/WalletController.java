@@ -2,7 +2,7 @@ package com.decagon.OakLandv1be.controllers;
 
 
 import com.decagon.OakLandv1be.dto.FundWalletRequest;
-import com.decagon.OakLandv1be.dto.TransactionResponseDto;
+import com.decagon.OakLandv1be.dto.cartDtos.ProcessPaymentRequest;
 import com.decagon.OakLandv1be.services.WalletService;
 import com.decagon.OakLandv1be.utils.ApiResponse;
 import com.decagon.OakLandv1be.utils.ResponseManager;
@@ -42,9 +42,15 @@ public class WalletController {
     @GetMapping("/transactions")
     public ResponseEntity<Object> fetchAllTrans(@RequestParam(defaultValue = "0") Integer pageNo,
                                                 @RequestParam(defaultValue = "10") Integer pageSize,
-                                                @RequestParam(defaultValue = "id") String sortBy){
+                                                @RequestParam(defaultValue = "id") String sortBy) {
 
         return ResponseEntity.ok(walletService.fetchAllTransactions(pageNo, pageSize, sortBy));
+    }
+
+    @PutMapping("/process-payment")
+    public  ResponseEntity<Boolean> processPayment(@RequestBody ProcessPaymentRequest processPaymentyRequest){
+        return ResponseEntity.ok(walletService.processPayment(processPaymentyRequest.getGrandTotal()));
+
     }
 
 }
