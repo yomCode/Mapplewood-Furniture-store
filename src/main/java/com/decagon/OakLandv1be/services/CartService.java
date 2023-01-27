@@ -6,10 +6,14 @@ import com.decagon.OakLandv1be.dto.cartDtos.CartItemResponseDto;
 import java.util.List;
 
 public interface CartService {
-    String addItemToCart(Long productId, AddItemToCartDto addItemToCartDto);
+    String addItemToCart(Long productId);
     String removeItem(Long itemToRemoveId);
     List<CartItemResponseDto> fetchProductsFromCustomerCart();
+    String addToItemQuantity(Long itemId);
+    String reduceItemQuantity(Long itemId);
     CartDto viewCartByCustomer ();
+
+    String clearCart();
 }
 
 

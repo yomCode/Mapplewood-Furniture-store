@@ -186,8 +186,9 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Customer getCurrentlyLoggedInUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String loggedInUserEmail = authentication.getName();
-        Person loggedInUser = personRepository.findByEmail(loggedInUserEmail)
+//        if (!(authentication instanceof AnonymousAuthenticationToken))
+//            throw new UnauthorizedUserException("Login to carry out this operation");
+        Person loggedInUser = personRepository.findByEmail(authentication.getName())
                 .orElseThrow(() -> new UserNotFoundException("No user with this email"));
         return loggedInUser.getCustomer();
     }

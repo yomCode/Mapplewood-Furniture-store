@@ -16,7 +16,6 @@ public class Item extends BaseEntity{
     private String productName;
     private String imageUrl;
 
-//    @NotBlank(message = "Kindly specify the quantity you desire, for this product")
     private Integer orderQty;
     private Double unitPrice;
     private Double subTotal;
