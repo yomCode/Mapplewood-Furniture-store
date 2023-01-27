@@ -23,50 +23,52 @@ import java.io.IOException;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
-@RequestMapping("/api/v1/customer")
+@RequestMapping("/api/v1")
 @RequiredArgsConstructor
 public class CustomerController {
     private final ResponseManager responseManager;
     private final CustomerService customerService;
     private final CartService cartService;
 
-    @PostMapping("/signup")
+    @PostMapping("/customer/signup")
     public ResponseEntity<ApiResponse> signup(@Valid @RequestBody SignupRequestDto signupRequestDto) throws AlreadyExistsException, IOException {
         customerService.saveCustomer(signupRequestDto);
         return new ResponseEntity<>(responseManager.success("Registration Successful! Check your mail for activation link"),HttpStatus.CREATED);
     }
+
     @GetMapping("/verifyRegistration")
     public ResponseEntity<ApiResponse> verifyAccount(@RequestParam("token") String token){
         return customerService.verifyRegistration(token);
     }
     
-    @PutMapping("/edit-profile")
+    @PutMapping("/customer/edit-profile")
     public ResponseEntity<String> editProfile(@Valid @RequestBody EditProfileRequestDto editProfileRequestDto){
         customerService.editProfile(editProfileRequestDto);
         return new ResponseEntity<>("Profile Updated Successfully", HttpStatus.OK);
     }
 
 
-    @GetMapping("/view-profile")
+    @GetMapping("/customer/view-profile")
     public ResponseEntity<CustomerProfileDto> viewProfile (){
         return new ResponseEntity<>(customerService.viewProfile(), HttpStatus.OK);
     }
 
     @GetMapping("/admin/customers-profile/page-sort")
-    public ResponseEntity<Page<CustomerProfileDto>> viewAllProfilesPaginationAndSort(@Valid @RequestParam Integer pageNumber,
-                                                                                     @RequestParam Integer pageSize,
-                                                                                     @RequestParam String sortBy){
-        return new ResponseEntity<>(customerService.viewAllCustomersProfileWithPaginationSorting(pageNumber, pageSize, sortBy),
+    public ApiResponse<Page<CustomerProfileDto>> viewAllProfilesPaginationAndSort(@RequestParam(defaultValue = "0") Integer pageNo,
+                                                     @RequestParam(defaultValue = "16") Integer pageSize,
+                                                     @RequestParam(defaultValue = "id") String sortBy){
+        return new ApiResponse<>("Paginated" ,
+                customerService.viewAllCustomersProfileWithPaginationSorting(pageNo, pageSize, sortBy),
                 HttpStatus.OK);
     }
 
-    @PostMapping("/cart/item/add/{productId}")
+    @PostMapping("/customer/cart/item/add/{productId}")
     public ResponseEntity<String> addItemToCart(@PathVariable Long productId, @RequestBody AddItemToCartDto addItemToCartDto) throws AlreadyExistsException {
         String response = cartService.addItemToCart(productId, addItemToCartDto);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @PostMapping("/product/favorites/add/{pid}")
+    @PostMapping("/customer/product/favorites/add/{pid}")
     public ResponseEntity<String> addFavorites(@PathVariable Long pid){
         customerService.addProductToFavorites(pid);
         return new ResponseEntity<>("Product added to favourites successfully", HttpStatus.ACCEPTED);
