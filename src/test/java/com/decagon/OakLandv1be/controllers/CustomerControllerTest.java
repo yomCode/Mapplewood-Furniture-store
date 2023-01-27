@@ -193,7 +193,7 @@ class CustomerControllerTest {
            String requestBody = mapper.writeValueAsString(pageNumber);
            String requestBodie = mapper.writeValueAsString(pageSize);
            String requestBod = mapper.writeValueAsString(sortBy);
-           ResponseEntity<Page<CustomerProfileDto>> actualResponse = customerController.viewAllProfilesPaginationAndSort(pageNumber, pageSize, sortBy);
+           ApiResponse<Page<CustomerProfileDto>> actualResponse = customerController.viewAllProfilesPaginationAndSort(pageNumber, pageSize, sortBy);
        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/customer/admin/customers-profile/page-sort")
                .contentType("application/json")
                .content(requestBody)

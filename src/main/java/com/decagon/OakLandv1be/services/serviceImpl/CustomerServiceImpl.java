@@ -305,17 +305,11 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Page<CustomerProfileDto> viewAllCustomersProfileWithPaginationSorting(Integer pageNumber, Integer pageSize, String sortBy) {
-        pageNumber = pageNumber < 0 ? 0 : pageNumber;
-        pageSize = pageSize < 10 ? 10 : pageSize;
-        List<Customer> customers = customerRepository.findAll();
-        if(customers.isEmpty()){
-            throw new EmptyListException("There are no customers registered yet");
-        }
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy));
-        Page<Person> personPage = personRepository.findAll(pageable);
-        List<CustomerProfileDto> customerProfileDtos = personPage.getContent().stream()
+    public Page<CustomerProfileDto> viewAllCustomersProfileWithPaginationSorting(Integer pageNo, Integer pageSize, String sortBy) {
+        List<Person> personPage = personRepository.findAll();
+        List<CustomerProfileDto> customerProfileDtos = personPage.stream()
                 .map(person -> CustomerProfileDto.builder()
+                        .id(person.getId())
                         .firstName(person.getFirstName())
                         .lastName(person.getLastName())
                         .email(person.getEmail())
@@ -326,7 +320,10 @@ public class CustomerServiceImpl implements CustomerService {
                         .address(person.getAddress())
                         .build())
                 .collect(Collectors.toList());
-        return new PageImpl<>(customerProfileDtos, pageable, personPage.getTotalElements());
+
+        PageRequest pageable = PageRequest.of(pageNo, pageSize, Sort.Direction.DESC, sortBy);
+        int max = Math.min(pageSize * (pageNo + 1), customerProfileDtos.size());
+        return new PageImpl<> (customerProfileDtos.subList(pageNo*pageSize, max), pageable, customerProfileDtos.size());
     }
 }
 
