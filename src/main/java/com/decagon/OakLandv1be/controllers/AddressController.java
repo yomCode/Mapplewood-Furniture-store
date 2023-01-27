@@ -19,25 +19,31 @@ public class AddressController {
         return ResponseEntity.ok(addressService.createAddress(request));
     }
 
-    @PutMapping("/update/{addressId}")
-    public ResponseEntity<String> updateAddress(@PathVariable Long addressId, @RequestBody AddressRequestDto request){
+    @PutMapping("/update")
+    public ResponseEntity<String> updateAddress(@RequestParam("id") Long addressId, @RequestBody AddressRequestDto request){
         return ResponseEntity.ok(addressService.updateAddress(addressId, request));
     }
 
-    @GetMapping("/setDefault/{addressId}")
-    public ResponseEntity<Object> setAsDefault(@PathVariable Long addressId){
+    @GetMapping("/setDefault")
+    public ResponseEntity<Object> setAsDefault(@RequestParam("id") Long addressId){
         addressService.setAsDefault(addressId);
         return ResponseEntity.ok("Address set to default");
     }
 
-    @DeleteMapping("/delete/{addressId}")
-    public ResponseEntity<Object> deleteAddress(@PathVariable Long addressId){
+    @DeleteMapping("/delete")
+    public ResponseEntity<Object> deleteAddress(@RequestParam("id") Long addressId){
         addressService.DeleteAddress(addressId);
         return ResponseEntity.ok("Address deleted");
     }
 
-    @GetMapping("/all")
+    @GetMapping("/get")
     public ResponseEntity<Object> getAllAddress(){
         return ResponseEntity.ok(addressService.getAllAddress());
     }
+
+    @GetMapping("/view")
+    public ResponseEntity<Object> viewAddress(@RequestParam("id") Long addressId){
+        return ResponseEntity.ok(addressService.viewAddress(addressId));
+    }
+
 }

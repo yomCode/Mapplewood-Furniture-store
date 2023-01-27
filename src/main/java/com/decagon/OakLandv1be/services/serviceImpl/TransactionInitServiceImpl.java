@@ -74,7 +74,6 @@ public class TransactionInitServiceImpl implements TransactionInitService {
         transactionRepository.save(transaction);
 
         return apiConnection.connectAndQuery(query);
-
     }
 
 

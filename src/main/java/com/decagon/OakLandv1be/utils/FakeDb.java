@@ -26,6 +26,7 @@ public class FakeDb {
     @Bean
     @Qualifier("MyOtherCommand")
     public CommandLineRunner myCommandLineRunner(PersonRepository personRepository,
+
                                                ProductRepository productRepository,
                                                CustomerRepository customerRepository,
                                                SubCategoryRepository subCategoryRepository,
@@ -699,7 +700,6 @@ public class FakeDb {
 
                 productRepository.saveAll(products);
             }
-
 
         };
     }
