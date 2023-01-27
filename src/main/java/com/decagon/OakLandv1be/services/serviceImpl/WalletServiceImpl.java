@@ -2,21 +2,26 @@ package com.decagon.OakLandv1be.services.serviceImpl;
 
 import com.decagon.OakLandv1be.dto.*;
 import com.decagon.OakLandv1be.entities.*;
+import com.decagon.OakLandv1be.exceptions.InsufficientBalanceInWalletException;
 import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
 import com.decagon.OakLandv1be.exceptions.UnauthorizedUserException;
+import com.decagon.OakLandv1be.exceptions.UserNotFoundException;
 import com.decagon.OakLandv1be.repositries.PersonRepository;
 import com.decagon.OakLandv1be.repositries.TransactionRepository;
 import com.decagon.OakLandv1be.repositries.WalletRepository;
 import com.decagon.OakLandv1be.services.JavaMailService;
 import com.decagon.OakLandv1be.services.WalletService;
+import com.decagon.OakLandv1be.utils.UserUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -29,6 +34,7 @@ import java.util.stream.Collectors;
 import static com.decagon.OakLandv1be.enums.PaymentPurpose.DEPOSIT;
 import static com.decagon.OakLandv1be.enums.TransactionStatus.COMPLETED;
 import static com.decagon.OakLandv1be.utils.UserUtil.extractEmailFromPrincipal;
+import java.util.Locale;
 
 @Service
 @RequiredArgsConstructor
@@ -38,6 +44,13 @@ public class WalletServiceImpl implements WalletService {
     private final TransactionRepository transactionRepository;
 
     private final JavaMailService mailService;
+
+    @Value("${admin.super.email}")
+    private String superAdminEmail;
+
+
+
+
 
     @Override
     public FundWalletResponseDto fundWallet(FundWalletRequest request) {
@@ -95,6 +108,69 @@ public class WalletServiceImpl implements WalletService {
         }
         throw new UnauthorizedUserException("User does not have access");
     }
+    @Override
+    public Boolean processPayment(BigDecimal grandTotal){
+
+        //get the logged in customer wallet
+        Wallet customerWallet=getCurrentlyLoggedInCustomerWallet();
+
+        //confirm if the current balance is enough
+        if(customerWallet.getAccountBalance().compareTo(grandTotal)>=0){
+            //deduct the ground total from the wallet balance
+            customerWallet.setAccountBalance(customerWallet.getAccountBalance().subtract(grandTotal));
+
+            //get the admin wallet
+            Wallet adminWallet=personRepository.findByEmail(superAdminEmail).orElseThrow(
+                    ()-> new UserNotFoundException("System Error: Please contact the admin")
+            ).getSuperAdmin().getWallet();
+            // add the ground total to super admin wallet
+            adminWallet.setAccountBalance(adminWallet.getAccountBalance().add(grandTotal));
+
+            // sent an email to the customer
+            //TODO         <=================================
+            try {
+
+                String customerEmail= UserUtil.extractEmailFromPrincipal().orElseThrow(
+                        ()->new UsernameNotFoundException("Please login to continue")
+                );
+
+                mailService.sendMail(customerEmail, "Transaction Alert", "Transaction Amount is "  + grandTotal);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+
+            return true;
+
+        }
+
+        throw new InsufficientBalanceInWalletException("Insufficient balance, Please fund your wallet.");
+
+
+    }
+
+
+
+    Wallet getCurrentlyLoggedInCustomerWallet(){
+        return personRepository.findByEmail(UserUtil.extractEmailFromPrincipal().orElseThrow(
+                ()->new UsernameNotFoundException("Please login to continue")
+        )).orElseThrow(
+                ()-> new UserNotFoundException("Please login to continue")
+        ).getCustomer().getWallet();
+    }
+
+    //get the currently logged in customer//
+
+//        String customerEmail= UserUtil.extractEmailFromPrincipal().orElseThrow(
+//                ()->new UsernameNotFoundException("Please login to continue")
+//        );
+//
+//        Person loggedInPerson=personRepository.findByEmail(customerEmail).orElseThrow(
+//                ()-> new UserNotFoundException("Please login to continue")
+//        );
+//
+//        Customer customer=loggedInPerson.getCustomer();
+
 
     @Override
     public WalletInfoResponseDto viewWalletInfo() {
@@ -115,6 +191,7 @@ public class WalletServiceImpl implements WalletService {
 
             DecimalFormatSymbols symbols = new DecimalFormatSymbols(new Locale("en", "NG"));
             symbols.setCurrencySymbol("₦");
+
 
             return WalletInfoResponseDto.builder()
                     .firstName(person.getFirstName())
