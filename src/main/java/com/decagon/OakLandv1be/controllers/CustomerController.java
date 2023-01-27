@@ -68,18 +68,18 @@ public class CustomerController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @PostMapping("/customer/product/favorites/add/{pid}")
+    @PostMapping("/customer/products/favorites/add/{pid}")
     public ResponseEntity<String> addFavorites(@PathVariable Long pid){
         customerService.addProductToFavorites(pid);
         return new ResponseEntity<>("Product added to favourites successfully", HttpStatus.ACCEPTED);
 
     }
 
-    @GetMapping("/product/favorite/view/{product_id}")
+    @GetMapping("/customer/products/favorites/view/{product_id}")
     public ResponseEntity<ProductCustResponseDto> viewASingleFavorite(@PathVariable Long product_id) {
         return new ResponseEntity<>(customerService.viewASingleFavorite(product_id), HttpStatus.OK);
     }
-    @GetMapping("/product/favorites/viewAllFavorites")
+    @GetMapping("/customer/products/favorites/viewAllFavorites")
     public ResponseEntity<Page<ProductCustResponseDto>> viewFavouritesByPagination(@RequestParam(defaultValue = "0") Integer pageNo,
                                                                                     @RequestParam(defaultValue = "16") Integer pageSize,
                                                                                     @RequestParam(defaultValue = "id") String sortBy){
