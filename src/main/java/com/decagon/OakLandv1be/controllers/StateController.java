@@ -26,7 +26,7 @@ public class StateController {
         statesService.deleteState(id);
     }
 
-    @GetMapping("/view_state/{name}")
+    @GetMapping("/view_state/{nameOfState}")
     @ResponseStatus(HttpStatus.OK)
     public  void viewState(@PathVariable String nameOfState) { statesService.viewStateByName(nameOfState);
     }

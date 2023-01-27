@@ -17,7 +17,7 @@ import java.util.Set;
 public class Cart extends BaseEntity{
 
     @JsonIgnore
-    @OneToMany(mappedBy = "cart" , orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "cart" ,  fetch = FetchType.EAGER)
     private Set<Item> items = new HashSet<>();
 
     private Double total;

@@ -20,7 +20,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,7 +33,7 @@ public class PickupServiceImpl implements PickupService {
 
     @Override
     public PickupCenterResponse getCenterByName(String name) {
-        PickupCenter pickup= pickupRepository.findByName(name).orElseThrow(
+        PickupCenter pickup = pickupRepository.findByName(name).orElseThrow(
                 ()-> new ResourceNotFoundException("Center not found"));
         return responseMapper(pickup);
     }
@@ -42,7 +41,7 @@ public class PickupServiceImpl implements PickupService {
     @Override
     public List<PickupCenterResponse> getCenterByStateName(String name) {
         return pickupRepository.findAll().parallelStream()
-                .filter(pickupCenter -> pickupCenter.getState().getName().toUpperCase().equals(name))
+                .filter(pickupCenter -> pickupCenter.getState().getName().equalsIgnoreCase(name))
                 .map(this::responseMapper)
                 .collect(Collectors.toList());
     }
@@ -62,8 +61,8 @@ public class PickupServiceImpl implements PickupService {
 
         pickupRepository.save(PickupCenter.builder()
                 .name(pickupCenterRequest.getName())
-                .state(stateRepository.findByName(pickupCenterRequest.getStateName()).orElseThrow(
-                        ()-> new ResourceNotFoundException("No state with the name {}",pickupCenterRequest.getStateName().toUpperCase())
+                .state(stateRepository.findByName(pickupCenterRequest.getState()).orElseThrow(
+                        ()-> new ResourceNotFoundException("No state with the name {}",pickupCenterRequest.getState().toUpperCase())
                 ))
                 .email(pickupCenterRequest.getEmail())
                 .address(pickupCenterRequest.getLocation())
@@ -84,9 +83,10 @@ public class PickupServiceImpl implements PickupService {
                 .id(pickup.getId())
                 .name(pickup.getName())
                 .location(pickup.getAddress())
-                .stateName(pickup.getState().getName())
+                .state(pickup.getState().getName())
                 .email(pickup.getEmail())
                 .phone(pickup.getPhone())
+                .delivery(pickup.getDelivery())
                 .build();
     }
 

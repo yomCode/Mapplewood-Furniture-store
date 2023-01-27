@@ -24,10 +24,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
-<<<<<<< HEAD
-import java.util.Set;
-=======
->>>>>>> 92b8b81bf554bc02ad1a2546719430d7d767d43a
 
 
 @CrossOrigin(origins = "http://localhost:3000")

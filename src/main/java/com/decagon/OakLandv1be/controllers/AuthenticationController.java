@@ -27,10 +27,6 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.security.Principal;
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 92b8b81bf554bc02ad1a2546719430d7d767d43a
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequiredArgsConstructor
