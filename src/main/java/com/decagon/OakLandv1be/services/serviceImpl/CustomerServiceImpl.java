@@ -238,8 +238,7 @@ public class CustomerServiceImpl implements CustomerService {
         PageRequest pageable = PageRequest.of(pageNo, pageSize, Sort.Direction.DESC, sortBy);
 
         int minimum = pageNo*pageSize;
-        int max = (pageSize*(pageNo+1)>products.size()) ?
-                products.size(): pageSize*(pageNo+1);
+        int max = Math.min(pageSize * (pageNo + 1), products.size());
 
         Page<ProductCustResponseDto> page = new PageImpl<>
                 (productCustResponseDtos.subList(minimum, max), pageable,

@@ -1,6 +1,7 @@
 package com.decagon.OakLandv1be.entities;
 
 
+import com.decagon.OakLandv1be.enums.PaymentPurpose;
 import com.decagon.OakLandv1be.enums.TransactionStatus;
 import lombok.*;
 
@@ -18,6 +19,13 @@ public class Transaction extends BaseEntity{
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "transaction_id")
     private Wallet wallet;
+
+    private String amount;
+
+    private String reference;
+
+    @Enumerated(EnumType.STRING)
+    private PaymentPurpose purpose;
 
     @Enumerated(EnumType.STRING)
     private TransactionStatus status;

@@ -2,17 +2,14 @@ package com.decagon.OakLandv1be.controllers;
 
 
 import com.decagon.OakLandv1be.dto.FundWalletRequest;
+import com.decagon.OakLandv1be.dto.TransactionResponseDto;
 import com.decagon.OakLandv1be.services.WalletService;
 import com.decagon.OakLandv1be.utils.ApiResponse;
 import com.decagon.OakLandv1be.utils.ResponseManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 
@@ -39,6 +36,15 @@ public class WalletController {
     public ApiResponse<Object> walletInfo(){
 
         return new ApiResponse<>("Request successful", walletService.viewWalletInfo(), HttpStatus.OK);
+    }
+
+
+    @GetMapping("/transactions")
+    public ResponseEntity<Object> fetchAllTrans(@RequestParam(defaultValue = "0") Integer pageNo,
+                                                @RequestParam(defaultValue = "10") Integer pageSize,
+                                                @RequestParam(defaultValue = "id") String sortBy){
+
+        return ResponseEntity.ok(walletService.fetchAllTransactions(pageNo, pageSize, sortBy));
     }
 
 }
