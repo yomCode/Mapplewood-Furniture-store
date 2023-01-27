@@ -50,7 +50,7 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    public String generateVerificationToken(String email){
+    public String generateVerificationToken(String email) {
         Instant now = Instant.now();
 
         JwtClaimsSet claims = JwtClaimsSet.builder()
@@ -62,6 +62,4 @@ public class TokenServiceImpl implements TokenService {
         return this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
 
     }
-
-
 }

@@ -16,7 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:3000")
+
 @RestController
 @RequestMapping("/api/v1/products")
 @RequiredArgsConstructor
@@ -40,6 +40,13 @@ public class ProductController {
     @PostMapping("/upload-image/{productId}")
     public ResponseEntity<Object> uploadProfilePic(@RequestPart MultipartFile productImage, @PathVariable Long productId) throws IOException {
         return ResponseEntity.ok(productService.uploadProductImage(productId, productImage));
+    }
+
+
+    @DeleteMapping("/delete-image")
+    public ResponseEntity<String> deleteProductImage(String publicUrl){
+        productService.deleteProductImage(publicUrl);
+        return ResponseEntity.ok("Deleted");
     }
 
     @GetMapping("/paginated-all")
