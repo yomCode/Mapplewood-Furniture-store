@@ -1,6 +1,7 @@
 package com.decagon.OakLandv1be.controllers;
 
 import com.decagon.OakLandv1be.entities.Item;
+import com.decagon.OakLandv1be.dto.CartDto;
 import com.decagon.OakLandv1be.services.CartService;
 import com.decagon.OakLandv1be.utils.ApiResponse;
 import com.decagon.OakLandv1be.utils.ResponseManager;
@@ -8,9 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-
 
 @RestController
 @RequiredArgsConstructor
@@ -30,9 +29,9 @@ public class CartController {
         return new ResponseEntity<>(cartService.addToItemQuantity(productId), HttpStatus.OK);
     }
 
-    @PutMapping("/item/reduce-quantity/{itemId}")
-    public ResponseEntity<String> reduceItemQuantity(@PathVariable Long itemId){
-        return new ResponseEntity<>(cartService.reduceItemQuantity(itemId), HttpStatus.OK);
+    @PutMapping("/item/reduce-quantity/{productId}")
+    public ResponseEntity<String> reduceItemQuantity(@PathVariable Long productId){
+        return new ResponseEntity<>(cartService.reduceItemQuantity(productId), HttpStatus.OK);
     }
 
     @DeleteMapping("/clear")
@@ -40,8 +39,8 @@ public class CartController {
         return new ResponseEntity<>(cartService.clearCart(), HttpStatus.OK);
     }
 
-    @GetMapping("/items/all")
-    public ResponseEntity<List<Item>> getAllCartItems(){
-        return new ResponseEntity<>(cartService.getAllCartItems(), HttpStatus.OK);
+    @GetMapping("/view")
+    public ResponseEntity<CartDto> viewCartByCustomer (){
+        return new ResponseEntity<>(cartService.viewCartByCustomer(), HttpStatus.OK);
     }
 }

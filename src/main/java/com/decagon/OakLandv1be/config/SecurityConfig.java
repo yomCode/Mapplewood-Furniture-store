@@ -37,7 +37,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Collections;
-
 import static com.decagon.OakLandv1be.enums.Role.*;
 
 
@@ -122,34 +121,34 @@ public class SecurityConfig {
         return provider;
     }
 
-    @Bean
-    public CommandLineRunner commandLineRunner(PersonRepository personRepository, CustomerRepository customerRepository) {
-        return args -> {
-            Person person = Person.builder()
-                    .firstName("Maria")
-                    .lastName("Girl")
-                    .password(passwordEncoder.encode("password1234"))
-                    .email("maria@gmail.com")
-                    .gender(Gender.OTHER)
-                    .date_of_birth("12-09-1997")
-                    .phone("78573944844")
-                    .verificationStatus(true)
-                    .address("Foolish")
-                    .role(Role.ADMIN)
-                    .isActive(true)
-                    .build();
-
-            Customer customer = Customer.builder()
-                    .person(person)
-                    .cart(new Cart())
-                    .wallet(Wallet.builder()
-                            .accountBalance(BigDecimal.valueOf(4000D))
-                            .baseCurrency(BaseCurrency.POUNDS)
-                            .build())
-                    .build();
-
-            personRepository.save(person);
-//            customerRepository.save(customer);
-        };
-    }
+//    @Bean
+//    public CommandLineRunner commandLineRunner(PersonRepository personRepository, CustomerRepository customerRepository) {
+//        return args -> {
+//            Person person = Person.builder()
+//                    .firstName("Maria")
+//                    .lastName("Girl")
+//                    .password(passwordEncoder.encode("password1234"))
+//                    .email("maria@gmail.com")
+//                    .gender(Gender.OTHER)
+//                    .date_of_birth("12-09-1997")
+//                    .phone("78573944844")
+//                    .verificationStatus(true)
+//                    .address("Foolish")
+//                    .role(Role.ADMIN)
+//                    .isActive(true)
+//                    .build();
+//
+//            Customer customer = Customer.builder()
+//                    .person(person)
+//                    .cart(new Cart())
+//                    .wallet(Wallet.builder()
+//                            .accountBalance(BigDecimal.valueOf(4000D))
+//                            .baseCurrency(BaseCurrency.POUNDS)
+//                            .build())
+//                    .build();
+//
+//            personRepository.save(person);
+////            customerRepository.save(customer);
+//        };
+//    }
 }

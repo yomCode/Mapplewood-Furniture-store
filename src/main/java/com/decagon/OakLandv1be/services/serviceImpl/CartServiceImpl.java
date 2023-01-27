@@ -1,30 +1,23 @@
 package com.decagon.OakLandv1be.services.serviceImpl;
 
+import com.decagon.OakLandv1be.dto.CartDto;
 import com.decagon.OakLandv1be.entities.*;
-import com.decagon.OakLandv1be.exceptions.AlreadyExistsException;
-import com.decagon.OakLandv1be.exceptions.NotAvailableException;
+import com.decagon.OakLandv1be.exceptions.*;
 import com.decagon.OakLandv1be.repositries.*;
 import com.decagon.OakLandv1be.services.CartService;
 import lombok.RequiredArgsConstructor;
-
 import com.decagon.OakLandv1be.entities.Cart;
 import com.decagon.OakLandv1be.entities.Item;
 import com.decagon.OakLandv1be.entities.Person;
-import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
-import com.decagon.OakLandv1be.exceptions.UnauthorizedUserException;
 import com.decagon.OakLandv1be.repositries.CartRepository;
 import com.decagon.OakLandv1be.repositries.ItemRepository;
 import com.decagon.OakLandv1be.repositries.PersonRepository;
-import com.decagon.OakLandv1be.repositries.TokenRepository;
 import com.decagon.OakLandv1be.services.CustomerService;
 
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 
@@ -37,9 +30,6 @@ public class CartServiceImpl implements CartService {
     private final PersonRepository personRepository;
     private final CartRepository cartRepository;
     private final ItemRepository itemRepository;
-    private final CategoryRepository categoryRepository;
-    private final TokenRepository tokenRepository;
-
 
     @Override
     public String addItemToCart(Long productId) {
@@ -51,8 +41,9 @@ public class CartServiceImpl implements CartService {
 
         if (product.getAvailableQty() == 0) {
             throw new NotAvailableException("Product out of stock");
-        } else if(allCartItems.contains(product.getItem())){
-            throw new AlreadyExistsException(product.getName() + " already in cart");
+        } else if(itemRepository.findByProductId(productId) != null){
+            addToItemQuantity(productId);
+            return "";
         }
 
         Item newCartItem = Item.builder()
@@ -145,55 +136,54 @@ public class CartServiceImpl implements CartService {
         Customer loggedInCustomer = customerService.getCurrentlyLoggedInUser();
         Cart cart = loggedInCustomer.getCart();
         Set<Item> cartItems = cart.getItems();
-        String response = "";
+        Double cartTotal = cart.getTotal();
 
         Item foundItem = itemRepository.findByProductId(productId);
 
-        synchronized (cartItems) {
-            for (Item item : cartItems) {
-                if (item.getProduct().getId() == foundItem.getProduct().getId()) {
-                    if (foundItem.getProduct().getAvailableQty() == 0)
-                        throw new NotAvailableException(foundItem.getProduct().getName() + " out of stock");
-                    foundItem.setOrderQty(item.getOrderQty() + 1);
-                    foundItem.setSubTotal(item.getUnitPrice() * item.getOrderQty());
+        if (foundItem.getProduct().getAvailableQty() == 0)
+            throw new NotAvailableException(foundItem.getProduct().getName() + " out of stock");
 
-                    Double cartTotal = cart.getTotal();
-                    cartTotal += foundItem.getUnitPrice();
-                    cart.setTotal(cartTotal);
 
-                    itemRepository.save(foundItem);
-                    cartRepository.save(cart);
-                } else {
-                    throw new NotAvailableException("Product not in cart");
-                }
+        for (Item item : cartItems) {
+            if(item.getProduct().getId() == foundItem.getProduct().getId()) {
+                foundItem.setOrderQty(item.getOrderQty() + 1);
+                foundItem.setSubTotal(item.getUnitPrice() * item.getOrderQty());
+                itemRepository.save(foundItem);
             }
         }
+
+        cartTotal += foundItem.getUnitPrice();
+        cart.setTotal(cartTotal);
+        cartRepository.save(cart);
         return "Item quantity updated successfully";
     }
 
     @Override
-    public String reduceItemQuantity(Long itemId) {
+    public String reduceItemQuantity(Long productId) {
         String response = "";
-        Item foundItem = itemRepository.findById(itemId).orElseThrow(() -> new NotAvailableException("Item not available"));
+        Item foundItem = itemRepository.findByProductId(productId);
         Customer loggedInCustomer = customerService.getCurrentlyLoggedInUser();
         Cart cart = loggedInCustomer.getCart();
         Set<Item> cartItems = cart.getItems();
+
         for(Item item : cartItems) {
             if(item.getProduct().getId() == foundItem.getProduct().getId()){
-                item.setOrderQty(item.getOrderQty() - 1);
-                item.setSubTotal(item.getUnitPrice() * item.getOrderQty());
+                foundItem.setOrderQty(item.getOrderQty() - 1);
+                foundItem.setSubTotal(item.getUnitPrice() * item.getOrderQty());
                 itemRepository.save(item);
 
-                cart.setTotal(cart.getTotal() - item.getUnitPrice());
-                cartRepository.save(cart);
                 response += item.getProductName() + " quantity updated successfully";
             }
 
-            if(item.getOrderQty() == 0) {
-                itemRepository.delete(item);
-                response += item.getProductName() + " removed from cart";
+            if(item.getOrderQty() == 1) {
+//                itemRepository.delete(item);
+//                response += item.getProductName() + " removed from cart";
+                removeItem(foundItem.getId());
             }
         };
+
+        cart.setTotal(cart.getTotal() - foundItem.getUnitPrice());
+        cartRepository.save(cart);
         customerRepository.save(loggedInCustomer);
         return response;
     }
@@ -212,10 +202,13 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public List<Item> getAllCartItems(){
-        Set<Item> cartItems = customerService.getCurrentlyLoggedInUser().getCart().getItems();
-        List<Item> cartItemsList = new ArrayList<>();
-        cartItemsList.addAll(cartItems);
-        return cartItemsList;
+    public CartDto viewCartByCustomer() {
+        Customer loggedInCustomer = customerService.getCurrentlyLoggedInUser();
+        Cart cart = cartRepository.findByCustomer(loggedInCustomer);
+        if (cart.getItems().isEmpty())
+            throw new ResourceNotFoundException("Your Cart is empty!");
+        return CartDto.builder()
+                .items(cart.getItems())
+                .total(cart.getTotal()).build();
     }
 }

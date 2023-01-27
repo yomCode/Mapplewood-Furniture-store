@@ -4,6 +4,7 @@ import com.cloudinary.utils.ObjectUtils;
 import com.decagon.OakLandv1be.config.CloudinaryConfig;
 import com.decagon.OakLandv1be.dto.ProductCustResponseDto;
 import com.decagon.OakLandv1be.entities.Product;
+import com.decagon.OakLandv1be.exceptions.InvalidAttributeException;
 import com.decagon.OakLandv1be.exceptions.ProductNotFoundException;
 import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
 import com.decagon.OakLandv1be.repositries.ProductRepository;
@@ -35,10 +36,10 @@ public class ProductServiceImpl implements ProductService {
 
     private final CloudinaryConfig cloudinaryConfig;
 
-    @Override
-    public Page<ProductCustResponseDto> productWithPaginationAndSorting(Integer offset, Integer size, String field) {
-        return null;
-    }
+//    @Override
+//    public Page<ProductCustResponseDto> productWithPaginationAndSorting(Integer offset, Integer size, String field) {
+//        return null;
+//    }
 
     public ProductCustResponseDto fetchASingleProduct(Long product_id) {
         Product product = productRepository.findById(product_id)
@@ -68,6 +69,11 @@ public class ProductServiceImpl implements ProductService {
             productCustResponseDtoList.add(productCustResponseDto);
         });
         return productCustResponseDtoList;
+    }
+
+    @Override
+    public ApiResponse<Page<Product>> getAllProducts(Integer pageNo, Integer pageSize, String sortBy, boolean isAscending) {
+        return null;
     }
 
 
@@ -103,6 +109,11 @@ public class ProductServiceImpl implements ProductService {
         return "Image uploaded successfully";
     }
 
+    @Override
+    public ApiResponse<Page<Product>> getAllProductsBySubCategory(Long subCategoryId, Integer pageNo, Integer pageSize, String sortBy, boolean isAscending) {
+        return null;
+    }
+
 
     public String uploadImage(MultipartFile image) throws IOException {
         try {
@@ -128,21 +139,6 @@ public class ProductServiceImpl implements ProductService {
         fos.write(image.getBytes());
         fos.close();
         return convFile;
-    }
-
-    @Override
-    public ApiResponse<Page<Product>> getAllProducts(Integer pageNo, Integer pageSize, String sortBy, boolean isAscending) {
-        Page<Product> userPage = productRepository.findAll(PageRequest.of(pageNo, pageSize,
-                isAscending ? Sort.Direction.ASC : Sort.Direction.DESC, sortBy));
-        return new ApiResponse<>(("Page: " + userPage.get()), true, userPage);
-    }
-
-    @Override
-    public ApiResponse<Page<Product>> getAllProductsBySubCategory(Long subCategoryId, Integer pageNo, Integer pageSize, String sortBy, boolean isAscending) {
-        Page<Product> userPage = productRepository.findAllBySubCategoryId(subCategoryId, PageRequest.of(pageNo, pageSize,
-                isAscending ? Sort.Direction.ASC : Sort.Direction.DESC, sortBy));
-        return new ApiResponse<>(("Page: " + userPage.get()), true, userPage);
-
     }
 
 }
