@@ -28,6 +28,7 @@ public class Product extends BaseEntity{
 
     private String color;
 
+    @Column(length=1000)
     private String description;
 
     @JsonIgnore

@@ -5,11 +5,10 @@ import com.decagon.OakLandv1be.dto.AddressResponseDto;
 import com.decagon.OakLandv1be.entities.Address;
 import com.decagon.OakLandv1be.entities.Customer;
 import com.decagon.OakLandv1be.entities.Person;
-import com.decagon.OakLandv1be.exceptions.UnauthorizedException;
+import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
 import com.decagon.OakLandv1be.repositries.AddressRepository;
 import com.decagon.OakLandv1be.repositries.PersonRepository;
 import com.decagon.OakLandv1be.services.AddressService;
-import com.decagon.OakLandv1be.utils.UserUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -27,10 +26,10 @@ public class AddressServiceImpl implements AddressService {
 
 
     @Override
-    public AddressResponseDto createAddress(AddressRequestDto request){
+    public String createAddress(AddressRequestDto request){
         String email = extractEmailFromPrincipal().get();
 
-        Person person = personRepository.findByEmail(email).orElseThrow();
+        Person person = personRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("User not found"));
         Customer customer = person.getCustomer();
 
         Address address = Address.builder()
@@ -41,14 +40,10 @@ public class AddressServiceImpl implements AddressService {
                 .country(request.getCountry())
                 .isDefault(false)
                 .phone(request.getPhone())
+                .emailAddress(request.getEmailAddress())
                 .build();
         addressRepository.save(address);
-        return AddressResponseDto.builder()
-                .fullName(address.getFullName())
-                .address(address.getStreet() + ", " + address.getState() + " " + address.getCountry())
-                .phone(address.getPhone())
-                .isDefault(address.getIsDefault())
-                .build();
+        return "Address saved succesfully";
     }
 
 
@@ -91,15 +86,18 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public Set<AddressResponseDto> getAllAddress(){
         String email = extractEmailFromPrincipal().get();
-        Person person = personRepository.findByEmail(email).orElseThrow();
+        Person person = personRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException(("User not found")));
         Customer customer = person.getCustomer();
         Set<Address> addressList = customer.getAddressBook();
         Set<AddressResponseDto> addressResponse = new HashSet<>();
         addressList
                 .forEach(address -> {
                     AddressResponseDto response = AddressResponseDto.builder()
+                            .id(address.getId())
                             .fullName(address.getFullName())
-                            .address(address.getStreet() + ", " + address.getState() + " " + address.getCountry())
+                            .street(address.getStreet())
+                            .state(address.getState())
+                            .country(address.getCountry())
                             .phone(address.getPhone())
                             .isDefault(address.getIsDefault())
                             .build();
@@ -108,9 +106,24 @@ public class AddressServiceImpl implements AddressService {
         return addressResponse;
     }
 
+    @Override
+    public AddressResponseDto viewAddress(Long addressId){
+        Address address = getAddress(addressId);
+        return AddressResponseDto.builder()
+                .id(address.getId())
+                .fullName(address.getFullName())
+                .phone(address.getPhone())
+                .emailAddress(address.getEmailAddress())
+                .street(address.getStreet())
+                .state(address.getState())
+                .country(address.getCountry())
+                .isDefault(address.getIsDefault())
+                .build();
+    }
 
-    protected Address getAddress(Long addressId){
-        return addressRepository.findById(addressId).orElseThrow();
+
+    public Address getAddress(Long addressId){
+        return addressRepository.findById(addressId).orElseThrow(() -> new ResourceNotFoundException("Address not found"));
     }
 
 

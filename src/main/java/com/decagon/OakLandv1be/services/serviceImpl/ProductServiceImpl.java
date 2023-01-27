@@ -99,14 +99,13 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public String uploadProductImage(long productId, MultipartFile image) throws IOException {
-//        String email = userAuth.getPrincipal();
         Product product = productRepository.findById(productId).orElseThrow(()->
                 new ResourceNotFoundException("Product not found"));
 
         String productImageUrl = uploadImage(image);
         product.setImageUrl(productImageUrl);
         productRepository.save(product);
-        return "Image uploaded successfully";
+        return productImageUrl;
     }
 
     @Override
@@ -114,6 +113,13 @@ public class ProductServiceImpl implements ProductService {
         return null;
     }
 
+    public void deleteProductImage(String publicUrl){
+        try {
+            cloudinaryConfig.cloudinary().uploader().destroy(publicUrl, ObjectUtils.emptyMap());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public String uploadImage(MultipartFile image) throws IOException {
         try {

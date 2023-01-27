@@ -115,7 +115,7 @@ class AdminControllerIntegrationTest {
                 .price(20.0d)
                 .imageUrl("blah blah")
                 .availableQty(20)
-                .subCategory(new SubCategory())
+                .subCategory("Coffee Table")
                 .color("brown")
                 .description("old products")
                 .build();

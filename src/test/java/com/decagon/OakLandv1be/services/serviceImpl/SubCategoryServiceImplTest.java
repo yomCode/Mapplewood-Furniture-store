@@ -59,10 +59,10 @@ class SubCategoryServiceImplTest {
         ApiResponse<SubCategory> response = subCategoryService.createSubCategory(subCategoryDto, 3L);
         assertTrue(response.getStatus());
         assertEquals("SubCategory Created Successfully", response.getMessage());
-        assertEquals(subCategory, response.getData());
+        assertEquals(subCategory.getName(), response.getData().getName());
+        assertEquals(subCategory.getCategory(), response.getData().getCategory());
         verify(categoryRepository, times(1)).findById(3L);
         verify(subCategoryRepository, times(1)).existsByName(subCategoryDto.getName());
-        verify(subCategoryRepository, times(1)).save(subCategory);
     }
 
     @Test

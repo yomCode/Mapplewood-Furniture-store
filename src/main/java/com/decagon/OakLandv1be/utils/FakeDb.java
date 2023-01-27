@@ -26,6 +26,7 @@ public class FakeDb {
     @Bean
     @Qualifier("MyOtherCommand")
     public CommandLineRunner myCommandLineRunner(PersonRepository personRepository,
+
                                                ProductRepository productRepository,
                                                CustomerRepository customerRepository,
                                                SubCategoryRepository subCategoryRepository,
@@ -33,7 +34,7 @@ public class FakeDb {
         return argument -> {
             if (!personRepository.existsByEmail("bennyson1@gmail.com")) {
              Customer customer = new Customer();
-             
+
                 Person person = Person.builder()
                         .firstName("Benson")
                         .lastName("Malik")
@@ -47,6 +48,10 @@ public class FakeDb {
                         .role(Role.CUSTOMER)
                         .customer(customer)
                         .address("No Address")
+                        .role(Role.CUSTOMER)
+                        .password(passwordEncoder.encode("password123453"))
+                        .isActive(true)
+
                         .build();
                 personRepository.save(person);
 
@@ -54,7 +59,7 @@ public class FakeDb {
                 customerRepository.save(customer);
             }
 
-            if(!categoryRepository.existsById(1L)) {
+            if (!categoryRepository.existsById(1L)) {
 
                 Category table = Category.builder()
                         .name("Table")
@@ -84,7 +89,7 @@ public class FakeDb {
                 categoryRepository.saveAll(categories);
             }
 
-            if(!subCategoryRepository.existsById(1L)) {
+            if (!subCategoryRepository.existsById(1L)) {
                 Category table = categoryRepository.findById(1L).orElseThrow(() -> new ProductNotFoundException("Not found!"));
                 Category sofa = categoryRepository.findById(2L).orElseThrow(() -> new ProductNotFoundException("Not found!"));
                 Category cupboard = categoryRepository.findById(3L).orElseThrow(() -> new ProductNotFoundException("Not found!"));
@@ -119,7 +124,7 @@ public class FakeDb {
                         .name("Work Table")
                         .category(table)
                         .build();
-                SubCategory table1 =SubCategory.builder()
+                SubCategory table1 = SubCategory.builder()
                         .name("Chief Table")
                         .category(table)
                         .build();
@@ -143,7 +148,7 @@ public class FakeDb {
                         .name("Wooden Rack")
                         .category(wooden)
                         .build();
-                SubCategory modern2= SubCategory.builder()
+                SubCategory modern2 = SubCategory.builder()
                         .name("Upperside Chair")
                         .category(modern)
                         .build();
@@ -183,7 +188,7 @@ public class FakeDb {
                         .name("BK Dresser")
                         .category(dresser)
                         .build();
-                SubCategory dresser3 =  SubCategory.builder()
+                SubCategory dresser3 = SubCategory.builder()
                         .name("Upperside Dresser")
                         .category(dresser)
                         .build();
@@ -212,7 +217,7 @@ public class FakeDb {
 
             }
 
-            if(!productRepository.existsById(1L)) {
+            if (!productRepository.existsById(1L)) {
 
                 SubCategory table1 = subCategoryRepository.findById(1L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
                 SubCategory table2 = subCategoryRepository.findById(2L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
@@ -246,7 +251,6 @@ public class FakeDb {
                 SubCategory lamp1 = subCategoryRepository.findById(23L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
                 SubCategory lamp2 = subCategoryRepository.findById(24L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
                 SubCategory lamp3 = subCategoryRepository.findById(25L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
-
 
 
                 List<Product> products = List.of(
@@ -700,38 +704,10 @@ public class FakeDb {
 
                 productRepository.saveAll(products);
             }
-        };
-    }
 
-    public CommandLineRunner commandLineRunner(PersonRepository personRepository, CustomerRepository customerRepository) {
-        return args -> {
-            Person person = Person.builder()
-                    .firstName("Maggie")
-                    .lastName("Stubborn")
-                    .password(passwordEncoder.encode("password123"))
-                    .email("maggie@gmail.com")
-                    .gender(Gender.OTHER)
-                    .date_of_birth("12-09-1993")
-                    .phone("78573944843")
-                    .verificationStatus(true)
-                    .address("Foolish address")
-                    .role(Role.ADMIN)
-                    .build();
-
-
-            Customer customer = Customer.builder()
-                    .person(person)
-                    .cart(new Cart())
-                    .wallet(Wallet.builder()
-                            .accountBalance(BigDecimal.valueOf(4000D))
-                            .baseCurrency(BaseCurrency.POUNDS)
-                            .build())
-                    .build();
-
-            personRepository.save(person);
-            customerRepository.save(customer);
         };
     }
 }
+
 
 

@@ -91,12 +91,10 @@ public class CartServiceImpl implements CartService {
             // for (Item item : itemsInCart) {
             //if (item.getId() == itemToRemoveId) {
             if (itemsInCart.contains(item))
-//                    //    if(itemsInCart.contains(item))
-////            itemsInCart.remove(item);
-////        cart.setItems(itemsInCart);
-////        itemRepository.save(item);
+       itemRepository.save(item);
                 itemRepository.delete(item);
             return "item removed successfully";
+
 //                    //search for the logged in user
 //                    //get his cart
 //                    //cart
