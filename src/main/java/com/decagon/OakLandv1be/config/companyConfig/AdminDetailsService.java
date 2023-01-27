@@ -1,5 +1,6 @@
 package com.decagon.OakLandv1be.config.companyConfig;
 
+import com.decagon.OakLandv1be.config.companyConfig.SuperAdminRepository;
 import com.decagon.OakLandv1be.entities.Person;
 import com.decagon.OakLandv1be.entities.Product;
 import com.decagon.OakLandv1be.entities.SuperAdmin;
@@ -91,3 +92,4 @@ public class AdminDetailsService implements CommandLineRunner {
 
     }
 }
+
