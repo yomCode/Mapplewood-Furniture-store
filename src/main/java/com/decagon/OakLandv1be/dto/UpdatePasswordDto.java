@@ -12,12 +12,16 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 public class UpdatePasswordDto {
 
+
+
     @NotBlank(message = "oldPassword should not be blank")
      private String oldPassword;
 
     @NotBlank(message = "newPassword should not be blank")
      private String newPassword;
 
+    @NotBlank(message = "confirmNewPassword should not be blank")
+    private String confirmNewPassword;
 
     }
 

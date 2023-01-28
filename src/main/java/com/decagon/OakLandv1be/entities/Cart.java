@@ -5,7 +5,6 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -18,10 +17,10 @@ import java.util.Set;
 public class Cart extends BaseEntity{
 
     @JsonIgnore
-    @OneToMany(mappedBy = "cart" ,cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "cart" , orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<Item> items = new HashSet<>();
 
-    private Double total;
+    private Double total = 0.0;
 
     @JsonIgnore
     @OneToOne(mappedBy = "cart", cascade = CascadeType.ALL)

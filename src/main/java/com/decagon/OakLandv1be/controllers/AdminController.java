@@ -31,7 +31,7 @@ public class AdminController {
 
     }
 
-    @PostMapping("products/new")
+    @PostMapping("/products/new")
     ApiResponse<ProductResponseDto> addNewProduct(@Valid @RequestBody NewProductRequestDto productDto) {
         return adminService.addNewProduct(productDto);
     }
@@ -46,5 +46,6 @@ public class AdminController {
     public ResponseEntity<String> deleteProduct(@PathVariable Long product_id){
        adminService.deleteProduct(product_id);
         return ResponseEntity.ok("Product deleted successfully");
+
     }
 }

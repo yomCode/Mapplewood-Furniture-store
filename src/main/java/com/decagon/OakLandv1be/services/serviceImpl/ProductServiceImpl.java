@@ -10,8 +10,8 @@ import com.decagon.OakLandv1be.exceptions.ProductNotFoundException;
 import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
 import com.decagon.OakLandv1be.repositries.ProductRepository;
 import com.decagon.OakLandv1be.services.ProductService;
+import com.decagon.OakLandv1be.utils.ApiResponse;
 import com.decagon.OakLandv1be.utils.Mapper;
-import com.decagon.OakLandv1be.utils.UserAuth;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -38,8 +38,12 @@ import java.util.stream.Collectors;
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
 
-//    private final UserAuth userAuth;
     private final CloudinaryConfig cloudinaryConfig;
+
+//    @Override
+//    public Page<ProductCustResponseDto> productWithPaginationAndSorting(Integer offset, Integer size, String field) {
+//        return null;
+//    }
 
     public ProductCustResponseDto fetchASingleProduct(Long product_id) {
         Product product = productRepository.findById(product_id)
@@ -50,6 +54,7 @@ public class ProductServiceImpl implements ProductService {
                 .imageUrl(product.getImageUrl())
                 .color(product.getColor())
                 .description(product.getDescription())
+                .subCategory(product.getSubCategory())
                 .build();
     }
 
@@ -71,34 +76,20 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<ProductCustResponseDto> productWithPaginationAndSorting(Integer page, Integer size, String sortingField) {
-
-        page=page<0?0:page;
-
-        size=size<10?10:size;
-
-        if(!(sortingField.equalsIgnoreCase("name") || sortingField.equalsIgnoreCase("price")
-        || sortingField.equalsIgnoreCase("color") || sortingField.equalsIgnoreCase("colour"))){
-            sortingField="price";
-        }
-        if(sortingField.equalsIgnoreCase("colour")){
-            sortingField="color";
-        }
-
-        return productRepository.findAll(PageRequest.of(page,size).withSort(Sort.by(sortingField)))
-                .map(Mapper::productToProductResponseDto);
+    public Page<ProductCustResponseDto> productWithPaginationAndSorting(Integer page, Integer size, String sortingField,boolean isAscending) {
+        return productRepository.findAll(PageRequest.of(page, size,
+                isAscending ? Sort.Direction.ASC : Sort.Direction.DESC, sortingField)).map(Mapper::productToProductResponseDto);
     }
 
     @Override
     public String uploadProductImage(long productId, MultipartFile image) throws IOException {
-//        String email = userAuth.getPrincipal();
         Product product = productRepository.findById(productId).orElseThrow(()->
                 new ResourceNotFoundException("Product not found"));
 
         String productImageUrl = uploadImage(image);
         product.setImageUrl(productImageUrl);
         productRepository.save(product);
-        return "Image uploaded successfully";
+        return productImageUrl;
     }
 
     @Override
@@ -113,6 +104,24 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findProductsBySalesDesc().stream()
                 .map(this::productResponseMapper)
                 .collect(Collectors.toList());
+    }
+
+    public void deleteProductImage(String publicUrl){
+        try {
+            cloudinaryConfig.cloudinary().uploader().destroy(publicUrl, ObjectUtils.emptyMap());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public ApiResponse<Page<Product>> getAllProducts(Integer pageNo, Integer pageSize, String sortBy, boolean isAscending) {
+        return null;
+    }
+
+    @Override
+    public ApiResponse<Page<Product>> getAllProductsBySubCategory(Long subCategoryId, Integer pageNo, Integer pageSize, String sortBy, boolean isAscending) {
+        return null;
     }
 
     public String uploadImage(MultipartFile image) throws IOException {

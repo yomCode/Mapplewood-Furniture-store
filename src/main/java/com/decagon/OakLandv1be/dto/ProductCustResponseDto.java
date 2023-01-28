@@ -15,10 +15,12 @@ public class ProductCustResponseDto {
     private String name;
 
     private Double price;
+    private Integer availableQty;
 
     private String imageUrl;
 
     private String color;
 
     private String description;
+    private SubCategory subCategory;
 }

@@ -15,9 +15,11 @@ import com.decagon.OakLandv1be.services.PersonService;
 import com.decagon.OakLandv1be.services.serviceImpl.PersonServiceImpl;
 import com.decagon.OakLandv1be.utils.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.apache.http.auth.InvalidCredentialsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.security.Principal;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -39,22 +42,25 @@ public class AuthenticationController {
     
 
     @PostMapping("/login")
-    public ApiResponse authenticate(@Valid @RequestBody LoginDto loginRequest) {
-        UserDetails user = userDetailsService.loadUserByUsername(loginRequest.getEmail());
-        if(!user.isEnabled())
-            throw new UsernameNotFoundException("You have not been verified. Check your email to be verified!");
-        if (!user.isAccountNonLocked()){
-            return new ApiResponse<>("This account has been deactivated", false, null,HttpStatus.OK);
-        }
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
-
-        if(authentication != null)
-            return new ApiResponse<>("Login Successful",
-                    true, tokenService.generateToken(authentication), HttpStatus.OK);
-
-        return new ApiResponse<>("Invalid Username or Password",
-                false, null, HttpStatus.UNAUTHORIZED);
+        public ApiResponse authenticate(@Valid @RequestBody LoginDto loginRequest) {
+            try {
+                UserDetails user = userDetailsService.loadUserByUsername(loginRequest.getEmail());
+                if(!user.isEnabled())
+                    throw new UsernameNotFoundException("You have not been verified. Check your email to be verified!");
+                if (!user.isAccountNonLocked()){
+                    return new ApiResponse<>("This account has been deactivated", false, null,HttpStatus.OK);
+                }
+                Authentication authentication = authenticationManager.authenticate(
+                        new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+                if(authentication == null)
+                    throw new InvalidCredentialsException("Invalid Email or Password");
+                return new ApiResponse<>("Login Successful",
+                        true, tokenService.generateToken(authentication), HttpStatus.OK);
+            } catch (InvalidCredentialsException e) {
+                return new ApiResponse<>("Invalid Credentials", false, null, HttpStatus.UNAUTHORIZED);
+            } catch (BadCredentialsException | UsernameNotFoundException e) {
+                return new ApiResponse<>("Password or Email not correct", false, null, HttpStatus.UNAUTHORIZED);
+            }
     }
 
     @PostMapping("/forgot-password-request")

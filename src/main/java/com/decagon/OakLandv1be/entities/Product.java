@@ -16,7 +16,6 @@ import javax.persistence.*;
 public class Product extends BaseEntity{
 
     private String name;
-
     private Double price;
 
     private String imageUrl;
@@ -31,9 +30,10 @@ public class Product extends BaseEntity{
 
     private Integer sales;
 
+    @Column(length=1000)
     private String description;
 
     @JsonIgnore
-    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "product", orphanRemoval = true)
     private Item item;
 }
