@@ -41,7 +41,7 @@ public class Order extends BaseEntity{
     @JoinColumn(name = "address_id")
     private Address address;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
 

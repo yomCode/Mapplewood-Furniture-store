@@ -2,9 +2,9 @@ package com.decagon.OakLandv1be.services.serviceImpl;
 
 import com.decagon.OakLandv1be.dto.NewProductRequestDto;
 import com.decagon.OakLandv1be.dto.ProductResponseDto;
+import com.decagon.OakLandv1be.dto.*;
 
 import com.decagon.OakLandv1be.entities.Person;
-import com.decagon.OakLandv1be.dto.UpdateProductDto;
 import com.decagon.OakLandv1be.entities.Product;
 import com.decagon.OakLandv1be.entities.SubCategory;
 import com.decagon.OakLandv1be.exceptions.AlreadyExistsException;
@@ -138,5 +138,5 @@ public class AdminServiceImpl implements AdminService {
         Product updatedProduct = productRepository.save(product);
         return new ApiResponse<>("product updated", true, updatedProduct);
     }
-    
+
 }

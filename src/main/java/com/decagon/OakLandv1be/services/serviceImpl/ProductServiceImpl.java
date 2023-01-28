@@ -9,6 +9,7 @@ import com.decagon.OakLandv1be.exceptions.InvalidAttributeException;
 import com.decagon.OakLandv1be.exceptions.ProductNotFoundException;
 import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
 import com.decagon.OakLandv1be.repositries.ProductRepository;
+import com.decagon.OakLandv1be.repositries.SubCategoryRepository;
 import com.decagon.OakLandv1be.services.ProductService;
 import com.decagon.OakLandv1be.utils.ApiResponse;
 import com.decagon.OakLandv1be.utils.Mapper;
@@ -36,6 +37,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class ProductServiceImpl implements ProductService {
+    private final SubCategoryRepository subCategoryRepository;
     private final ProductRepository productRepository;
 
     private final CloudinaryConfig cloudinaryConfig;
@@ -73,6 +75,14 @@ public class ProductServiceImpl implements ProductService {
             productCustResponseDtoList.add(productCustResponseDto);
         });
         return productCustResponseDtoList;
+    }
+
+    @Override
+    public ApiResponse<Page<Product>> getAllProducts(Integer pageNo, Integer pageSize, String sortBy, boolean isAscending) {
+        Page<Product> productPage = productRepository.findAll(PageRequest.of(pageNo, pageSize,
+                isAscending ? Sort.Direction.ASC : Sort.Direction.DESC, sortBy));
+        return new ApiResponse<>("Pages",  productPage, HttpStatus.OK);
+
     }
 
     @Override
@@ -114,14 +124,10 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-    @Override
-    public ApiResponse<Page<Product>> getAllProducts(Integer pageNo, Integer pageSize, String sortBy, boolean isAscending) {
-        return null;
-    }
-
-    @Override
     public ApiResponse<Page<Product>> getAllProductsBySubCategory(Long subCategoryId, Integer pageNo, Integer pageSize, String sortBy, boolean isAscending) {
-        return null;
+        Page<Product> allBySubCategoryId = productRepository.findAllBySubCategoryId(subCategoryId, PageRequest.of(pageNo, pageSize,
+                isAscending ? Sort.Direction.ASC : Sort.Direction.DESC, sortBy));
+        return new ApiResponse<>("Pages",  allBySubCategoryId, HttpStatus.OK);
     }
 
     public String uploadImage(MultipartFile image) throws IOException {
