@@ -32,7 +32,7 @@ public class CustomerController {
         return new ResponseEntity<>(responseManager.success("Registration Successful! Check your mail for activation link"),HttpStatus.CREATED);
     }
 
-    @GetMapping("/verifyRegistration")
+    @GetMapping("/customer/verifyRegistration")
     public ResponseEntity<ApiResponse> verifyAccount(@RequestParam("token") String token){
         return customerService.verifyRegistration(token);
     }
@@ -45,7 +45,7 @@ public class CustomerController {
 
 
     @GetMapping("/customer/view-profile")
-    public ResponseEntity<CustomerProfileDto> viewProfile (){
+    public ResponseEntity<CustomerProfileDto> viewProfile(){
         return new ResponseEntity<>(customerService.viewProfile(), HttpStatus.OK);
     }
 
@@ -56,12 +56,6 @@ public class CustomerController {
         return new ApiResponse<>("Paginated" ,
                 customerService.viewAllCustomersProfileWithPaginationSorting(pageNo, pageSize, sortBy),
                 HttpStatus.OK);
-    }
-
-    @PostMapping("/cart/item/add/{productId}")
-    public ResponseEntity<String> addItemToCart(@PathVariable Long productId) throws AlreadyExistsException {
-        String response = cartService.addItemToCart(productId);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PostMapping("/customer/products/favorites/add/{pid}")
