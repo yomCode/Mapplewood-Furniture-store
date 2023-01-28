@@ -5,15 +5,16 @@ import com.decagon.OakLandv1be.dto.ProductResponseDto;
 import com.decagon.OakLandv1be.entities.Product;
 import com.decagon.OakLandv1be.entities.SubCategory;
 import com.decagon.OakLandv1be.repositries.ProductRepository;
-import com.decagon.OakLandv1be.utils.ApiResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
 import java.util.Optional;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
@@ -64,5 +65,10 @@ class AdminServiceImplTest {
     void testDeleteProductById() {
       adminService.deleteProduct(1L);
         verify(productRepository, times(1)).deleteById(anyLong());
+    }
+
+    @Test
+    void addPickupCenterForCustomers() {
+
     }
 }

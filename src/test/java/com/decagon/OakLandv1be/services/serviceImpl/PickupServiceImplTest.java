@@ -59,7 +59,7 @@ class PickupServiceImplTest {
         List<PickupCenterResponse> result = pickupCenterService.getCenterByStateName("lagos");
 
         assertEquals(1, result.size());
-        assertEquals("LAGOS", result.get(0).getStateName());
+        assertEquals("LAGOS", result.get(0).getState());
     }
 
     @Test

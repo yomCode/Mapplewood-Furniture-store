@@ -4,6 +4,7 @@ import com.decagon.OakLandv1be.dto.CustomerProfileDto;
 import com.decagon.OakLandv1be.dto.EditProfileRequestDto;
 import com.decagon.OakLandv1be.dto.ProductCustResponseDto;
 import com.decagon.OakLandv1be.dto.SignupRequestDto;
+import com.decagon.OakLandv1be.dto.cartDtos.CartItemResponseDto;
 import com.decagon.OakLandv1be.exceptions.AlreadyExistsException;
 import com.decagon.OakLandv1be.services.CartService;
 import com.decagon.OakLandv1be.services.CustomerService;
@@ -16,7 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.io.IOException;
-
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -62,6 +63,12 @@ public class CustomerController {
     public ResponseEntity<String> addFavorites(@PathVariable Long pid){
         customerService.addProductToFavorites(pid);
         return new ResponseEntity<>("Product added to favourites successfully", HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping("customer/cart/item/view-all")
+    public ResponseEntity<List<CartItemResponseDto>> fetchProductsFromCustomerCart() {
+        List<CartItemResponseDto> items = cartService.fetchProductsFromCustomerCart();
+        return new ResponseEntity<>(items, HttpStatus.OK);
     }
 
     @GetMapping("/customer/products/favorites/view/{product_id}")

@@ -1,7 +1,6 @@
 package com.decagon.OakLandv1be.entities;
 
 import lombok.*;
-
 import javax.persistence.*;
 
 @Entity
@@ -17,8 +16,9 @@ public class PickupCenter extends BaseEntity{
     private String address;
     private String email;
     private String phone;
+    private Double delivery;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "states_id")
     private State state;
 
