@@ -2,6 +2,7 @@ package com.decagon.OakLandv1be.controllers;
 
 import com.decagon.OakLandv1be.entities.Item;
 import com.decagon.OakLandv1be.dto.CartDto;
+import com.decagon.OakLandv1be.exceptions.AlreadyExistsException;
 import com.decagon.OakLandv1be.services.CartService;
 import com.decagon.OakLandv1be.utils.ApiResponse;
 import com.decagon.OakLandv1be.utils.ResponseManager;
@@ -17,6 +18,11 @@ import java.util.List;
 public class CartController {
     private final CartService cartService;
 
+    @PostMapping("/item/add/{productId}")
+    public ResponseEntity<String> addItemToCart(@PathVariable Long productId) throws AlreadyExistsException {
+        String response = cartService.addItemToCart(productId);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
 
     @DeleteMapping("/item/delete/{itemId}")
     public ResponseEntity<String> deleteItem(@PathVariable Long itemId){

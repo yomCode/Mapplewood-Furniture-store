@@ -1,7 +1,9 @@
 package com.decagon.OakLandv1be.services.serviceImpl;
 
 import com.decagon.OakLandv1be.dto.CartDto;
+import com.decagon.OakLandv1be.dto.cartDtos.CartItemResponseDto;
 import com.decagon.OakLandv1be.entities.*;
+import com.decagon.OakLandv1be.exceptions.NotAvailableException;
 import com.decagon.OakLandv1be.exceptions.*;
 import com.decagon.OakLandv1be.repositries.*;
 import com.decagon.OakLandv1be.services.CartService;
@@ -13,11 +15,13 @@ import com.decagon.OakLandv1be.repositries.CartRepository;
 import com.decagon.OakLandv1be.repositries.ItemRepository;
 import com.decagon.OakLandv1be.repositries.PersonRepository;
 import com.decagon.OakLandv1be.services.CustomerService;
-
+import org.springframework.beans.BeanUtils;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 
@@ -209,4 +213,19 @@ public class CartServiceImpl implements CartService {
                 .items(cart.getItems())
                 .total(cart.getTotal()).build();
     }
+
+    @Override
+    public List<CartItemResponseDto> fetchProductsFromCustomerCart() {
+        Customer loggedInCustomer = customerService.getCurrentlyLoggedInUser();
+        Cart cart = loggedInCustomer.getCart();
+        Set<Item> items = cart.getItems();
+        List<CartItemResponseDto> itemDtos = new ArrayList<>();
+        for (Item item : items) {
+            CartItemResponseDto itemDto = new CartItemResponseDto();
+            BeanUtils.copyProperties(item, itemDto);
+            itemDtos.add(itemDto);
+        }
+        return itemDtos;
+    }
+
 }

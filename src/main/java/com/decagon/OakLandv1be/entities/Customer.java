@@ -23,7 +23,7 @@ public class Customer extends BaseEntity{
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="cart_id")
-    private Cart cart = new Cart();
+    private Cart cart;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "wallet_id")
@@ -42,7 +42,7 @@ public class Customer extends BaseEntity{
     private Set<Product> favorites = new HashSet<>();
 
     @JsonIgnore
-    @OneToMany(mappedBy = "customer", orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "customer",  fetch = FetchType.EAGER)
     private Set<Address> addressBook;
     private boolean isActive = true;
 
