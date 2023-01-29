@@ -36,4 +36,7 @@ public class Product extends BaseEntity{
     @JsonIgnore
     @OneToOne(mappedBy = "product", orphanRemoval = true)
     private Item item;
+
+    public Product(String favour, double v, String nnnn, int i, SubCategory subCategory, String red, String center_table, Item item) {
+    }
 }

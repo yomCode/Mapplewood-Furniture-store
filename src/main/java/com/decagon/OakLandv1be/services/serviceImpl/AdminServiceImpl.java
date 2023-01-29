@@ -29,7 +29,6 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class AdminServiceImpl implements AdminService {
-
     private final ProductRepository productRepository;
     private final PersonRepository personRepository;
     private final CustomerRepository customerRepository;

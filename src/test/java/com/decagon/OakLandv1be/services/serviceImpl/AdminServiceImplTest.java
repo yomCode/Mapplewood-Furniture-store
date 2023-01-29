@@ -64,7 +64,7 @@ class AdminServiceImplTest {
     @Test
     void testDeleteProductById() {
       adminService.deleteProduct(1L);
-        verify(productRepository, times(1)).deleteById(anyLong());
+        verify(productRepository, times(1)).delete(product);
     }
 
     @Test
