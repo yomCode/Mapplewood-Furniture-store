@@ -8,6 +8,7 @@ import com.decagon.OakLandv1be.dto.SignupResponseDto;
 
 import com.decagon.OakLandv1be.entities.Customer;
 import com.decagon.OakLandv1be.exceptions.AlreadyExistsException;
+import com.decagon.OakLandv1be.exceptions.EmailNotFoundException;
 import com.decagon.OakLandv1be.utils.ApiResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,8 @@ import java.util.List;
 
 public interface CustomerService {
     SignupResponseDto saveCustomer(SignupRequestDto signupRequestDto) throws AlreadyExistsException, IOException;
+
+    ResponseEntity<ApiResponse> resendVerificationToken(String email) throws EmailNotFoundException, IOException;
 
     ResponseEntity<ApiResponse> verifyRegistration(String token);
 
