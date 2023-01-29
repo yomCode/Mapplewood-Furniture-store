@@ -21,6 +21,7 @@ import java.util.List;
 public class FakeDb {
 
     private final PasswordEncoder passwordEncoder;
+    private final AdminRepository adminRepository;
 
 
     @Bean
@@ -33,8 +34,7 @@ public class FakeDb {
                                                  CategoryRepository categoryRepository) {
         return argument -> {
             if (!personRepository.existsByEmail("bennyson1@gmail.com")) {
-                Customer customer = new Customer();
-
+                Admin admin = Admin.builder().build();
                 Person person = Person.builder()
                         .firstName("Benson")
                         .lastName("Malik")
@@ -44,18 +44,36 @@ public class FakeDb {
                         .phone("9859595959")
                         .isActive(true)
                         .verificationStatus(true)
-//                        .password(passwordEncoder.encode("password123"))
-//                        .role(Role.CUSTOMER)
-                        .customer(customer)
+                        .admin(admin)
                         .address("No Address")
                         .role(Role.ADMIN)
                         .password(passwordEncoder.encode("password123453"))
                         .isActive(true)
 
                         .build();
-                personRepository.save(person);
+                Person adminPerson = personRepository.save(person);
+                admin.setPerson(adminPerson);
+                Admin savedAdmin = adminRepository.save(admin);
 
-                //customer.setPerson(person);
+                Customer customer = new Customer();
+                Person customerPerson = Person.builder()
+                        .firstName("Joe")
+                        .lastName("Lennon")
+                        .email("bennyson2@gmail.com")
+                        .gender(Gender.MALE)
+                        .date_of_birth("1996-03-12")
+                        .phone("9859595959")
+                        .isActive(true)
+                        .verificationStatus(true)
+                        .role(Role.CUSTOMER)
+                        .customer(customer)
+                        .address("No Address")
+                        .password(passwordEncoder.encode("password123453"))
+                        .isActive(true)
+
+                        .build();
+                Person savedPerson = personRepository.save(customerPerson);
+                customer.setPerson(savedPerson);
                 customerRepository.save(customer);
             }
 
