@@ -83,13 +83,9 @@ public class ProductServiceImpl implements ProductService {
 
 
     public ResponseEntity<Boolean> deleteProduct(Long id){
-
-
         Product product = productRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Product not found"));
         productRepository.delete(product);
-
         Product removedProduct = productRepository.findById(id).orElse(null);
-
         if(removedProduct == null)
             return new ResponseEntity<>(true, HttpStatus.OK);
         return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);

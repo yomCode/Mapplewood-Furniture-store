@@ -74,7 +74,6 @@ public class AdminServiceImpl implements AdminService {
                 .build();
 
         Product newProduct = productRepository.save(product);
-
         ProductResponseDto productResponseDto = ProductResponseDto.builder()
                 .name(newProduct.getName())
                 .price(newProduct.getPrice())
