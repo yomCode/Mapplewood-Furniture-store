@@ -18,7 +18,7 @@ import java.util.Set;
 public class SubCategory extends BaseEntity{
 
     private String name;
-
+    private String imageUrl;
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;

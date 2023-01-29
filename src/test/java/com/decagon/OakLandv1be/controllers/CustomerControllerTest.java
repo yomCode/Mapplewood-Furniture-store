@@ -13,13 +13,16 @@ import com.decagon.OakLandv1be.services.serviceImpl.CustomerServiceImpl;
 import com.decagon.OakLandv1be.utils.ApiResponse;
 import com.decagon.OakLandv1be.utils.ResponseManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ContextConfiguration;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.anyLong;
 
 import org.springframework.data.domain.Page;
@@ -184,21 +187,26 @@ class CustomerControllerTest {
     void viewAllProfilesPaginationAndSort() {
        try {
            int pageNumber = 0;
-           int pageSize = 10;
-           String sortBy = "lastName";
+           int pageSize = 16;
+           String sortBy = "id";
+           List<Customer> customers = Arrays.asList(new Customer(), new Customer());
            List<CustomerProfileDto> customerProfileDtoList = Arrays.asList(new CustomerProfileDto(), new CustomerProfileDto());
            Page<CustomerProfileDto> customerProfileDtoPage = new PageImpl<>(customerProfileDtoList);
            when(customerService.viewAllCustomersProfileWithPaginationSorting(pageNumber, pageSize, sortBy)).thenReturn(customerProfileDtoPage);
            String requestBody = mapper.writeValueAsString(pageNumber);
            String requestBodie = mapper.writeValueAsString(pageSize);
            String requestBod = mapper.writeValueAsString(sortBy);
-           ApiResponse<Page<CustomerProfileDto>> actualResponse = customerController.viewAllProfilesPaginationAndSort(pageNumber, pageSize, sortBy);
-       mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/customer/admin/customers-profile/page-sort")
-               .contentType("application/json")
-               .content(requestBody)
-               .content(requestBodie)
-               .content(requestBod))
-               .andReturn();
+           ApiResponse<Page<CustomerProfileDto>> actualResponse = customerController.viewAllProfilesPaginationAndSort(0, 16, "id");
+//       mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/customer/admin/customers-profile/page-sort")
+//               .contentType("application/json")
+//               .content(requestBody)
+//               .content(requestBodie)
+//               .content(requestBod))
+//               .andReturn();
+           Assertions.assertEquals("Paginated", actualResponse.getMessage());
+           Assertions.assertEquals(customerProfileDtoPage, actualResponse.getData());
+           Assertions.assertEquals(true, actualResponse.getStatus());
+           verify(customerService).viewAllCustomersProfileWithPaginationSorting(0, 16, "id");
        } catch (Exception ce){
            ce.printStackTrace();
        }

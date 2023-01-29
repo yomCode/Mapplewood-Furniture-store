@@ -125,8 +125,7 @@ public class WalletServiceImpl implements WalletService {
             ).getSuperAdmin().getWallet();
             // add the ground total to super admin wallet
             adminWallet.setAccountBalance(adminWallet.getAccountBalance().add(grandTotal));
-
-            // sent an email to the customer
+            // send an email to the customer
             //TODO         <=================================
             try {
 
@@ -143,8 +142,6 @@ public class WalletServiceImpl implements WalletService {
         throw new InsufficientBalanceInWalletException("Insufficient balance, Please fund your wallet.");
     }
 
-
-
     Wallet getCurrentlyLoggedInCustomerWallet(){
         return personRepository.findByEmail(UserUtil.extractEmailFromPrincipal().orElseThrow(
                 ()->new UsernameNotFoundException("Please login to continue")
@@ -152,19 +149,6 @@ public class WalletServiceImpl implements WalletService {
                 ()-> new UserNotFoundException("Please login to continue")
         ).getCustomer().getWallet();
     }
-
-    //get the currently logged in customer//
-
-//        String customerEmail= UserUtil.extractEmailFromPrincipal().orElseThrow(
-//                ()->new UsernameNotFoundException("Please login to continue")
-//        );
-//
-//        Person loggedInPerson=personRepository.findByEmail(customerEmail).orElseThrow(
-//                ()-> new UserNotFoundException("Please login to continue")
-//        );
-//
-//        Customer customer=loggedInPerson.getCustomer();
-
 
     @Override
     public WalletInfoResponseDto viewWalletInfo() {
@@ -186,7 +170,6 @@ public class WalletServiceImpl implements WalletService {
             DecimalFormatSymbols symbols = new DecimalFormatSymbols(new Locale("en", "NG"));
             symbols.setCurrencySymbol("₦");
 
-
             return WalletInfoResponseDto.builder()
                     .firstName(person.getFirstName())
                     .lastName(person.getLastName())
@@ -194,9 +177,7 @@ public class WalletServiceImpl implements WalletService {
                     .walletBalance(currencyString)
                     .baseCurrency(String.valueOf(wallet.getBaseCurrency()))
                     .build();
-
         }
-
         throw new UnauthorizedUserException("User does not have access");
     }
 
