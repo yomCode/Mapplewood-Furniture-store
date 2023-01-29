@@ -2,22 +2,22 @@ package com.decagon.OakLandv1be.services.serviceImpl;
 
 import com.decagon.OakLandv1be.dto.OrderResponseDto;
 import com.decagon.OakLandv1be.entities.*;
+import com.decagon.OakLandv1be.exceptions.EmptyListException;
 import com.decagon.OakLandv1be.repositries.CustomerRepository;
 import com.decagon.OakLandv1be.repositries.OrderRepository;
-import com.decagon.OakLandv1be.services.OrderService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Page;
 
-import java.util.HashSet;
-import java.util.Optional;
+import java.util.*;
 
 import static com.decagon.OakLandv1be.enums.ModeOfDelivery.DOORSTEP;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class OrderServiceImplTest {
     @Mock
@@ -36,6 +36,7 @@ class OrderServiceImplTest {
     private Address address;
     private Transaction transaction;
     private Customer customer;
+    private List<Order> orders;
 
     @BeforeEach
     void setUp() {
@@ -54,6 +55,8 @@ class OrderServiceImplTest {
         orderResponseDto = OrderResponseDto.builder()
                 .items(new HashSet<>()).modeOfPayment(modeOfPayment).modeOfDelivery(DOORSTEP).deliveryFee(2000.00)
                 .delivery(delivery).grandTotal(5000.00).discount(500.00).address(address).transaction(transaction).build();
+        orders = Arrays.asList(new Order(), new Order(), new Order());
+        when(orderRepository.findAll()).thenReturn(orders);
     }
 
     @Test
@@ -66,5 +69,20 @@ class OrderServiceImplTest {
         assertEquals(orderResponseDto, actual);
     }
 
+    @Test
+    void viewAllOrdersPaginated() {
+        Page<OrderResponseDto> result = orderService.viewAllOrdersPaginated(0, 2, "id", true);
+        assertEquals(2, result.getSize());
+        assertEquals(3, result.getTotalElements());
+        assertEquals(2, result.getNumberOfElements());
+        verify(orderRepository).findAll();
+    }
 
+    @Test
+    public void testViewAllSubCategories_EmptyList() {
+        List<Order> orders = new ArrayList<>();
+        when(orderRepository.findAll()).thenReturn(orders);
+        assertThrows(EmptyListException.class, () -> orderService.viewAllOrdersPaginated(0, 2, "id", true));
+        verify(orderRepository, times(1)).findAll();
+    }
 }

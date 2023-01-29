@@ -1,12 +1,16 @@
 package com.decagon.OakLandv1be.services.serviceImpl;
 
 import com.decagon.OakLandv1be.dto.FundWalletRequest;
+import com.decagon.OakLandv1be.dto.TransactionDto;
 import com.decagon.OakLandv1be.dto.TransactionInitRequestDto;
 import com.decagon.OakLandv1be.dto.TransactionInitResponseDto;
 import com.decagon.OakLandv1be.entities.Amount;
 import com.decagon.OakLandv1be.entities.PaystackTransaction;
+import com.decagon.OakLandv1be.entities.Transaction;
+import com.decagon.OakLandv1be.exceptions.EmptyListException;
 import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
 import com.decagon.OakLandv1be.repositries.PaystackTransactionRepository;
+import com.decagon.OakLandv1be.repositries.TransactionRepository;
 import com.decagon.OakLandv1be.services.TransactionInitService;
 import com.decagon.OakLandv1be.services.WalletService;
 import com.decagon.OakLandv1be.utils.ApiConnection;
@@ -18,6 +22,10 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.json.JSONObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -26,7 +34,9 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -34,6 +44,7 @@ import java.util.UUID;
 public class TransactionInitServiceImpl implements TransactionInitService {
 
     private final PaystackTransactionRepository transactionRepository;
+    private final TransactionRepository transactionRepo;
     private ApiConnection apiConnection;
 
     private final String key = "sk_test_26cc81b3fc91a4e6cd2002ba7f2beeec550cb07f";
@@ -141,6 +152,19 @@ public class TransactionInitServiceImpl implements TransactionInitService {
         return "Transaction not successful";
     }
 
-
-
+    @Override
+    public Page<TransactionDto> viewAllTransactionsPaginated(Integer pageNo, Integer pageSize, String sortBy, boolean isAscending) {
+        List<Transaction> transactions = transactionRepo.findAll();
+        if(transactions.isEmpty()){
+            throw new EmptyListException("Sorry there are no Transactions to display");
+        }
+        List<TransactionDto> transactionDtos = transactions.stream()
+                .map(transaction -> TransactionDto.builder()
+                        .status(transaction.getStatus())
+                        .order(transaction.getOrder())
+                        .build()).collect(Collectors.toList());
+        PageRequest pageable = PageRequest.of(pageNo, pageSize, Sort.Direction.DESC, sortBy);
+        int max = Math.min(pageSize * (pageNo + 1), transactionDtos.size());
+        return new PageImpl<>(transactionDtos.subList(pageNo*pageSize, max), pageable, transactionDtos.size());
+    }
 }

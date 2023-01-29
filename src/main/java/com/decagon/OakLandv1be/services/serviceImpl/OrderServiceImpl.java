@@ -94,7 +94,9 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Page<OrderResponseDto> viewAllOrdersPaginated(Integer pageNo, Integer pageSize, String sortBy, boolean isAscending) {
         List<Order> orders = orderRepository.findAll();
-
+        if(orders.isEmpty()){
+            throw new EmptyListException("Sorry there are no Customer orders yet");
+        }
         List<OrderResponseDto> orderResponseDtos =
                 orders.stream()
                         .map(order -> OrderResponseDto.builder()
@@ -113,6 +115,4 @@ public class OrderServiceImpl implements OrderService {
         int max = Math.min(pageSize * (pageNo + 1), orderResponseDtos.size());
         return new PageImpl<>(orderResponseDtos.subList(pageNo*pageSize, max), pageable, orderResponseDtos.size());
     }
-
-
 }
