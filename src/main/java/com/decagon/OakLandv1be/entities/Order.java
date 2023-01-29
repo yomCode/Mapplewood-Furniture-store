@@ -29,7 +29,6 @@ public class Order extends BaseEntity{
 
     @Enumerated(EnumType.STRING)
     private ModeOfDelivery modeOfDelivery;
-
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "delivery_id")
     private Delivery delivery;

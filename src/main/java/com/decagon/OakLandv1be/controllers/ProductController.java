@@ -5,6 +5,7 @@ import com.decagon.OakLandv1be.dto.ProductResponseDto;
 import com.decagon.OakLandv1be.entities.Product;
 import com.decagon.OakLandv1be.services.ProductService;
 import com.decagon.OakLandv1be.services.serviceImpl.ProductServiceImpl;
+
 import com.decagon.OakLandv1be.utils.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,12 +22,12 @@ import java.util.List;
 @RequestMapping("/api/v1/products")
 @RequiredArgsConstructor
 public class ProductController {
+
     private final ProductService productService;
 
     @GetMapping("/view/{product_id}")
     public ResponseEntity<ProductCustResponseDto> viewASingleProduct(@PathVariable("product_id") Long product_id){
         return new ResponseEntity<>(productService.fetchASingleProduct(product_id), HttpStatus.OK);
-
     }
 
     @GetMapping("/page-and-sort")
@@ -42,6 +43,15 @@ public class ProductController {
         return ResponseEntity.ok(productService.uploadProductImage(productId, productImage));
     }
 
+    @GetMapping("/new-arrival")
+    public ResponseEntity<List<ProductCustResponseDto>> viewNewArrivals(){
+        return new ResponseEntity<>(productService.viewNewArrivalProducts(), HttpStatus.OK);
+    }
+
+    @GetMapping("/best-selling")
+    public ResponseEntity<List<ProductCustResponseDto>> viewBestSelling(){
+        return new ResponseEntity<>(productService.viewBestSellingProducts(), HttpStatus.OK);
+    }
 
     @DeleteMapping("/delete-image")
     public ResponseEntity<String> deleteProductImage(String publicUrl){

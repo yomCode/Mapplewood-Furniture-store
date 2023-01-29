@@ -48,7 +48,7 @@ public class FakeDb {
 //                        .role(Role.CUSTOMER)
                         .customer(customer)
                         .address("No Address")
-                        .role(Role.CUSTOMER)
+                        .role(Role.ADMIN)
                         .password(passwordEncoder.encode("password123453"))
                         .isActive(true)
 

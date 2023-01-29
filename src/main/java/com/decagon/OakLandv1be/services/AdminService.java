@@ -13,6 +13,6 @@ public interface AdminService {
     ProductResponseDto fetchASingleProduct(Long product_id);
     String deactivateUser(Long customerId);
     ApiResponse<ProductResponseDto> addNewProduct(@Valid NewProductRequestDto productDto);
-    ApiResponse<OperationStatus> deleteProduct(Long product_id);
+    void deleteProduct(Long product_id);
     ApiResponse<Product> updateProduct(Long productId, UpdateProductDto updateproductDto);
 }
