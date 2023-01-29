@@ -17,9 +17,14 @@ import java.util.Set;
 import java.util.List;
 import java.util.stream.DoubleStream;
 
+
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
     boolean existsByName(String name);
+    @Query(value = "SELECT * FROM product_tbl ORDER BY created_at DESC LIMIT 3", nativeQuery = true)
+    List<Product> findProductByCreatedAtDesc();
+    @Query(value = "SELECT * FROM product_tbl ORDER BY sales DESC LIMIT 3", nativeQuery = true)
+           List <Product> findProductsBySalesDesc();
 
     Product findByItem(Item item);
     Product findByItemProductName(String itemName);

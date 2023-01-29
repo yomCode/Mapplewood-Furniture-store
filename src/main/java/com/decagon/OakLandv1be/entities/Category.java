@@ -18,6 +18,7 @@ import java.util.Set;
 public class Category extends BaseEntity{
 
     private String name;
+    private String imageUrl;
 
     @JsonIgnore
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.EAGER)

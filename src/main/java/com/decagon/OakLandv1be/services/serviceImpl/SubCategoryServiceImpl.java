@@ -38,6 +38,7 @@ public class SubCategoryServiceImpl implements SubCategoryService {
         SubCategory subCategory = SubCategory.builder()
                 .name(subCategoryDto.getName())
                 .category(category)
+                .imageUrl(subCategoryDto.getImageUrl())
                 .build();
         subCategoryRepository.save(subCategory);
         return new ApiResponse<>("SubCategory Created Successfully", true, subCategory);
@@ -50,7 +51,7 @@ public class SubCategoryServiceImpl implements SubCategoryService {
             throw new EmptyListException("There are no SubCategories yet", "Kindly create categories");
         List<SubCategoryDto> subCategoryDtos = new ArrayList<>();
         subCategoryList.forEach(subCategory -> {
-            SubCategoryDto subCategoryDto = SubCategoryDto.builder().name(subCategory.getName()).build();
+            SubCategoryDto subCategoryDto = SubCategoryDto.builder().name(subCategory.getName()).imageUrl(subCategory.getImageUrl()).build();
             subCategoryDtos.add(subCategoryDto);
         });
         return subCategoryDtos;
@@ -68,6 +69,7 @@ public class SubCategoryServiceImpl implements SubCategoryService {
         SubCategory subCategory = subCategoryRepository.findById(subCategoryId).orElseThrow(() ->
                 new ResourceNotFoundException("This SubCategory does not exist"));
         subCategory.setName(subCategoryDto.getName());
+        subCategory.setImageUrl(subCategoryDto.getImageUrl());
         return new ApiResponse<>("SubCategory Updated successfully", true, subCategoryRepository.save(subCategory));
     }
 
@@ -81,6 +83,7 @@ public class SubCategoryServiceImpl implements SubCategoryService {
             SubCategoryDto subCategoryDto = SubCategoryDto.builder()
                     .id(subCategory.getId())
                     .size(subCategory.getProducts().size())
+                    .imageUrl(subCategory.getImageUrl())
                     .name(subCategory.getName()).build();
             subCategoryDtos.add(subCategoryDto);
         });

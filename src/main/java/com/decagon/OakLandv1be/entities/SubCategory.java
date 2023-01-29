@@ -18,13 +18,13 @@ import java.util.Set;
 public class SubCategory extends BaseEntity{
 
     private String name;
-
+    private String imageUrl;
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "subCategory", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "subCategory", orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<Product> products;
 
 
