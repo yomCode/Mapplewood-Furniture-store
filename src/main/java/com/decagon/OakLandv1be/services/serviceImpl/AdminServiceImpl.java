@@ -5,13 +5,11 @@ import com.decagon.OakLandv1be.dto.ProductResponseDto;
 import com.decagon.OakLandv1be.dto.*;
 
 import com.decagon.OakLandv1be.entities.Person;
+import com.decagon.OakLandv1be.entities.PickupCenter;
 import com.decagon.OakLandv1be.entities.Product;
 import com.decagon.OakLandv1be.entities.SubCategory;
-import com.decagon.OakLandv1be.exceptions.AlreadyExistsException;
-import com.decagon.OakLandv1be.exceptions.ProductNotFoundException;
-import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
+import com.decagon.OakLandv1be.exceptions.*;
 
-import com.decagon.OakLandv1be.exceptions.UserNotFoundException;
 import com.decagon.OakLandv1be.repositries.PersonRepository;
 import com.decagon.OakLandv1be.repositries.ProductRepository;
 import com.decagon.OakLandv1be.repositries.*;
@@ -21,6 +19,7 @@ import com.decagon.OakLandv1be.utils.ApiResponse;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -34,6 +33,7 @@ public class AdminServiceImpl implements AdminService {
     private final CustomerRepository customerRepository;
     private final SubCategoryRepository subCategoryRepository;
     private final CategoryRepository categoryRepository;
+    private final PickupRepository pickupRepository;
 
     @Override
     public ProductResponseDto fetchASingleProduct(Long product_id) {
@@ -136,5 +136,20 @@ public class AdminServiceImpl implements AdminService {
         Product updatedProduct = productRepository.save(product);
         return new ApiResponse<>("product updated", true, updatedProduct);
     }
+
+    @Override
+    public PickupCenter updatePickupCenter(Long pickupCenterId, UpdatePickUpCenterDto request) {
+        PickupCenter center = pickupRepository.findById(pickupCenterId).
+                orElseThrow(()-> new PickupCenterNotFoundException("Pickup Center does not exist"));
+
+        center.setName(request.getName());
+        center.setAddress(request.getAddress());
+        center.setEmail(request.getEmail());
+        center.setPhone(request.getPhone());
+
+        PickupCenter pickupCenter= pickupRepository.save(center);
+        return pickupCenter ;
+    }
+
 
 }
