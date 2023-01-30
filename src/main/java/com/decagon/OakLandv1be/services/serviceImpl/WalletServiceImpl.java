@@ -1,8 +1,6 @@
 package com.decagon.OakLandv1be.services.serviceImpl;
 
-import com.decagon.OakLandv1be.dto.FundWalletRequest;
-import com.decagon.OakLandv1be.dto.FundWalletResponseDto;
-import com.decagon.OakLandv1be.dto.WalletInfoResponseDto;
+import com.decagon.OakLandv1be.dto.*;
 import com.decagon.OakLandv1be.entities.*;
 import com.decagon.OakLandv1be.exceptions.InsufficientBalanceInWalletException;
 import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
@@ -15,21 +13,28 @@ import com.decagon.OakLandv1be.services.JavaMailService;
 import com.decagon.OakLandv1be.services.WalletService;
 import com.decagon.OakLandv1be.utils.UserUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.stream.Collectors;
+import static com.decagon.OakLandv1be.enums.PaymentPurpose.DEPOSIT;
+import static com.decagon.OakLandv1be.enums.TransactionStatus.COMPLETED;
+import static com.decagon.OakLandv1be.utils.UserUtil.extractEmailFromPrincipal;
 import java.util.Locale;
-
-import static com.decagon.OakLandv1be.enums.TransactionStatus.SUCCESSFUL;
 
 @Service
 @RequiredArgsConstructor
@@ -58,7 +63,10 @@ public class WalletServiceImpl implements WalletService {
 
         Transaction transaction = Transaction.builder()
                 .wallet(wallet)
-                .status(SUCCESSFUL).build();
+                .amount(String.valueOf(request.getAmount()))
+                .purpose(DEPOSIT)
+                .reference(String.valueOf(UUID.randomUUID()))
+                .status(COMPLETED).build();
         transactionRepository.save(transaction);
 
         try {
@@ -117,8 +125,7 @@ public class WalletServiceImpl implements WalletService {
             ).getSuperAdmin().getWallet();
             // add the ground total to super admin wallet
             adminWallet.setAccountBalance(adminWallet.getAccountBalance().add(grandTotal));
-
-            // sent an email to the customer
+            // send an email to the customer
             //TODO         <=================================
             try {
 
@@ -130,18 +137,10 @@ public class WalletServiceImpl implements WalletService {
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-
-
             return true;
-
         }
-
         throw new InsufficientBalanceInWalletException("Insufficient balance, Please fund your wallet.");
-
-
     }
-
-
 
     Wallet getCurrentlyLoggedInCustomerWallet(){
         return personRepository.findByEmail(UserUtil.extractEmailFromPrincipal().orElseThrow(
@@ -150,19 +149,6 @@ public class WalletServiceImpl implements WalletService {
                 ()-> new UserNotFoundException("Please login to continue")
         ).getCustomer().getWallet();
     }
-
-    //get the currently logged in customer//
-
-//        String customerEmail= UserUtil.extractEmailFromPrincipal().orElseThrow(
-//                ()->new UsernameNotFoundException("Please login to continue")
-//        );
-//
-//        Person loggedInPerson=personRepository.findByEmail(customerEmail).orElseThrow(
-//                ()-> new UserNotFoundException("Please login to continue")
-//        );
-//
-//        Customer customer=loggedInPerson.getCustomer();
-
 
     @Override
     public WalletInfoResponseDto viewWalletInfo() {
@@ -184,17 +170,57 @@ public class WalletServiceImpl implements WalletService {
             DecimalFormatSymbols symbols = new DecimalFormatSymbols(new Locale("en", "NG"));
             symbols.setCurrencySymbol("₦");
 
-
             return WalletInfoResponseDto.builder()
                     .firstName(person.getFirstName())
                     .lastName(person.getLastName())
                     .email(person.getEmail())
-                    .walletBalance(wallet.getAccountBalance())
-                    .baseCurrency(currencyString)
+                    .walletBalance(currencyString)
+                    .baseCurrency(String.valueOf(wallet.getBaseCurrency()))
                     .build();
-
         }
-
         throw new UnauthorizedUserException("User does not have access");
+    }
+
+
+
+    @Override
+    public Page<TransactionResponseDto> fetchAllTransactions(Integer pageNo, Integer pageSize, String sortBy){
+        String email = extractEmailFromPrincipal().get();
+
+        Person person = personRepository.findByEmail(email).orElseThrow();
+        Wallet wallet = person.getCustomer().getWallet();
+
+        Set<Transaction> transactions = wallet.getTransactions();
+
+        List<Transaction> transactionsList = new ArrayList<>(transactions);
+
+        List<TransactionResponseDto> response = transactionsList.stream().map(this::responseMapper).collect(Collectors.toList());
+
+        PageRequest pageRequest = PageRequest.of(pageNo, pageSize, Sort.Direction.DESC, sortBy);
+
+
+        int minimum = pageNo*pageSize;
+        int max = Math.min(pageSize * (pageNo + 1), transactions.size());
+
+        return new PageImpl<>(
+                response.subList(minimum, max), pageRequest, response.size()
+        );
+
+    }
+
+
+    protected TransactionResponseDto responseMapper(Transaction transaction){
+        SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat time = new SimpleDateFormat("HH:mm:ss");
+
+        return TransactionResponseDto.builder()
+                .id(transaction.getId())
+                .date(date.format(transaction.getCreatedAt()))
+                .time(time.format(transaction.getCreatedAt()))
+                .amount(transaction.getAmount())
+                .purpose(String.valueOf(transaction.getPurpose()).toLowerCase())
+                .status(String.valueOf(transaction.getStatus()).toLowerCase())
+                .reference(transaction.getReference())
+                .build();
     }
 }

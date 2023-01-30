@@ -27,13 +27,13 @@ public class FakeDb {
     @Qualifier("MyOtherCommand")
     public CommandLineRunner myCommandLineRunner(PersonRepository personRepository,
 
-                                               ProductRepository productRepository,
-                                               CustomerRepository customerRepository,
-                                               SubCategoryRepository subCategoryRepository,
-                                               CategoryRepository categoryRepository) {
+                                                 ProductRepository productRepository,
+                                                 CustomerRepository customerRepository,
+                                                 SubCategoryRepository subCategoryRepository,
+                                                 CategoryRepository categoryRepository) {
         return argument -> {
             if (!personRepository.existsByEmail("bennyson1@gmail.com")) {
-             Customer customer = new Customer();
+                Customer customer = new Customer();
 
                 Person person = Person.builder()
                         .firstName("Benson")
@@ -44,11 +44,11 @@ public class FakeDb {
                         .phone("9859595959")
                         .isActive(true)
                         .verificationStatus(true)
-                        .password(passwordEncoder.encode("password123"))
-                        .role(Role.CUSTOMER)
+//                        .password(passwordEncoder.encode("password123"))
+//                        .role(Role.CUSTOMER)
                         .customer(customer)
                         .address("No Address")
-                        .role(Role.CUSTOMER)
+                        .role(Role.ADMIN)
                         .password(passwordEncoder.encode("password123453"))
                         .isActive(true)
 
@@ -708,6 +708,3 @@ public class FakeDb {
         };
     }
 }
-
-
-

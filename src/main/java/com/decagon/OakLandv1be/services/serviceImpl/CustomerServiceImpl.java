@@ -235,12 +235,10 @@ public class CustomerServiceImpl implements CustomerService {
                             .build()
             );
         });
-
         PageRequest pageable = PageRequest.of(pageNo, pageSize, Sort.Direction.DESC, sortBy);
 
         int minimum = pageNo*pageSize;
-        int max = (pageSize*(pageNo+1)>products.size()) ?
-                products.size(): pageSize*(pageNo+1);
+        int max = Math.min(pageSize * (pageNo + 1), products.size());
 
         Page<ProductCustResponseDto> page = new PageImpl<>
                 (productCustResponseDtos.subList(minimum, max), pageable,
@@ -248,48 +246,6 @@ public class CustomerServiceImpl implements CustomerService {
 
         return page;
     }
-
-
-
-
-//    @Override
-//    public Page<ProductCustResponseDto> viewFavouritesByPagination(Integer pageNo, Integer pageSize, String sortBy) {
-//        String email = UserUtil.extractEmailFromPrincipal()
-//                .orElseThrow(() -> new UserNotFoundException("user does not exist"));
-//        Customer customer = customerRepository.findByPersonEmail(email).orElseThrow
-//                (() -> new UserNotFoundException("user not found"));
-//        List<Product> products = new ArrayList<>(customer.getFavorites());
-//
-//        List<ProductCustResponseDto> productCustResponseDtos = new ArrayList<>();
-//
-//        products.forEach(product -> {
-//            productCustResponseDtos.add(
-//                    ProductCustResponseDto.builder()
-//                    .name(product.getName())
-//                    .price(product.getPrice())
-//                    .imageUrl(product.getImageUrl())
-//                    .color(product.getColor())
-//                    .description(product.getDescription())
-//                    .build()
-//            );
-//        });
-//
-//
-//        PageRequest pageable = PageRequest.of(pageNo, pageSize, Sort.Direction.DESC, sortBy);
-//
-//        int max = (pageSize*(pageNo+1)>products.size()) ?
-//                productCustResponseDtos.size(): pageSize*(pageNo+1);
-//
-//        Page<ProductCustResponseDto> page = new PageImpl<>
-//                (productCustResponseDtos.subList(pageNo*pageSize, max), pageable,
-//                        productCustResponseDtos.size());
-//
-//        return page;
-//    }
-
-
-
-
 
     public CustomerProfileDto viewProfile() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

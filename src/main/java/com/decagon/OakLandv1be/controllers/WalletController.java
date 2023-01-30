@@ -38,9 +38,19 @@ public class WalletController {
         return new ApiResponse<>("Request successful", walletService.viewWalletInfo(), HttpStatus.OK);
     }
 
+
+    @GetMapping("/transactions")
+    public ResponseEntity<Object> fetchAllTrans(@RequestParam(defaultValue = "0") Integer pageNo,
+                                                @RequestParam(defaultValue = "10") Integer pageSize,
+                                                @RequestParam(defaultValue = "id") String sortBy) {
+
+        return ResponseEntity.ok(walletService.fetchAllTransactions(pageNo, pageSize, sortBy));
+    }
+
     @PutMapping("/process-payment")
     public  ResponseEntity<Boolean> processPayment(@RequestBody ProcessPaymentRequest processPaymentyRequest){
         return ResponseEntity.ok(walletService.processPayment(processPaymentyRequest.getGrandTotal()));
+
     }
 
 }

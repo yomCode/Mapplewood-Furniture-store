@@ -12,7 +12,8 @@ import lombok.NoArgsConstructor;
 public class PickupCenterRequest {
     private String name;
     private String location;
-    private String stateName;
+    private String state;
     private String email;
     private String phone;
+    private Double delivery;
 }
