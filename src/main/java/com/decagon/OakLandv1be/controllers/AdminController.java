@@ -1,18 +1,16 @@
 package com.decagon.OakLandv1be.controllers;
 
-import com.decagon.OakLandv1be.dto.UpdateProductDto;
+import com.decagon.OakLandv1be.dto.*;
 import com.decagon.OakLandv1be.entities.Product;
 import com.decagon.OakLandv1be.utils.ApiResponse;
 import lombok.RequiredArgsConstructor;
-import com.decagon.OakLandv1be.dto.NewProductRequestDto;
-import com.decagon.OakLandv1be.dto.OperationStatus;
-import com.decagon.OakLandv1be.dto.ProductResponseDto;
 import com.decagon.OakLandv1be.services.AdminService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Set;
 
 @RestController
 @RequiredArgsConstructor
@@ -42,10 +40,15 @@ public class AdminController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @GetMapping("/addresses/{customerId}")
+    public ResponseEntity<Set<AddressResponseDto>> viewAllCustomerAddress(@PathVariable Long customerId){
+       Set<AddressResponseDto> response = adminService.viewAllCustomerAddress(customerId);
+       return ResponseEntity.ok(response);
+    }
+
     @DeleteMapping("/products/delete/{product_id}")
     public ResponseEntity<String> deleteProduct(@PathVariable Long product_id){
        adminService.deleteProduct(product_id);
         return ResponseEntity.ok("Product deleted successfully");
-
     }
 }

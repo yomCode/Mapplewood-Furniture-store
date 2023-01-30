@@ -4,9 +4,7 @@ import com.decagon.OakLandv1be.dto.NewProductRequestDto;
 import com.decagon.OakLandv1be.dto.ProductResponseDto;
 import com.decagon.OakLandv1be.dto.*;
 
-import com.decagon.OakLandv1be.entities.Person;
-import com.decagon.OakLandv1be.entities.Product;
-import com.decagon.OakLandv1be.entities.SubCategory;
+import com.decagon.OakLandv1be.entities.*;
 import com.decagon.OakLandv1be.exceptions.AlreadyExistsException;
 import com.decagon.OakLandv1be.exceptions.ProductNotFoundException;
 import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
@@ -26,6 +24,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import static com.decagon.OakLandv1be.utils.UserUtil.extractEmailFromPrincipal;
+
 @Service
 @RequiredArgsConstructor
 public class AdminServiceImpl implements AdminService {
@@ -33,7 +36,6 @@ public class AdminServiceImpl implements AdminService {
     private final PersonRepository personRepository;
     private final CustomerRepository customerRepository;
     private final SubCategoryRepository subCategoryRepository;
-    private final CategoryRepository categoryRepository;
 
     @Override
     public ProductResponseDto fetchASingleProduct(Long product_id) {
@@ -135,6 +137,33 @@ public class AdminServiceImpl implements AdminService {
 
         Product updatedProduct = productRepository.save(product);
         return new ApiResponse<>("product updated", true, updatedProduct);
+    }
+
+    @Override
+    public Set<AddressResponseDto> viewAllCustomerAddress(Long customerId){
+        String email = extractEmailFromPrincipal().get();
+        personRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException(("Incorrect credentials or not found")));
+
+        Customer customer = customerRepository.findById(customerId)
+                .orElseThrow(()-> new ResourceNotFoundException("Not Found"));
+
+        Set<Address> addressList = customer.getAddressBook();
+        Set<AddressResponseDto> addressResponse = new HashSet<>();
+        addressList
+                .forEach(address -> {
+                    AddressResponseDto response = AddressResponseDto.builder()
+                            .id(address.getId())
+                            .fullName(address.getFullName())
+                            .street(address.getStreet())
+                            .state(address.getState())
+                            .country(address.getCountry())
+                            .phone(address.getPhone())
+                            .isDefault(address.getIsDefault())
+                            .build();
+                    addressResponse.add(response);
+                });
+        return addressResponse;
     }
 
 }
