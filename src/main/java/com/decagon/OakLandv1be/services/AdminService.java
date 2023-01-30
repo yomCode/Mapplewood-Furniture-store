@@ -1,8 +1,11 @@
 package com.decagon.OakLandv1be.services;
 
 import com.decagon.OakLandv1be.dto.*;
+import com.decagon.OakLandv1be.entities.PickupCenter;
+
 import com.decagon.OakLandv1be.entities.Product;
 import com.decagon.OakLandv1be.utils.ApiResponse;
+import org.springframework.http.ResponseEntity;
 
 import javax.validation.Valid;
 import java.io.IOException;
@@ -15,5 +18,9 @@ public interface AdminService {
     ApiResponse<Product> updateProduct(Long productId, UpdateProductDto updateproductDto);
 
 
+
     AdminResponseDto createAdmin(AdminRequestDto adminRequestDto) throws IOException;
+
+    PickupCenter updatePickupCenter(Long pickupCenterId, UpdatePickUpCenterDto request);
+
 }

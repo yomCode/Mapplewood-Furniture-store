@@ -1,6 +1,9 @@
 package com.decagon.OakLandv1be.controllers;
 
 import com.decagon.OakLandv1be.dto.*;
+
+import com.decagon.OakLandv1be.entities.PickupCenter;
+
 import com.decagon.OakLandv1be.entities.Product;
 import com.decagon.OakLandv1be.utils.ApiResponse;
 import com.decagon.OakLandv1be.utils.ResponseManager;
@@ -24,6 +27,14 @@ public class AdminController {
       public ApiResponse<Product> updateProduct(@Valid @PathVariable Long productId , @RequestBody UpdateProductDto updateproductDto) {
        return adminService.updateProduct( productId, updateproductDto);
    }
+
+    @PutMapping("/pickupCenter/update/{pickupCenter_id}")
+    public ResponseEntity<PickupCenter> updateCenter(@Valid @PathVariable Long pickupCenter_id, @RequestBody UpdatePickUpCenterDto response){
+       return new ResponseEntity<>(adminService.updatePickupCenter(pickupCenter_id, response), HttpStatus.OK);
+    }
+
+
+
 
     @GetMapping("/products/{product_id}")
     public ResponseEntity<ProductResponseDto> viewASingleProduct(@PathVariable("product_id") Long product_id){

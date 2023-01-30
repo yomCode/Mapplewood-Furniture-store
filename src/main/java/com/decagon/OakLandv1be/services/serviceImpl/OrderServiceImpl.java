@@ -3,6 +3,7 @@ package com.decagon.OakLandv1be.services.serviceImpl;
 import com.decagon.OakLandv1be.dto.OrderResponseDto;
 import com.decagon.OakLandv1be.entities.Customer;
 import com.decagon.OakLandv1be.entities.Order;
+import com.decagon.OakLandv1be.enums.DeliveryStatus;
 import com.decagon.OakLandv1be.exceptions.EmptyListException;
 import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
 import com.decagon.OakLandv1be.repositries.CustomerRepository;
@@ -62,10 +63,9 @@ public class OrderServiceImpl implements OrderService {
         OrderResponseDto orderResponseDto = OrderResponseDto.builder()
                 .items(order.getItems())
                 .address(order.getAddress())
-                .delivery(order.getDelivery())
+                .deliveryStatus(DeliveryStatus.TO_ARRIVE)
                 .modeOfDelivery(order.getModeOfDelivery())
                 .modeOfPayment(order.getModeOfPayment())
-                .transaction(order.getTransaction())
                 .discount(order.getDiscount())
                 .deliveryFee(order.getDeliveryFee())
                 .grandTotal(order.getGrandTotal())
@@ -83,11 +83,10 @@ public class OrderServiceImpl implements OrderService {
                 .items(order.getItems())
                 .deliveryFee(order.getDeliveryFee())
                 .modeOfDelivery(order.getModeOfDelivery())
-                .delivery(order.getDelivery())
+                .deliveryStatus(DeliveryStatus.TO_ARRIVE)
                 .grandTotal(order.getGrandTotal())
                 .discount(order.getDiscount())
                 .address(order.getAddress())
-                .transaction(order.getTransaction())
                 .build();
     }
 
@@ -104,11 +103,10 @@ public class OrderServiceImpl implements OrderService {
                                 .items(order.getItems())
                                 .deliveryFee(order.getDeliveryFee())
                                 .modeOfDelivery(order.getModeOfDelivery())
-                                .delivery(order.getDelivery())
+                                .deliveryStatus(DeliveryStatus.TO_ARRIVE)
                                 .grandTotal(order.getGrandTotal())
                                 .discount(order.getDiscount())
                                 .address(order.getAddress())
-                                .transaction(order.getTransaction())
                 .build()).collect(Collectors.toList());
 
         PageRequest pageable = PageRequest.of(pageNo, pageSize, Sort.Direction.DESC, sortBy);

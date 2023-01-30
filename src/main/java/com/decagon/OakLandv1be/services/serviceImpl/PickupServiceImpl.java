@@ -61,7 +61,7 @@ public class PickupServiceImpl implements PickupService {
 
         pickupRepository.save(PickupCenter.builder()
                 .name(pickupCenterRequest.getName())
-                .state(stateRepository.findByName(pickupCenterRequest.getState()).orElseThrow(
+                .state(stateRepository.findByName(pickupCenterRequest.getState().toUpperCase()).orElseThrow(
                         ()-> new ResourceNotFoundException("No state with the name {}",pickupCenterRequest.getState().toUpperCase())
                 ))
                 .email(pickupCenterRequest.getEmail())
@@ -86,14 +86,14 @@ public class PickupServiceImpl implements PickupService {
                 .state(pickup.getState().getName())
                 .email(pickup.getEmail())
                 .phone(pickup.getPhone())
-                .delivery(pickup.getDelivery())
                 .build();
     }
 
     private boolean confirmAuthority(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String loggedInUserEmail = authentication.getName();
-        Person loggedInUser = personRepository.findByEmail(loggedInUserEmail).orElseThrow(() -> new UserNotFoundException("No user with this email"));
+        Person loggedInUser = personRepository.findByEmail(loggedInUserEmail).
+                orElseThrow(() -> new UserNotFoundException("No user with this email"));
         return loggedInUser.getRole()== Role.ADMIN;
     }
 }

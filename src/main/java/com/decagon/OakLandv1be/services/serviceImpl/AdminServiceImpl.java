@@ -5,6 +5,7 @@ import com.decagon.OakLandv1be.dto.NewProductRequestDto;
 import com.decagon.OakLandv1be.dto.ProductResponseDto;
 import com.decagon.OakLandv1be.dto.*;
 
+
 import com.decagon.OakLandv1be.entities.*;
 import com.decagon.OakLandv1be.enums.Gender;
 import com.decagon.OakLandv1be.enums.Role;
@@ -12,7 +13,13 @@ import com.decagon.OakLandv1be.exceptions.AlreadyExistsException;
 import com.decagon.OakLandv1be.exceptions.ProductNotFoundException;
 import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
 
-import com.decagon.OakLandv1be.exceptions.UserNotFoundException;
+import com.decagon.OakLandv1be.entities.Person;
+import com.decagon.OakLandv1be.entities.PickupCenter;
+import com.decagon.OakLandv1be.entities.Product;
+import com.decagon.OakLandv1be.entities.SubCategory;
+import com.decagon.OakLandv1be.exceptions.*;
+
+
 import com.decagon.OakLandv1be.repositries.PersonRepository;
 import com.decagon.OakLandv1be.repositries.ProductRepository;
 import com.decagon.OakLandv1be.repositries.*;
@@ -24,6 +31,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -45,6 +53,7 @@ public class AdminServiceImpl implements AdminService {
     private final CustomerRepository customerRepository;
     private final SubCategoryRepository subCategoryRepository;
     private final CategoryRepository categoryRepository;
+    private final PickupRepository pickupRepository;
 
     private final TokenService tokenService;
     private final TokenRepository tokenRepository;
@@ -55,22 +64,22 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public ProductResponseDto fetchASingleProduct(Long product_id) {
-            Product product = productRepository.findById(product_id)
-                    .orElseThrow(() -> new ProductNotFoundException("This product was not found"));
-            return ProductResponseDto.builder()
-                    .name(product.getName())
-                    .price(product.getPrice())
-                    .imageUrl(product.getImageUrl())
-                    .availableQty(product.getAvailableQty())
-                    .subCategory(product.getSubCategory())
-                    .color(product.getColor())
-                    .description(product.getDescription())
-                    .build();
-        }
+        Product product = productRepository.findById(product_id)
+                .orElseThrow(() -> new ProductNotFoundException("This product was not found"));
+        return ProductResponseDto.builder()
+                .name(product.getName())
+                .price(product.getPrice())
+                .imageUrl(product.getImageUrl())
+                .availableQty(product.getAvailableQty())
+                .subCategory(product.getSubCategory())
+                .color(product.getColor())
+                .description(product.getDescription())
+                .build();
+    }
 
     @Override
     public ApiResponse<ProductResponseDto> addNewProduct(NewProductRequestDto newProductRequestDto) {
-        if(productRepository.existsByName(newProductRequestDto.getName()))
+        if (productRepository.existsByName(newProductRequestDto.getName()))
             throw new AlreadyExistsException("Product with name '" +
                     newProductRequestDto.getName() + "' already exists");
 
@@ -108,7 +117,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public void deleteProduct(Long product_id) {
         Product product = productRepository.findById(product_id)
-                .orElseThrow(()-> new ResourceNotFoundException("Product not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
         productRepository.delete(product);
 
     }
@@ -123,18 +132,18 @@ public class AdminServiceImpl implements AdminService {
                 .orElseThrow(() -> new ResourceNotFoundException("Admin not found"));
 
         Person customer = personRepository.findById(customerId)
-                .orElseThrow(()-> new UserNotFoundException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         boolean isActive = !customer.isActive();
         customer.setActive(isActive);
         personRepository.save(customer);
-        return isActive ? "Account Re-activated":"Account deactivated";
+        return isActive ? "Account Re-activated" : "Account deactivated";
     }
-    
+
     @Override
     public ApiResponse<Product> updateProduct(Long productId, UpdateProductDto updateproductDto) {
         Product product = productRepository.findById(productId).
-                orElseThrow(()->
+                orElseThrow(() ->
                         new ProductNotFoundException("Product does not exist"));
 
         SubCategory subCategory = subCategoryRepository
@@ -197,9 +206,24 @@ public class AdminServiceImpl implements AdminService {
         javaMailService.sendMail(adminRequestDto.getEmail(),
                 "Verify your email address",
                 "Hi " + person.getFirstName() + " " + person.getLastName() + ",Use this password to Login and ensure you reset the password as you login ."
-                        + "Password  is :" +"<<-- " + pwd + "  -->>"+
+                        + "Password  is :" + "<<-- " + pwd + "  -->>" +
                         "To complete your registration, we need you to verify your email address \n" + "http://" + request.getServerName() + ":3000" + "/verifyRegistration?token=" + validToken);
         return adminResponseDto;
     }
 
+
+    public PickupCenter updatePickupCenter(Long pickupCenterId, UpdatePickUpCenterDto request) {
+        PickupCenter center = pickupRepository.findById(pickupCenterId).
+                orElseThrow(() -> new PickupCenterNotFoundException("Pickup Center does not exist"));
+
+        center.setName(request.getName());
+        center.setAddress(request.getAddress());
+        center.setEmail(request.getEmail());
+        center.setPhone(request.getPhone());
+
+        PickupCenter pickupCenter = pickupRepository.save(center);
+        return pickupCenter;
+    }
+
 }
+
