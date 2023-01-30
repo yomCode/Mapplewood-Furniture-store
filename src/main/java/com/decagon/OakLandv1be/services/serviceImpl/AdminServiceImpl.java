@@ -1,12 +1,13 @@
 package com.decagon.OakLandv1be.services.serviceImpl;
 
+import com.decagon.OakLandv1be.config.tokens.TokenService;
 import com.decagon.OakLandv1be.dto.NewProductRequestDto;
 import com.decagon.OakLandv1be.dto.ProductResponseDto;
 import com.decagon.OakLandv1be.dto.*;
 
-import com.decagon.OakLandv1be.entities.Person;
-import com.decagon.OakLandv1be.entities.Product;
-import com.decagon.OakLandv1be.entities.SubCategory;
+import com.decagon.OakLandv1be.entities.*;
+import com.decagon.OakLandv1be.enums.Gender;
+import com.decagon.OakLandv1be.enums.Role;
 import com.decagon.OakLandv1be.exceptions.AlreadyExistsException;
 import com.decagon.OakLandv1be.exceptions.ProductNotFoundException;
 import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
@@ -16,15 +17,25 @@ import com.decagon.OakLandv1be.repositries.PersonRepository;
 import com.decagon.OakLandv1be.repositries.ProductRepository;
 import com.decagon.OakLandv1be.repositries.*;
 import com.decagon.OakLandv1be.services.AdminService;
+import com.decagon.OakLandv1be.services.JavaMailService;
 import com.decagon.OakLandv1be.utils.ApiResponse;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
+import java.io.IOException;
+import java.util.UUID;
+
+import static com.decagon.OakLandv1be.enums.TokenStatus.ACTIVE;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +45,13 @@ public class AdminServiceImpl implements AdminService {
     private final CustomerRepository customerRepository;
     private final SubCategoryRepository subCategoryRepository;
     private final CategoryRepository categoryRepository;
+
+    private final TokenService tokenService;
+    private final TokenRepository tokenRepository;
+    private final JavaMailService javaMailService;
+    private final HttpServletRequest request;
+    private final AdminRepository adminRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public ProductResponseDto fetchASingleProduct(Long product_id) {
@@ -135,6 +153,53 @@ public class AdminServiceImpl implements AdminService {
 
         Product updatedProduct = productRepository.save(product);
         return new ApiResponse<>("product updated", true, updatedProduct);
+    }
+
+    @Override
+    @Transactional
+    public AdminResponseDto createAdmin(AdminRequestDto adminRequestDto) throws IOException {
+        boolean emailExist = personRepository.existsByEmail(adminRequestDto.getEmail());
+        if (emailExist)
+            throw new AlreadyExistsException("This Email address already exists");
+
+        Admin admin = new Admin();
+        String pwd = UUID.randomUUID().toString();
+        Person person = Person.builder()
+                .firstName(adminRequestDto.getFirstName())
+                .lastName(adminRequestDto.getLastName())
+                .email(adminRequestDto.getEmail())
+                .password(passwordEncoder.encode(pwd))
+                .phone(adminRequestDto.getPhoneNumber())
+                .gender(Gender.valueOf(adminRequestDto.getGender().toUpperCase()))
+                .address(adminRequestDto.getAddress())
+                .date_of_birth(adminRequestDto.getDate_of_birth())
+                .role(Role.ADMIN)
+                .isActive(true)
+                .verificationStatus(false)
+                .build();
+        personRepository.save(person);
+        admin.setPerson(person);
+        adminRepository.save(admin);
+
+        AdminResponseDto adminResponseDto = new AdminResponseDto();
+        BeanUtils.copyProperties(person, adminResponseDto);
+
+        String validToken = tokenService.generateVerificationToken(adminRequestDto.getEmail());
+        Token token = new Token();
+        token.setToken(validToken);
+        token.setTokenStatus(ACTIVE);
+        token.setPerson(person);
+        tokenRepository.save(token);
+
+
+//        System.out.println("Password :" +person.getPassword());
+
+        javaMailService.sendMail(adminRequestDto.getEmail(),
+                "Verify your email address",
+                "Hi " + person.getFirstName() + " " + person.getLastName() + ",Use this password to Login and ensure you reset the password as you login ."
+                        + "Password  is :" +"<<-- " + pwd + "  -->>"+
+                        "To complete your registration, we need you to verify your email address \n" + "http://" + request.getServerName() + ":3000" + "/verifyRegistration?token=" + validToken);
+        return adminResponseDto;
     }
 
 }
