@@ -69,6 +69,15 @@ public class GlobalExceptionHandler {
 
     }
 
+    @ExceptionHandler(PickupCenterNotFoundException.class)
+    public ResponseEntity<ErrorResponse> pickupCenterNotFound(PickupCenterNotFoundException ne){
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setMessage(ne.getMessage());
+        errorResponse.setDebugMessage("Pickup center not found");
+        errorResponse.setStatus(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(InvalidTokenException.class)
     public ResponseEntity<ErrorResponse> tokenNotFound(InvalidTokenException ne) {
         ErrorResponse errorResponse = new ErrorResponse();

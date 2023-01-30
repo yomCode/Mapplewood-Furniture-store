@@ -150,6 +150,7 @@ public class WalletServiceImpl implements WalletService {
         ).getCustomer().getWallet();
     }
 
+
     @Override
     public WalletInfoResponseDto viewWalletInfo() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
