@@ -6,6 +6,7 @@ import com.decagon.OakLandv1be.exceptions.InsufficientBalanceInWalletException;
 import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
 import com.decagon.OakLandv1be.exceptions.UnauthorizedUserException;
 import com.decagon.OakLandv1be.exceptions.UserNotFoundException;
+import com.decagon.OakLandv1be.repositries.CustomerRepository;
 import com.decagon.OakLandv1be.repositries.PersonRepository;
 import com.decagon.OakLandv1be.repositries.TransactionRepository;
 import com.decagon.OakLandv1be.repositries.WalletRepository;
@@ -47,9 +48,7 @@ public class WalletServiceImpl implements WalletService {
 
     @Value("${admin.super.email}")
     private String superAdminEmail;
-
-
-
+    private final CustomerRepository customerRepository;
 
 
     @Override
@@ -150,6 +149,7 @@ public class WalletServiceImpl implements WalletService {
         ).getCustomer().getWallet();
     }
 
+
     @Override
     public WalletInfoResponseDto viewWalletInfo() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -205,6 +205,20 @@ public class WalletServiceImpl implements WalletService {
         return new PageImpl<>(
                 response.subList(minimum, max), pageRequest, response.size()
         );
+
+    }
+
+    @Override
+    public Page<FundWalletResponseDto> viewCustomerWalletByPagination(Integer pageNo, Integer pageSize, String sortBy) {
+        List<FundWalletResponseDto> fundWalletResponseDtos =
+            customerRepository.findAll().stream().map(customer -> FundWalletResponseDto.builder()
+                    .fullName(customer.getPerson().getFirstName() + " " + customer.getPerson().getLastName())
+                    .depositAmount(customer.getWallet().getAccountBalance())
+                    .build()).collect(Collectors.toList());
+
+        PageRequest pageable = PageRequest.of(pageNo, pageSize, Sort.Direction.DESC, sortBy);
+        int max = Math.min(pageSize * (pageNo + 1), fundWalletResponseDtos.size());
+        return new PageImpl<> (fundWalletResponseDtos.subList(pageNo*pageSize, max), pageable, fundWalletResponseDtos.size());
 
     }
 
