@@ -4,8 +4,6 @@ import com.decagon.OakLandv1be.config.tokens.TokenService;
 import com.decagon.OakLandv1be.dto.NewProductRequestDto;
 import com.decagon.OakLandv1be.dto.ProductResponseDto;
 import com.decagon.OakLandv1be.dto.*;
-
-
 import com.decagon.OakLandv1be.entities.*;
 import com.decagon.OakLandv1be.enums.Gender;
 import com.decagon.OakLandv1be.enums.Role;
@@ -37,12 +35,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import java.util.HashSet;
+import java.util.Set;
 
+import static com.decagon.OakLandv1be.utils.UserUtil.extractEmailFromPrincipal;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.UUID;
-
 import static com.decagon.OakLandv1be.enums.TokenStatus.ACTIVE;
 
 @Service
@@ -61,6 +61,7 @@ public class AdminServiceImpl implements AdminService {
     private final HttpServletRequest request;
     private final AdminRepository adminRepository;
     private final PasswordEncoder passwordEncoder;
+
 
     @Override
     public ProductResponseDto fetchASingleProduct(Long product_id) {
@@ -165,6 +166,32 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    public Set<AddressResponseDto> viewAllCustomerAddress(Long customerId){
+        String email = extractEmailFromPrincipal().get();
+        personRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException(("Incorrect credentials or not found")));
+
+        Customer customer = customerRepository.findById(customerId)
+                .orElseThrow(()-> new ResourceNotFoundException("Not Found"));
+
+        Set<Address> addressList = customer.getAddressBook();
+        Set<AddressResponseDto> addressResponse = new HashSet<>();
+        addressList
+                .forEach(address -> {
+                    AddressResponseDto response = AddressResponseDto.builder()
+                            .id(address.getId())
+                            .fullName(address.getFullName())
+                            .street(address.getStreet())
+                            .state(address.getState())
+                            .country(address.getCountry())
+                            .phone(address.getPhone())
+                            .isDefault(address.getIsDefault())
+                            .build();
+                    addressResponse.add(response);
+                });
+        return addressResponse;
+    }
+
     @Transactional
     public AdminResponseDto createAdmin(AdminRequestDto adminRequestDto) throws IOException {
         boolean emailExist = personRepository.existsByEmail(adminRequestDto.getEmail());
