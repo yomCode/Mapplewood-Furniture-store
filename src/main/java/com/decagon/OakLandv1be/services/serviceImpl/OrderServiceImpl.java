@@ -10,7 +10,6 @@ import com.decagon.OakLandv1be.repositries.CustomerRepository;
 import com.decagon.OakLandv1be.repositries.OrderRepository;
 import com.decagon.OakLandv1be.services.OrderService;
 import lombok.RequiredArgsConstructor;
-import lombok.AllArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,7 +20,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -112,5 +110,24 @@ public class OrderServiceImpl implements OrderService {
         PageRequest pageable = PageRequest.of(pageNo, pageSize, Sort.Direction.DESC, sortBy);
         int max = Math.min(pageSize * (pageNo + 1), orderResponseDtos.size());
         return new PageImpl<>(orderResponseDtos.subList(pageNo*pageSize, max), pageable, orderResponseDtos.size());
+    }
+
+    @Override    public Page<OrderResponseDto> getOrderByDeliveryStatus(DeliveryStatus status, Integer pageNo, Integer pageSize) {
+        pageNo=Math.max(pageNo,0);
+        pageSize=Math.max(pageSize,10);
+        Pageable pageable=PageRequest.of(pageNo,pageSize);
+        return orderRepository.findByDeliveryStatus(status,pageable).map(this::orderResponseMapper);
+    }
+    private OrderResponseDto orderResponseMapper(Order order){
+        return OrderResponseDto.builder()
+                .modeOfPayment(order.getModeOfPayment())
+                .items(order.getItems())
+                .deliveryFee(order.getDeliveryFee())
+                .modeOfDelivery(order.getModeOfDelivery())
+                .deliveryStatus(order.getDeliveryStatus())
+                .grandTotal(order.getGrandTotal())
+                .discount(order.getDiscount())
+                .address(order.getAddress())
+                .build();
     }
 }

@@ -4,6 +4,7 @@ import com.decagon.OakLandv1be.dto.AddressRequestDto;
 import com.decagon.OakLandv1be.dto.CheckoutDto;
 import com.decagon.OakLandv1be.dto.CheckoutResponseDto;
 import com.decagon.OakLandv1be.dto.OrderResponseDto;
+import com.decagon.OakLandv1be.enums.DeliveryStatus;
 import com.decagon.OakLandv1be.services.CheckoutService;
 import com.decagon.OakLandv1be.services.OrderService;
 import lombok.Data;
@@ -49,5 +50,13 @@ public class OrderController {
                         @RequestParam(defaultValue = "id") String sortBy,
                         @RequestParam(defaultValue = "false") boolean isAscending) {
         return new ResponseEntity<>(orderService.viewAllOrdersPaginated(pageNo, pageSize, sortBy, isAscending), HttpStatus.OK);
+    }
+
+    @GetMapping("admin/order/delivery-status")
+    public ResponseEntity<Page<OrderResponseDto>> orderByStatus(
+            @RequestParam DeliveryStatus status,
+            @RequestParam(defaultValue = "0") Integer pageNo,
+            @RequestParam(defaultValue = "10") Integer pageSize    ){
+        return ResponseEntity.ok(orderService.getOrderByDeliveryStatus(status, pageNo, pageSize));
     }
 }
