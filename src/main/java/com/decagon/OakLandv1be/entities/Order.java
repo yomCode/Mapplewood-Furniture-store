@@ -49,4 +49,8 @@ public class Order extends BaseEntity{
     @JsonIgnore
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
     private Transaction transaction;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "pickup_id")
+    private PickupCenter pickupCenter;
 }

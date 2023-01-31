@@ -1,33 +1,34 @@
 package com.decagon.OakLandv1be.services.serviceImpl;
 
+import com.decagon.OakLandv1be.dto.OrderRequestDto;
 import com.decagon.OakLandv1be.dto.OrderResponseDto;
 import com.decagon.OakLandv1be.entities.Customer;
 import com.decagon.OakLandv1be.entities.Order;
+import com.decagon.OakLandv1be.entities.Transaction;
+import com.decagon.OakLandv1be.enums.PaymentPurpose;
+import com.decagon.OakLandv1be.enums.TransactionStatus;
 import com.decagon.OakLandv1be.exceptions.EmptyListException;
 import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
 import com.decagon.OakLandv1be.repositries.CustomerRepository;
 import com.decagon.OakLandv1be.repositries.OrderRepository;
+import com.decagon.OakLandv1be.services.CustomerService;
 import com.decagon.OakLandv1be.services.OrderService;
 import lombok.RequiredArgsConstructor;
-import lombok.AllArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
+
+import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
     private final CustomerRepository customerRepository;
     private final OrderRepository orderRepository;
-    private final CustomerServiceImpl customerService;
+    private final CustomerService customerService;
 
     @Override
     public List<OrderResponseDto> viewOrderHistory(int pageNo, int pageSize) {
@@ -114,5 +115,31 @@ public class OrderServiceImpl implements OrderService {
         return new PageImpl<>(orderResponseDtos.subList(pageNo*pageSize, max), pageable, orderResponseDtos.size());
     }
 
+    @Override
+    public String saveOrder(OrderRequestDto orderRequestDto){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if ((authentication instanceof AnonymousAuthenticationToken))
+            throw new ResourceNotFoundException("Please Login");
+        String email = authentication.getName();
+        Customer loggedInCustomer = customerRepository.findByPersonEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
+        Transaction transaction = Transaction.builder()
+                .wallet(loggedInCustomer.getWallet())
+                .amount(String.valueOf(orderRequestDto.getGrandTotal()))
+                .reference(UUID.randomUUID().toString())
+                .purpose(PaymentPurpose.PURCHASE)
+                .status(TransactionStatus.PENDING)
+                .build();
+
+        Order order = Order.builder()
+                .pickupCenter(orderRequestDto.getPickupCenter())
+                .transaction(transaction)
+                .items(orderRequestDto.getItems())
+                .customer(loggedInCustomer)
+                .build();
+        orderRepository.save(order);
+
+        return "New Order made successfully";
+    }
 }

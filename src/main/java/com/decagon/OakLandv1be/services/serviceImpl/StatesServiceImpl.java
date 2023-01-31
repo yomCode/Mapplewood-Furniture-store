@@ -5,10 +5,7 @@ import com.decagon.OakLandv1be.dto.StateResponse;
 import com.decagon.OakLandv1be.entities.Person;
 import com.decagon.OakLandv1be.entities.State;
 import com.decagon.OakLandv1be.enums.Role;
-import com.decagon.OakLandv1be.exceptions.AlreadyExistsException;
-import com.decagon.OakLandv1be.exceptions.AuthorizationException;
-import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
-import com.decagon.OakLandv1be.exceptions.UserNotFoundException;
+import com.decagon.OakLandv1be.exceptions.*;
 import com.decagon.OakLandv1be.repositries.PersonRepository;
 import com.decagon.OakLandv1be.repositries.PickupRepository;
 import com.decagon.OakLandv1be.repositries.StateRepository;
@@ -18,6 +15,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -69,6 +69,19 @@ public class StatesServiceImpl implements StatesService {
                 .name(stateResponse.getName())
                 .pickupCenters(stateResponse.getPickupCenters())
                 .build();
+    }
+
+    @Override
+    public List<StateResponse> viewAllStates(){
+        List<State> allStates = stateRepository.findAll();
+        if(allStates.isEmpty())
+            throw new EmptyListException("There are no states yet");
+        List<StateResponse> statesResponseList = new ArrayList<>();
+        allStates.forEach(state -> {
+            StateResponse stateResponse = StateResponse.builder().name(state.getName()).build();
+            statesResponseList.add(stateResponse);
+        });
+        return statesResponseList;
     }
 
 }

@@ -20,6 +20,9 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -39,8 +42,7 @@ public class CartServiceImpl implements CartService {
     public String addItemToCart(Long productId) {
         Customer loggedInCustomer = customerService.getCurrentlyLoggedInUser();
         Cart cart = loggedInCustomer.getCart();
-        Product product = productRepository.findById(productId).orElseThrow(() -> new NotAvailableException("Product" +
-                " not available"));
+        Product product = productRepository.findById(productId).orElseThrow(() -> new NotAvailableException("Product not available"));
         Set<Item> allCartItems = cart.getItems();
 
         if (product.getAvailableQty() == 0) {
@@ -173,13 +175,10 @@ public class CartServiceImpl implements CartService {
                 foundItem.setOrderQty(item.getOrderQty() - 1);
                 foundItem.setSubTotal(item.getUnitPrice() * item.getOrderQty());
                 itemRepository.save(item);
-
                 response += item.getProductName() + " quantity updated successfully";
             }
 
             if(item.getOrderQty() == 1) {
-//                itemRepository.delete(item);
-//                response += item.getProductName() + " removed from cart";
                 removeItem(foundItem.getId());
             }
         };
@@ -209,9 +208,13 @@ public class CartServiceImpl implements CartService {
         Cart cart = cartRepository.findByCustomer(loggedInCustomer);
         if (cart.getItems().isEmpty())
             throw new ResourceNotFoundException("Your Cart is empty!");
+
+        double cartTotal = cart.getTotal();
+        BigDecimal bdCartTotal = new BigDecimal(cartTotal);
+        bdCartTotal = bdCartTotal.setScale(2, RoundingMode.HALF_UP);
         return CartDto.builder()
                 .items(cart.getItems())
-                .total(cart.getTotal()).build();
+                .total(bdCartTotal).build();
     }
 
     @Override

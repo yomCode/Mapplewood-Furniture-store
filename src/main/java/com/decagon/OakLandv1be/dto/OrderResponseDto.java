@@ -22,4 +22,5 @@ public class OrderResponseDto {
     private Double discount;
     private Address address;
     private Transaction transaction;
+    private PickupCenter pickupCenter;
 }

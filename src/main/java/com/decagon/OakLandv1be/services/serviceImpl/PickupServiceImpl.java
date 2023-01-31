@@ -31,9 +31,16 @@ public class PickupServiceImpl implements PickupService {
     private final PersonRepository personRepository;
     private final StateRepository stateRepository;
 
+//    @Override
+//    public PickupCenterResponse getCenterByName(String name) {
+//        PickupCenter pickup = pickupRepository.findByName(name).orElseThrow(
+//                ()-> new ResourceNotFoundException("Center not found"));
+//        return responseMapper(pickup);
+//    }
+
     @Override
-    public PickupCenterResponse getCenterByName(String name) {
-        PickupCenter pickup = pickupRepository.findByName(name).orElseThrow(
+    public PickupCenterResponse getCenterByEmail(String email) {
+        PickupCenter pickup = pickupRepository.findByEmail(email).orElseThrow(
                 ()-> new ResourceNotFoundException("Center not found"));
         return responseMapper(pickup);
     }

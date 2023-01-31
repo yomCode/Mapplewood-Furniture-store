@@ -1,9 +1,6 @@
 package com.decagon.OakLandv1be.controllers;
 
-import com.decagon.OakLandv1be.dto.AddressRequestDto;
-import com.decagon.OakLandv1be.dto.CheckoutDto;
-import com.decagon.OakLandv1be.dto.CheckoutResponseDto;
-import com.decagon.OakLandv1be.dto.OrderResponseDto;
+import com.decagon.OakLandv1be.dto.*;
 import com.decagon.OakLandv1be.services.CheckoutService;
 import com.decagon.OakLandv1be.services.OrderService;
 import lombok.Data;
@@ -49,5 +46,10 @@ public class OrderController {
                         @RequestParam(defaultValue = "id") String sortBy,
                         @RequestParam(defaultValue = "false") boolean isAscending) {
         return new ResponseEntity<>(orderService.viewAllOrdersPaginated(pageNo, pageSize, sortBy, isAscending), HttpStatus.OK);
+    }
+
+    @PostMapping("customer/order/new")
+    public ResponseEntity<String> saveNewOrder(@RequestBody OrderRequestDto orderRequestDto){
+        return new ResponseEntity<>(orderService.saveOrder(orderRequestDto), HttpStatus.OK);
     }
 }

@@ -1,11 +1,15 @@
 package com.decagon.OakLandv1be.controllers;
 
+import com.decagon.OakLandv1be.dto.CategoryDto;
 import com.decagon.OakLandv1be.dto.StateRequest;
+import com.decagon.OakLandv1be.dto.StateResponse;
 import com.decagon.OakLandv1be.services.StatesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/state")
@@ -31,5 +35,8 @@ public class StateController {
     public  void viewState(@PathVariable String nameOfState) { statesService.viewStateByName(nameOfState);
     }
 
-
+    @GetMapping("/view-all")
+    public ResponseEntity<List<StateResponse>> viewAllStates() {
+        return new ResponseEntity<>(statesService.viewAllStates(), HttpStatus.OK);
+    }
 }
