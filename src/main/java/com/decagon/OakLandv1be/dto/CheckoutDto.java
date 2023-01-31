@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CheckoutDto {
-    private String modeOfPayment;
     private String modeOfDelivery;
-    private Long address_id;
+    private Long addressId;
 }

@@ -1,11 +1,10 @@
 package com.decagon.OakLandv1be.controllers;
 
 import com.decagon.OakLandv1be.dto.ProductCustResponseDto;
-import com.decagon.OakLandv1be.dto.ProductResponseDto;
 import com.decagon.OakLandv1be.entities.Product;
-import com.decagon.OakLandv1be.services.ProductService;
-import com.decagon.OakLandv1be.services.serviceImpl.ProductServiceImpl;
 
+
+import com.decagon.OakLandv1be.services.ProductService;
 import com.decagon.OakLandv1be.utils.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
