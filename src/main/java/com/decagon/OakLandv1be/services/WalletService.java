@@ -22,4 +22,6 @@ public interface WalletService {
     WalletInfoResponseDto viewWalletInfo();
 
     Page<TransactionResponseDto> fetchAllTransactions(Integer pageNo, Integer pageSize, String sortBy);
+
+    Page<FundWalletResponseDto> viewCustomerWalletByPagination(Integer pageNo, Integer pageSize, String sortBy);
 }
