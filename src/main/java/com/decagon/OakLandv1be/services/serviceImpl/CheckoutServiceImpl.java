@@ -49,8 +49,8 @@ public class CheckoutServiceImpl implements CheckoutService {
                 .orElseThrow(() -> new ResourceNotFoundException("Address not found"));
         // Create a new Order and Delivery
         Order order = new Order();
-        Delivery delivery = new Delivery();
-        delivery.setStatus(DeliveryStatus.TO_ARRIVE);
+       // Delivery delivery = new Delivery();
+       // delivery.setStatus(DeliveryStatus.TO_ARRIVE);
         order.setItems(cart.getItems());
         // Calculate the total and set order details
         double total = cart.getItems().stream()
@@ -62,7 +62,7 @@ public class CheckoutServiceImpl implements CheckoutService {
         order.setDeliveryFee(0.00);
         order.setModeOfDelivery(this.modeOfDelivery(checkoutDto.getModeOfDelivery()));
         order.setModeOfPayment(modeOfPayment(checkoutDto.getModeOfPayment()));
-        order.setDelivery(delivery);
+        order.setDeliveryStatus(DeliveryStatus.TO_ARRIVE);
         order.setGrandTotal((total - order.getDiscount()) + order.getDeliveryFee());
         // Save the order and create the response
         orderRepository.save(order);
@@ -72,7 +72,7 @@ public class CheckoutServiceImpl implements CheckoutService {
                 .deliveryFee(order.getDeliveryFee())
                 .discount(order.getDiscount())
                 .grandTotal(order.getGrandTotal())
-                .delivery(order.getDelivery())
+               // .delivery(order.getDelivery())
                 .modeOfPayment(order.getModeOfPayment())
                 .modeOfDelivery(order.getModeOfDelivery())
                 .address(order.getAddress())
