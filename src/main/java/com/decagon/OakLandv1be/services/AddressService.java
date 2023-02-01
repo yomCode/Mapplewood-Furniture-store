@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Set;
 
-@Repository
 public interface AddressService {
     String createAddress(AddressRequestDto request);
 
