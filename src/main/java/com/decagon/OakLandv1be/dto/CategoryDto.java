@@ -10,7 +10,6 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @ToString
 public class CategoryDto {
-    @NotNull(message="Id cannot be null")
     private Long id;
     @NotNull(message = "Field cannot be missing or empty")
     private String name;

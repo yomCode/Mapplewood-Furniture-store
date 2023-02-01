@@ -5,10 +5,7 @@ import com.decagon.OakLandv1be.dto.PickupCenterResponse;
 import com.decagon.OakLandv1be.entities.Person;
 import com.decagon.OakLandv1be.entities.PickupCenter;
 import com.decagon.OakLandv1be.enums.Role;
-import com.decagon.OakLandv1be.exceptions.AlreadyExistsException;
-import com.decagon.OakLandv1be.exceptions.AuthorizationException;
-import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
-import com.decagon.OakLandv1be.exceptions.UserNotFoundException;
+import com.decagon.OakLandv1be.exceptions.*;
 import com.decagon.OakLandv1be.repositries.PersonRepository;
 import com.decagon.OakLandv1be.repositries.PickupRepository;
 import com.decagon.OakLandv1be.repositries.StateRepository;
@@ -67,6 +64,7 @@ public class PickupServiceImpl implements PickupService {
                 .email(pickupCenterRequest.getEmail())
                 .address(pickupCenterRequest.getLocation())
                 .phone(pickupCenterRequest.getPhone())
+                .delivery(pickupCenterRequest.getDelivery())
                 .build());
         return "Center created successfully";
     }
@@ -76,6 +74,36 @@ public class PickupServiceImpl implements PickupService {
         page= Math.max(page, 0);
         size= Math.max(size, 10);
         return pickupRepository.findAll(PageRequest.of(page,size)).map(this::responseMapper);
+    }
+
+    @Override
+    public String updatePickupCenter(Long pickupId, PickupCenterRequest pickupCenterRequest) {
+        PickupCenter pickupCenter = pickupRepository.findById(pickupId)
+                .orElseThrow(() -> new NotAvailableException("Pickup center does not exist!"));
+        String name =  pickupCenterRequest.getState();
+        String email = pickupCenterRequest.getEmail();
+        String location = pickupCenterRequest.getLocation();
+        String state = pickupCenterRequest.getState();
+        String phone = pickupCenterRequest.getPhone();
+        Double delivery = pickupCenterRequest.getDelivery();
+
+        if(name != null)
+            pickupCenter.setName(name);
+        if(email != null)
+            pickupCenter.setEmail(email);
+        if(location != null)
+            pickupCenter.setAddress(location);
+        if(state != null)
+            pickupCenter.setState(stateRepository.findByName(state)
+                    .orElseThrow(() -> new NotAvailableException("State is not available")));
+        if(phone != null)
+            pickupCenter.setPhone(phone);
+        if(delivery != null)
+            pickupCenter.setDelivery(delivery);
+
+        pickupRepository.save(pickupCenter);
+        return "State added";
+
     }
 
     protected PickupCenterResponse responseMapper(PickupCenter pickup) {

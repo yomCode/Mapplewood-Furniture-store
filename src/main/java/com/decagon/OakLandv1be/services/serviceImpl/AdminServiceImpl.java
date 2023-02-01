@@ -25,6 +25,7 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -61,10 +62,12 @@ public class AdminServiceImpl implements AdminService {
                 .orElseThrow(() ->
                         new ProductNotFoundException("SubCategory does not exist"));
 
+//        String imageUrl = newProductRequestDto.getProductImage();
+
         Product product = Product.builder()
                 .name(newProductRequestDto.getName())
                 .price(newProductRequestDto.getPrice())
-                .imageUrl(newProductRequestDto.getImageUrl())
+                .imageUrl("")
                 .availableQty(newProductRequestDto.getAvailableQty())
                 .subCategory(subCategory)
                 .color(newProductRequestDto.getColor())
