@@ -24,7 +24,6 @@ import java.util.Set;
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final SubCategoryRepository subCategoryRepository;
-    private final ProductRepository productRepository;
 
     @Override
     public ApiResponse<Category> createCategory(CategoryDto categoryDto) {
@@ -32,6 +31,7 @@ public class CategoryServiceImpl implements CategoryService {
             throw new AlreadyExistsException("Please create another category with a different name");
         Category category = Category.builder()
                 .name(categoryDto.getName())
+                .imageUrl(categoryDto.getImageUrl())
                 .build();
         categoryRepository.save(category);
         return new ApiResponse<>("Category Created Successfully", true, category);
@@ -44,7 +44,7 @@ public class CategoryServiceImpl implements CategoryService {
             throw new EmptyListException("There are no categories yet", "Kindly create categories");
         List<CategoryDto> categoryDtoList = new ArrayList<>();
         categoryList.forEach(category -> {
-            CategoryDto categoryDto = CategoryDto.builder().name(category.getName()).build();
+            CategoryDto categoryDto = CategoryDto.builder().name(category.getName()).imageUrl(category.getImageUrl()).build();
             categoryDtoList.add(categoryDto);
         });
         return categoryDtoList;
@@ -62,15 +62,15 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = categoryRepository.findById(category_id).orElseThrow(() ->
                 new ResourceNotFoundException("This Category does not exist"));
         category.setName(categoryDto.getName());
+        category.setImageUrl(category.getImageUrl());
         Category updatedCategory = categoryRepository.save(category);
         return new ApiResponse<>("Category Updated successfully", true, updatedCategory);
     }
 
     @Override
     public Category fetchASingleCategory(Long category_id) {
-        Category category = categoryRepository.findById(category_id).orElseThrow(() ->
+        return categoryRepository.findById(category_id).orElseThrow(() ->
                 new ResourceNotFoundException("This Category does not exist"));
-        return category;
     }
 
     @Override
@@ -85,6 +85,7 @@ public class CategoryServiceImpl implements CategoryService {
             CategoryDto categoryDto = CategoryDto.builder()
                     .id(category.getId())
                     .name(category.getName())
+                    .imageUrl(category.getImageUrl())
                     .size(size2)
                     .build();
             categoryDtoList.add(categoryDto);

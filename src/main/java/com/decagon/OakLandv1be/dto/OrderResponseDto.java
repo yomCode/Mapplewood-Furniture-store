@@ -1,6 +1,7 @@
 package com.decagon.OakLandv1be.dto;
 
 import com.decagon.OakLandv1be.entities.*;
+import com.decagon.OakLandv1be.enums.DeliveryStatus;
 import com.decagon.OakLandv1be.enums.ModeOfDelivery;
 import lombok.*;
 import lombok.Data;
@@ -17,7 +18,7 @@ public class OrderResponseDto {
     private Set<OrderItem> items;
     private Double deliveryFee;
     private ModeOfDelivery modeOfDelivery;
-    private Delivery delivery;
+    private DeliveryStatus deliveryStatus;
     private Double grandTotal;
     private Double discount;
     private Address address;

@@ -6,6 +6,7 @@ import com.decagon.OakLandv1be.dto.ProductCustResponseDto;
 import com.decagon.OakLandv1be.dto.SignupRequestDto;
 import com.decagon.OakLandv1be.dto.cartDtos.CartItemResponseDto;
 import com.decagon.OakLandv1be.exceptions.AlreadyExistsException;
+import com.decagon.OakLandv1be.exceptions.EmailNotFoundException;
 import com.decagon.OakLandv1be.services.CartService;
 import com.decagon.OakLandv1be.services.CustomerService;
 import com.decagon.OakLandv1be.utils.ApiResponse;
@@ -37,7 +38,14 @@ public class CustomerController {
     public ResponseEntity<ApiResponse> verifyAccount(@RequestParam("token") String token){
         return customerService.verifyRegistration(token);
     }
-    
+
+    @GetMapping("/customer/resendVerificationToken")
+    public ResponseEntity<ApiResponse> resendVerificationToken(@RequestParam("email") String email) throws EmailNotFoundException, IOException {
+        return customerService.resendVerificationToken(email);
+    }
+
+
+
     @PutMapping("/customer/edit-profile")
     public ResponseEntity<String> editProfile(@Valid @RequestBody EditProfileRequestDto editProfileRequestDto){
         customerService.editProfile(editProfileRequestDto);

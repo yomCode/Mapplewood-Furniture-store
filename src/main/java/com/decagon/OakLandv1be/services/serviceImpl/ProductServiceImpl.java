@@ -2,18 +2,25 @@ package com.decagon.OakLandv1be.services.serviceImpl;
 
 import com.cloudinary.utils.ObjectUtils;
 import com.decagon.OakLandv1be.config.CloudinaryConfig;
+import com.decagon.OakLandv1be.dto.NewProductRequestDto;
 import com.decagon.OakLandv1be.dto.ProductCustResponseDto;
+import com.decagon.OakLandv1be.dto.ProductResponseDto;
 import com.decagon.OakLandv1be.entities.Product;
+import com.decagon.OakLandv1be.entities.SubCategory;
+import com.decagon.OakLandv1be.exceptions.AlreadyExistsException;
 import com.decagon.OakLandv1be.exceptions.InvalidAttributeException;
 import com.decagon.OakLandv1be.exceptions.ProductNotFoundException;
 import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
 import com.decagon.OakLandv1be.repositries.ProductRepository;
 import com.decagon.OakLandv1be.repositries.SubCategoryRepository;
+
 import com.decagon.OakLandv1be.services.ProductService;
 import com.decagon.OakLandv1be.utils.ApiResponse;
 import com.decagon.OakLandv1be.utils.Mapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -28,6 +35,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -81,21 +89,6 @@ public class ProductServiceImpl implements ProductService {
 
     }
 
-
-    public ResponseEntity<Boolean> deleteProduct(Long id){
-
-
-        Product product = productRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Product not found"));
-        productRepository.delete(product);
-
-        Product removedProduct = productRepository.findById(id).orElse(null);
-
-        if(removedProduct == null)
-            return new ResponseEntity<>(true, HttpStatus.OK);
-        return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
-    }
-
-
     @Override
     public Page<ProductCustResponseDto> productWithPaginationAndSorting(Integer page, Integer size, String sortingField,boolean isAscending) {
         return productRepository.findAll(PageRequest.of(page, size,
@@ -114,10 +107,17 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ApiResponse<Page<Product>> getAllProductsBySubCategory(Long subCategoryId, Integer pageNo, Integer pageSize, String sortBy, boolean isAscending) {
-        Page<Product> allBySubCategoryId = productRepository.findAllBySubCategoryId(subCategoryId, PageRequest.of(pageNo, pageSize,
-                isAscending ? Sort.Direction.ASC : Sort.Direction.DESC, sortBy));
-        return new ApiResponse<>("Pages",  allBySubCategoryId, HttpStatus.OK);
+    public List<ProductCustResponseDto> viewNewArrivalProducts() {
+        return productRepository.findProductByCreatedAtDesc().stream()
+                .map(this::productResponseMapper)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ProductCustResponseDto> viewBestSellingProducts() {
+        return productRepository.findProductsBySalesDesc().stream()
+                .map(this::productResponseMapper)
+                .collect(Collectors.toList());
     }
 
     public void deleteProductImage(String publicUrl){
@@ -126,6 +126,12 @@ public class ProductServiceImpl implements ProductService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public ApiResponse<Page<Product>> getAllProductsBySubCategory(Long subCategoryId, Integer pageNo, Integer pageSize, String sortBy, boolean isAscending) {
+        Page<Product> allBySubCategoryId = productRepository.findAllBySubCategoryId(subCategoryId, PageRequest.of(pageNo, pageSize,
+                isAscending ? Sort.Direction.ASC : Sort.Direction.DESC, sortBy));
+        return new ApiResponse<>("Pages",  allBySubCategoryId, HttpStatus.OK);
     }
 
     public String uploadImage(MultipartFile image) throws IOException {
@@ -152,6 +158,20 @@ public class ProductServiceImpl implements ProductService {
         fos.write(image.getBytes());
         fos.close();
         return convFile;
+    }
+    protected ProductCustResponseDto productResponseMapper(Product product){
+        return ProductCustResponseDto.builder()
+                .name(product.getName())
+                .price(product.getPrice())
+                .imageUrl(product.getImageUrl())
+                .color(product.getColor())
+                .description(product.getDescription())
+                .build();
+    }
+
+    @Override
+    public String uploadProductImageFileWithoutId(MultipartFile productImage) throws IOException {
+        return uploadImage(productImage);
     }
 
 }

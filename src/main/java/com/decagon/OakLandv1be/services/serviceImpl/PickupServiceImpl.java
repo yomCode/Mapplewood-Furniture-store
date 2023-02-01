@@ -5,10 +5,7 @@ import com.decagon.OakLandv1be.dto.PickupCenterResponse;
 import com.decagon.OakLandv1be.entities.Person;
 import com.decagon.OakLandv1be.entities.PickupCenter;
 import com.decagon.OakLandv1be.enums.Role;
-import com.decagon.OakLandv1be.exceptions.AlreadyExistsException;
-import com.decagon.OakLandv1be.exceptions.AuthorizationException;
-import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
-import com.decagon.OakLandv1be.exceptions.UserNotFoundException;
+import com.decagon.OakLandv1be.exceptions.*;
 import com.decagon.OakLandv1be.repositries.PersonRepository;
 import com.decagon.OakLandv1be.repositries.PickupRepository;
 import com.decagon.OakLandv1be.repositries.StateRepository;
@@ -61,12 +58,13 @@ public class PickupServiceImpl implements PickupService {
 
         pickupRepository.save(PickupCenter.builder()
                 .name(pickupCenterRequest.getName())
-                .state(stateRepository.findByName(pickupCenterRequest.getState()).orElseThrow(
+                .state(stateRepository.findByName(pickupCenterRequest.getState().toUpperCase()).orElseThrow(
                         ()-> new ResourceNotFoundException("No state with the name {}",pickupCenterRequest.getState().toUpperCase())
                 ))
                 .email(pickupCenterRequest.getEmail())
                 .address(pickupCenterRequest.getLocation())
                 .phone(pickupCenterRequest.getPhone())
+                .delivery(pickupCenterRequest.getDelivery())
                 .build());
         return "Center created successfully";
     }
@@ -78,6 +76,36 @@ public class PickupServiceImpl implements PickupService {
         return pickupRepository.findAll(PageRequest.of(page,size)).map(this::responseMapper);
     }
 
+    @Override
+    public String updatePickupCenter(Long pickupId, PickupCenterRequest pickupCenterRequest) {
+        PickupCenter pickupCenter = pickupRepository.findById(pickupId)
+                .orElseThrow(() -> new NotAvailableException("Pickup center does not exist!"));
+        String name =  pickupCenterRequest.getState();
+        String email = pickupCenterRequest.getEmail();
+        String location = pickupCenterRequest.getLocation();
+        String state = pickupCenterRequest.getState();
+        String phone = pickupCenterRequest.getPhone();
+        Double delivery = pickupCenterRequest.getDelivery();
+
+        if(name != null)
+            pickupCenter.setName(name);
+        if(email != null)
+            pickupCenter.setEmail(email);
+        if(location != null)
+            pickupCenter.setAddress(location);
+        if(state != null)
+            pickupCenter.setState(stateRepository.findByName(state)
+                    .orElseThrow(() -> new NotAvailableException("State is not available")));
+        if(phone != null)
+            pickupCenter.setPhone(phone);
+        if(delivery != null)
+            pickupCenter.setDelivery(delivery);
+
+        pickupRepository.save(pickupCenter);
+        return "State added";
+
+    }
+
     protected PickupCenterResponse responseMapper(PickupCenter pickup) {
         return PickupCenterResponse.builder()
                 .id(pickup.getId())
@@ -86,14 +114,14 @@ public class PickupServiceImpl implements PickupService {
                 .state(pickup.getState().getName())
                 .email(pickup.getEmail())
                 .phone(pickup.getPhone())
-                .delivery(pickup.getDelivery())
                 .build();
     }
 
     private boolean confirmAuthority(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String loggedInUserEmail = authentication.getName();
-        Person loggedInUser = personRepository.findByEmail(loggedInUserEmail).orElseThrow(() -> new UserNotFoundException("No user with this email"));
+        Person loggedInUser = personRepository.findByEmail(loggedInUserEmail).
+                orElseThrow(() -> new UserNotFoundException("No user with this email"));
         return loggedInUser.getRole()== Role.ADMIN;
     }
 }

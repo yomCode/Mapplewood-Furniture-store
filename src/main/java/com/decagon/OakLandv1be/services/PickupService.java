@@ -7,8 +7,6 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 public interface PickupService {
-//    PickupCenterResponse getCenterByName(String name);
-
     PickupCenterResponse getCenterByEmail(String email);
 
     List<PickupCenterResponse> getCenterByStateName(String name);
@@ -18,4 +16,6 @@ public interface PickupService {
     String createCenter(PickupCenterRequest pickupCenterRequest);
 
     Page<PickupCenterResponse> getAll(int page, int size);
+
+    String updatePickupCenter(Long pickupId, PickupCenterRequest pickupCenterRequest);
 }

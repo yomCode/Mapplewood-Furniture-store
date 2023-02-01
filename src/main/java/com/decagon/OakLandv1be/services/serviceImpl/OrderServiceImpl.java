@@ -2,9 +2,15 @@ package com.decagon.OakLandv1be.services.serviceImpl;
 
 import com.decagon.OakLandv1be.dto.OrderRequestDto;
 import com.decagon.OakLandv1be.dto.OrderResponseDto;
+
 import com.decagon.OakLandv1be.entities.*;
 import com.decagon.OakLandv1be.enums.PaymentPurpose;
 import com.decagon.OakLandv1be.enums.TransactionStatus;
+
+import com.decagon.OakLandv1be.entities.Customer;
+import com.decagon.OakLandv1be.entities.Order;
+import com.decagon.OakLandv1be.enums.DeliveryStatus;
+
 import com.decagon.OakLandv1be.exceptions.EmptyListException;
 import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
 import com.decagon.OakLandv1be.repositries.CustomerRepository;
@@ -16,7 +22,9 @@ import com.decagon.OakLandv1be.services.CustomerService;
 import com.decagon.OakLandv1be.services.OrderService;
 import com.decagon.OakLandv1be.services.PickupService;
 import lombok.RequiredArgsConstructor;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.data.domain.*;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -72,10 +80,9 @@ public class OrderServiceImpl implements OrderService {
         OrderResponseDto orderResponseDto = OrderResponseDto.builder()
                 .items(order.getItems())
                 .address(order.getAddress())
-                .delivery(order.getDelivery())
+                .deliveryStatus(DeliveryStatus.TO_ARRIVE)
                 .modeOfDelivery(order.getModeOfDelivery())
                 .modeOfPayment(order.getModeOfPayment())
-                .transaction(order.getTransaction())
                 .discount(order.getDiscount())
                 .deliveryFee(order.getDeliveryFee())
                 .grandTotal(order.getGrandTotal())
@@ -93,18 +100,19 @@ public class OrderServiceImpl implements OrderService {
                 .items(order.getItems())
                 .deliveryFee(order.getDeliveryFee())
                 .modeOfDelivery(order.getModeOfDelivery())
-                .delivery(order.getDelivery())
+                .deliveryStatus(DeliveryStatus.TO_ARRIVE)
                 .grandTotal(order.getGrandTotal())
                 .discount(order.getDiscount())
                 .address(order.getAddress())
-                .transaction(order.getTransaction())
                 .build();
     }
 
     @Override
     public Page<OrderResponseDto> viewAllOrdersPaginated(Integer pageNo, Integer pageSize, String sortBy, boolean isAscending) {
         List<Order> orders = orderRepository.findAll();
-
+        if(orders.isEmpty()){
+            throw new EmptyListException("Sorry there are no Customer orders yet");
+        }
         List<OrderResponseDto> orderResponseDtos =
                 orders.stream()
                         .map(order -> OrderResponseDto.builder()
@@ -112,11 +120,10 @@ public class OrderServiceImpl implements OrderService {
                                 .items(order.getItems())
                                 .deliveryFee(order.getDeliveryFee())
                                 .modeOfDelivery(order.getModeOfDelivery())
-                                .delivery(order.getDelivery())
+                                .deliveryStatus(DeliveryStatus.TO_ARRIVE)
                                 .grandTotal(order.getGrandTotal())
                                 .discount(order.getDiscount())
                                 .address(order.getAddress())
-                                .transaction(order.getTransaction())
                 .build()).collect(Collectors.toList());
 
         PageRequest pageable = PageRequest.of(pageNo, pageSize, Sort.Direction.DESC, sortBy);
@@ -124,8 +131,9 @@ public class OrderServiceImpl implements OrderService {
         return new PageImpl<>(orderResponseDtos.subList(pageNo*pageSize, max), pageable, orderResponseDtos.size());
     }
 
+
     @Override
-    public String saveOrder(OrderRequestDto orderRequestDto){
+    public String saveOrder(OrderRequestDto orderRequestDto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if ((authentication instanceof AnonymousAuthenticationToken))
             throw new ResourceNotFoundException("Please Login");
@@ -180,5 +188,27 @@ public class OrderServiceImpl implements OrderService {
         transactionRepository.save(transaction);
 
         return "New Order made successfully";
+    }
+
+        @Override
+        public Page<OrderResponseDto> getOrderByDeliveryStatus(DeliveryStatus status, Integer pageNo, Integer pageSize){
+            pageNo=Math.max(pageNo,0);
+            pageSize=Math.max(pageSize,10);
+            Pageable pageable=PageRequest.of(pageNo,pageSize);
+            return orderRepository.findByDeliveryStatus(status,pageable).map(this::orderResponseMapper);
+        }
+
+
+    private OrderResponseDto orderResponseMapper(Order order){
+        return OrderResponseDto.builder()
+                .modeOfPayment(order.getModeOfPayment())
+                .items(order.getItems())
+                .deliveryFee(order.getDeliveryFee())
+                .modeOfDelivery(order.getModeOfDelivery())
+                .deliveryStatus(order.getDeliveryStatus())
+                .grandTotal(order.getGrandTotal())
+                .discount(order.getDiscount())
+                .address(order.getAddress())
+                .build();
     }
 }
