@@ -34,7 +34,7 @@ public class FakeDb {
                                                  CategoryRepository categoryRepository) {
         return argument -> {
             if (!personRepository.existsByEmail("bennyson1@gmail.com")) {
-                Admin admin = Admin.builder().build();
+                Admin admin = new Admin();
                 Person person = Person.builder()
                         .firstName("Benson")
                         .lastName("Malik")
@@ -43,14 +43,15 @@ public class FakeDb {
                         .date_of_birth("13-08-1990")
                         .phone("9859595959")
                         .isActive(true)
+                        .admin(admin)
                         .verificationStatus(true)
                         .admin(admin)
                         .address("No Address")
                         .role(Role.ADMIN)
                         .password(passwordEncoder.encode("password123453"))
                         .isActive(true)
-
                         .build();
+
                 Person adminPerson = personRepository.save(person);
                 admin.setPerson(adminPerson);
                 Admin savedAdmin = adminRepository.save(admin);
@@ -75,6 +76,131 @@ public class FakeDb {
                 Person savedPerson = personRepository.save(customerPerson);
                 customer.setPerson(savedPerson);
                 customerRepository.save(customer);
+
+                Customer customer1 = new Customer();
+                Person person1 = Person.builder()
+                        .firstName("Alex")
+                        .lastName("Cole")
+                        .email("indigo@gmail.com")
+                        .gender(Gender.MALE)
+                        .date_of_birth("13-08-1990")
+                        .phone("9859595959")
+                        .isActive(true)
+                        .customer(customer1)
+                        .verificationStatus(true)
+                        .address("No Address")
+                        .role(Role.ADMIN)
+                        .password(passwordEncoder.encode("password123453"))
+                        .isActive(true)
+
+                        .build();
+                Person savedperson1 = personRepository.save(person1);
+
+                customer1.setPerson(person1);
+
+                Wallet wallet = Wallet.builder()
+                        .baseCurrency(BaseCurrency.NAIRA)
+                        .accountBalance(BigDecimal.valueOf(400000))
+                        .build();
+
+                customer1.setPerson(savedperson1);
+                customer1.setWallet(wallet);
+                customerRepository.save(customer1);
+
+
+                Customer customer2 = new Customer();
+                Person person2 = Person.builder()
+                        .firstName("Natalie")
+                        .lastName("Feshman")
+                        .email("oppenheimer@gmail.com")
+                        .gender(Gender.MALE)
+                        .date_of_birth("13-08-1990")
+                        .phone("9859595959")
+                        .isActive(true)
+                        .customer(customer2)
+                        .verificationStatus(true)
+                        .address("No Address")
+                        .role(Role.ADMIN)
+                        .password(passwordEncoder.encode("password123453"))
+                        .isActive(true)
+
+                        .build();
+                Person savedperson2 = personRepository.save(person2);
+
+                customer1.setPerson(person2);
+
+                Wallet wallet1 = Wallet.builder()
+                        .baseCurrency(BaseCurrency.NAIRA)
+                        .accountBalance(BigDecimal.valueOf(400000))
+                        .build();
+
+                customer2.setPerson(savedperson2);
+                customer2.setWallet(wallet1);
+                customerRepository.save(customer2);
+
+
+                Customer customer3 = new Customer();
+                Person person3 = Person.builder()
+                        .firstName("Natalie")
+                        .lastName("Feshman")
+                        .email("natialieFreshman@gmail.com")
+                        .gender(Gender.MALE)
+                        .date_of_birth("13-08-1990")
+                        .phone("9859595959")
+                        .isActive(true)
+                        .customer(customer3)
+                        .verificationStatus(true)
+                        .address("No Address")
+                        .role(Role.ADMIN)
+                        .password(passwordEncoder.encode("password123453"))
+                        .isActive(true)
+
+                        .build();
+                Person savedperson3 = personRepository.save(person3);
+
+                customer3.setPerson(person3);
+
+                Wallet wallet2 = Wallet.builder()
+                        .baseCurrency(BaseCurrency.NAIRA)
+                        .accountBalance(BigDecimal.valueOf(400000))
+                        .build();
+
+                customer3.setPerson(savedperson3);
+                customer3.setWallet(wallet2);
+                customerRepository.save(customer3);
+
+
+
+
+                Customer customer4 = new Customer();
+                Person person4 = Person.builder()
+                        .firstName("King")
+                        .lastName("Kong")
+                        .email("kingKong@gmail.com")
+                        .gender(Gender.MALE)
+                        .date_of_birth("13-08-1990")
+                        .phone("9859595959")
+                        .isActive(true)
+                        .customer(customer4)
+                        .verificationStatus(true)
+                        .address("No Address")
+                        .role(Role.ADMIN)
+                        .password(passwordEncoder.encode("password123453"))
+                        .isActive(true)
+
+                        .build();
+                Person savedperson4 = personRepository.save(person4);
+
+                customer1.setPerson(person4);
+
+                Wallet wallet3 = Wallet.builder()
+                        .baseCurrency(BaseCurrency.NAIRA)
+                        .accountBalance(BigDecimal.valueOf(400000))
+                        .build();
+
+                customer4.setPerson(savedperson4);
+                customer4.setWallet(wallet3);
+                customerRepository.save(customer4);
             }
 
             if (!categoryRepository.existsById(1L)) {
