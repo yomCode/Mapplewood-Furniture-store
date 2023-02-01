@@ -14,7 +14,7 @@ import java.util.Set;
 @Data
 public class OrderResponseDto {
     private ModeOfPayment modeOfPayment;
-    private Set<Item> items;
+    private Set<OrderItem> items;
     private Double deliveryFee;
     private ModeOfDelivery modeOfDelivery;
     private Delivery delivery;

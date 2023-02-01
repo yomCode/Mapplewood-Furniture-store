@@ -23,7 +23,7 @@ public class Order extends BaseEntity{
 
     @JsonIgnore
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<Item> items;
+    private Set<OrderItem> items;
 
     private Double deliveryFee;
 

@@ -1,32 +1,21 @@
 package com.decagon.OakLandv1be.controllers;
 
 import com.decagon.OakLandv1be.dto.*;
-import com.decagon.OakLandv1be.services.CheckoutService;
+import com.decagon.OakLandv1be.services.CartService;
 import com.decagon.OakLandv1be.services.OrderService;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/v1/")
 public class OrderController {
-    private final CheckoutService checkoutService;
     private final OrderService orderService;
-    @PostMapping ("customer/checkout")
-    public ResponseEntity<CheckoutResponseDto> checkoutOrder(@Valid @RequestBody CheckoutDto checkoutDto){
-        return checkoutService.cartCheckout(checkoutDto);
-
-    }
-    @PostMapping("customer/add-new-address")
-    public ResponseEntity<String> addNewAddress(@Valid @RequestBody AddressRequestDto addressRequestDto){
-        return checkoutService.addNewAddress(addressRequestDto);
-    }
+    private final CartService cartService;
 
     @GetMapping("customer/order-history")
     public ResponseEntity<List<OrderResponseDto>> viewOrderHistory(@RequestParam int pageNo,
@@ -47,6 +36,7 @@ public class OrderController {
                         @RequestParam(defaultValue = "false") boolean isAscending) {
         return new ResponseEntity<>(orderService.viewAllOrdersPaginated(pageNo, pageSize, sortBy, isAscending), HttpStatus.OK);
     }
+
 
     @PostMapping("customer/order/new")
     public ResponseEntity<String> saveNewOrder(@RequestBody OrderRequestDto orderRequestDto){

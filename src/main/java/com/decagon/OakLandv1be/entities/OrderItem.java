@@ -4,14 +4,15 @@ import lombok.*;
 
 import javax.persistence.*;
 
+
 @Entity
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "item_tbl")
-public class Item extends BaseEntity{
+@Table(name = "orderItem_tbl")
+public class OrderItem extends BaseEntity{
 
     private String productName;
     private String imageUrl;
@@ -19,14 +20,6 @@ public class Item extends BaseEntity{
     private Integer orderQty;
     private Double unitPrice;
     private Double subTotal;
-
-//    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.DETACH})
-//    @JoinColumn(name = "customer_id")
-//    private Customer customer;
-
-    @ManyToOne
-    @JoinColumn(name = "cart_id")
-    private Cart cart;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "order_id")

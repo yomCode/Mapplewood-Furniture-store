@@ -2,33 +2,42 @@ package com.decagon.OakLandv1be.services.serviceImpl;
 
 import com.decagon.OakLandv1be.dto.OrderRequestDto;
 import com.decagon.OakLandv1be.dto.OrderResponseDto;
-import com.decagon.OakLandv1be.entities.Customer;
-import com.decagon.OakLandv1be.entities.Order;
-import com.decagon.OakLandv1be.entities.Transaction;
+import com.decagon.OakLandv1be.entities.*;
 import com.decagon.OakLandv1be.enums.PaymentPurpose;
 import com.decagon.OakLandv1be.enums.TransactionStatus;
 import com.decagon.OakLandv1be.exceptions.EmptyListException;
 import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
 import com.decagon.OakLandv1be.repositries.CustomerRepository;
 import com.decagon.OakLandv1be.repositries.OrderRepository;
+import com.decagon.OakLandv1be.repositries.PickupRepository;
+import com.decagon.OakLandv1be.repositries.TransactionRepository;
+import com.decagon.OakLandv1be.services.CartService;
 import com.decagon.OakLandv1be.services.CustomerService;
 import com.decagon.OakLandv1be.services.OrderService;
+import com.decagon.OakLandv1be.services.PickupService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class OrderServiceImpl implements OrderService {
     private final CustomerRepository customerRepository;
     private final OrderRepository orderRepository;
     private final CustomerService customerService;
+    private final TransactionRepository transactionRepository;
+    private final CartService cartService;
+    private final PickupRepository pickupRepository;
 
     @Override
     public List<OrderResponseDto> viewOrderHistory(int pageNo, int pageSize) {
@@ -126,19 +135,49 @@ public class OrderServiceImpl implements OrderService {
 
         Transaction transaction = Transaction.builder()
                 .wallet(loggedInCustomer.getWallet())
-                .amount(String.valueOf(orderRequestDto.getGrandTotal()))
+                .amount(orderRequestDto.getGrandTotal().toString())
                 .reference(UUID.randomUUID().toString())
                 .purpose(PaymentPurpose.PURCHASE)
                 .status(TransactionStatus.PENDING)
                 .build();
 
+        PickupCenter pickupCenter = pickupRepository
+                .findByEmail(orderRequestDto.getPickupCenterEmail())
+                .orElseThrow(() -> new ResourceNotFoundException("Pickup center not found"));
+
+        BigDecimal bigDecimalValue = orderRequestDto.getGrandTotal();
+        double total = bigDecimalValue.doubleValue();
+
+        Set<Item> allCartItems = loggedInCustomer.getCart().getItems();
+        Set<OrderItem> orderItems = new HashSet<>();
+
+
+        allCartItems.forEach(item -> {
+            OrderItem orderItem = OrderItem.builder()
+                    .orderQty(item.getOrderQty())
+                    .order(item.getOrder())
+                    .productName(item.getProductName())
+                    .subTotal(item.getSubTotal())
+                    .unitPrice(item.getUnitPrice())
+                    .product(item.getProduct())
+                    .build();
+            orderItems.add(orderItem);
+
+        });
+
+        cartService.clearCart();
+
         Order order = Order.builder()
-                .pickupCenter(orderRequestDto.getPickupCenter())
+                .grandTotal(total)
+                .pickupCenter(pickupCenter)
                 .transaction(transaction)
-                .items(orderRequestDto.getItems())
                 .customer(loggedInCustomer)
+                .items(orderItems)
                 .build();
         orderRepository.save(order);
+
+        transaction.setOrder(order);
+        transactionRepository.save(transaction);
 
         return "New Order made successfully";
     }
