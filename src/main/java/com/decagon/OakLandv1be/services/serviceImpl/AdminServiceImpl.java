@@ -29,7 +29,6 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -89,10 +88,12 @@ public class AdminServiceImpl implements AdminService {
                 .orElseThrow(() ->
                         new ProductNotFoundException("SubCategory does not exist"));
 
+//        String imageUrl = newProductRequestDto.getProductImage();
+
         Product product = Product.builder()
                 .name(newProductRequestDto.getName())
                 .price(newProductRequestDto.getPrice())
-                .imageUrl(newProductRequestDto.getImageUrl())
+                .imageUrl("")
                 .availableQty(newProductRequestDto.getAvailableQty())
                 .subCategory(subCategory)
                 .color(newProductRequestDto.getColor())

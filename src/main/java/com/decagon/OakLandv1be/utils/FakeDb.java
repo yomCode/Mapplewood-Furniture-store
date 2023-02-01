@@ -45,17 +45,37 @@ public class FakeDb {
                         .isActive(true)
                         .admin(admin)
                         .verificationStatus(true)
+                        .admin(admin)
                         .address("No Address")
                         .role(Role.ADMIN)
                         .password(passwordEncoder.encode("password123453"))
                         .isActive(true)
+                        .build();
+
+                Person adminPerson = personRepository.save(person);
+                admin.setPerson(adminPerson);
+                Admin savedAdmin = adminRepository.save(admin);
+
+                Customer customer = new Customer();
+                Person customerPerson = Person.builder()
+                        .firstName("Joe")
+                        .lastName("Lennon")
+                        .email("bennyson2@gmail.com")
+                        .gender(Gender.MALE)
+                        .date_of_birth("1996-03-12")
+                        .phone("9859595959")
+                        .isActive(true)
+                        .verificationStatus(true)
+                        .role(Role.CUSTOMER)
+                        .customer(customer)
+                        .address("No Address")
+                        .password(passwordEncoder.encode("password123453"))
+                        .isActive(true)
 
                         .build();
-                Person savedperson = personRepository.save(person);
-
-                admin.setPerson(person);
-                adminRepository.save(admin);
-
+                Person savedPerson = personRepository.save(customerPerson);
+                customer.setPerson(savedPerson);
+                customerRepository.save(customer);
 
                 Customer customer1 = new Customer();
                 Person person1 = Person.builder()
@@ -181,9 +201,6 @@ public class FakeDb {
                 customer4.setPerson(savedperson4);
                 customer4.setWallet(wallet3);
                 customerRepository.save(customer4);
-
-
-
             }
 
             if (!categoryRepository.existsById(1L)) {

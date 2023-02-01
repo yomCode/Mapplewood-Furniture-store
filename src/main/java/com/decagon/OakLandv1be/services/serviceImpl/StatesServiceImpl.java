@@ -14,10 +14,14 @@ import com.decagon.OakLandv1be.repositries.PickupRepository;
 import com.decagon.OakLandv1be.repositries.StateRepository;
 import com.decagon.OakLandv1be.services.StatesService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -56,6 +60,12 @@ public class StatesServiceImpl implements StatesService {
                 () -> new ResourceNotFoundException("State not found"));
         return responseMapper(state);
     }
+
+    @Override
+    public ResponseEntity<List<State>> getAllStates() {
+        return new ResponseEntity<>(stateRepository.findAll(), HttpStatus.OK);
+    }
+
     private boolean confirmAuthority(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String loggedInUserEmail = authentication.getName();

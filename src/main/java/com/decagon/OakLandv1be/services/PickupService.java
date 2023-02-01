@@ -16,4 +16,6 @@ public interface PickupService {
     String createCenter(PickupCenterRequest pickupCenterRequest);
 
     Page<PickupCenterResponse> getAll(int page, int size);
+
+    String updatePickupCenter(Long pickupId, PickupCenterRequest pickupCenterRequest);
 }
