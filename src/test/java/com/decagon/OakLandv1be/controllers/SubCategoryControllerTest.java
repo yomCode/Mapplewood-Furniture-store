@@ -44,14 +44,18 @@ class SubCategoryControllerTest {
     @Test
     void addNewSubCategory() {
         try {
-            Category category = new Category("Tester", new HashSet<>());
+            Category category = new Category("Tester", "image.com", new HashSet<>());
             category.setId(3L);
             SubCategory subCategory = SubCategory.builder()
                     .name("Bed")
+                    .imageUrl("subcat.com")
                     .category(category)
                     .build();
             SubCategoryDto subCategoryDto = SubCategoryDto.builder()
                     .name("Bed")
+                    .imageUrl("subcat.com")
+                    .id(2L)
+                    .size(1)
                     .build();
             when(subCategoryService.createSubCategory(subCategoryDto, 3L))
                     .thenReturn(new ApiResponse<>("SubCategory Created Successfully", true, subCategory));
@@ -90,6 +94,9 @@ class SubCategoryControllerTest {
         updatedSubCategory.setName("TestCategory");
         SubCategoryDto sub = SubCategoryDto.builder()
                 .name("TestSubCategory")
+                .id(2L)
+                .size(1)
+                .imageUrl("test.com")
                 .build();
         when(subCategoryService.editSubCategory(sub, 2L ))
                 .thenReturn( new ApiResponse<>("SubCategory Updated successfully", true, updatedSubCategory));
@@ -120,7 +127,7 @@ class SubCategoryControllerTest {
     @Test
     void viewAllSubcategoriesInACategory() {
         try {
-            Category category = new Category("Tester", new HashSet<>());
+            Category category = new Category("Tester", "image.com", new HashSet<>());
             category.setId(3L);
             SubCategoryDto sub = SubCategoryDto.builder()
                     .name("Bed")

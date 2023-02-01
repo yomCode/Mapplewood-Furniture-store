@@ -29,6 +29,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
@@ -97,15 +98,48 @@ public class CustomerServiceImpl implements CustomerService {
 
         javaMailService.sendMail(signupRequestDto.getEmail(),
                 "Verify your email address",
-                "Hi " + person.getFirstName() + " " + person.getLastName() + ", Thank you for your interest in joining Oakland." +
+                "Hi " + person.getFirstName() + " " + person.getLastName() +
+                        ", Thank you for your interest in joining Oakland." +
 
-                        "To complete your registration, we need you to verify your email address \n" + "http://" + request.getServerName() + ":3000" + "/verifyRegistration?token=" + validToken);
+                        "To complete your registration, we need you to verify your email address \n" +
+                        "http://" + request.getServerName() + ":3000" + "/verifyRegistration?token=" +
+                        validToken);
 
         // use the user object to create UserResponseDto Object
         SignupResponseDto signupResponseDto = new SignupResponseDto();
         BeanUtils.copyProperties(person, signupResponseDto);
         return signupResponseDto;
     }
+
+    @Override
+    public ResponseEntity<ApiResponse> resendVerificationToken(String email) throws EmailNotFoundException, IOException {
+        boolean emailExists = personRepository.existsByEmail(email);
+        if (!emailExists) {
+            throw new EmailNotFoundException("Email not found");
+        }
+        Person person = personRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("No user found with this email"));
+
+        if (!person.getVerificationStatus()) {
+            String validToken = tokenService.generateVerificationToken(email);
+            Token token = new Token();
+            token.setToken(validToken);
+            token.setTokenStatus(ACTIVE);
+            token.setPerson(person);
+            tokenRepository.save(token);
+
+            javaMailService.sendMail(email,
+                    "Verify your email address",
+                    "Hi " + person.getFirstName() + " " + person.getLastName() + "," +
+                            " Thank you for your interest in joining Oakland." +
+                            "To complete your registration, we need you to verify your email address \n" + "http://" + request.getServerName() + ":3000" + "/verifyRegistration?token=" +
+                            validToken);
+        }else
+            throw new AlreadyExistsException("User is already verified");
+        return new ResponseEntity<>(responseManager.success("Verification token resent. Check your email"), HttpStatus.OK);
+    }
+
+
 
     @Override
     public ResponseEntity<ApiResponse> verifyRegistration(String token) {
@@ -235,7 +269,6 @@ public class CustomerServiceImpl implements CustomerService {
                             .build()
             );
         });
-
         PageRequest pageable = PageRequest.of(pageNo, pageSize, Sort.Direction.DESC, sortBy);
 
         int minimum = pageNo*pageSize;
@@ -247,48 +280,6 @@ public class CustomerServiceImpl implements CustomerService {
 
         return page;
     }
-
-
-
-
-//    @Override
-//    public Page<ProductCustResponseDto> viewFavouritesByPagination(Integer pageNo, Integer pageSize, String sortBy) {
-//        String email = UserUtil.extractEmailFromPrincipal()
-//                .orElseThrow(() -> new UserNotFoundException("user does not exist"));
-//        Customer customer = customerRepository.findByPersonEmail(email).orElseThrow
-//                (() -> new UserNotFoundException("user not found"));
-//        List<Product> products = new ArrayList<>(customer.getFavorites());
-//
-//        List<ProductCustResponseDto> productCustResponseDtos = new ArrayList<>();
-//
-//        products.forEach(product -> {
-//            productCustResponseDtos.add(
-//                    ProductCustResponseDto.builder()
-//                    .name(product.getName())
-//                    .price(product.getPrice())
-//                    .imageUrl(product.getImageUrl())
-//                    .color(product.getColor())
-//                    .description(product.getDescription())
-//                    .build()
-//            );
-//        });
-//
-//
-//        PageRequest pageable = PageRequest.of(pageNo, pageSize, Sort.Direction.DESC, sortBy);
-//
-//        int max = (pageSize*(pageNo+1)>products.size()) ?
-//                productCustResponseDtos.size(): pageSize*(pageNo+1);
-//
-//        Page<ProductCustResponseDto> page = new PageImpl<>
-//                (productCustResponseDtos.subList(pageNo*pageSize, max), pageable,
-//                        productCustResponseDtos.size());
-//
-//        return page;
-//    }
-
-
-
-
 
     public CustomerProfileDto viewProfile() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

@@ -1,16 +1,15 @@
 package com.decagon.OakLandv1be.config.companyConfig;
 
 import com.decagon.OakLandv1be.config.companyConfig.SuperAdminRepository;
-import com.decagon.OakLandv1be.entities.Person;
-import com.decagon.OakLandv1be.entities.Product;
-import com.decagon.OakLandv1be.entities.SuperAdmin;
-import com.decagon.OakLandv1be.entities.Wallet;
+import com.decagon.OakLandv1be.entities.*;
 import com.decagon.OakLandv1be.enums.BaseCurrency;
 import com.decagon.OakLandv1be.enums.Gender;
 import com.decagon.OakLandv1be.enums.Role;
 
 import com.decagon.OakLandv1be.exceptions.InvalidOperationException;
 
+import com.decagon.OakLandv1be.repositries.AdminRepository;
+import com.decagon.OakLandv1be.repositries.PersonRepository;
 import com.decagon.OakLandv1be.repositries.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,62 +32,99 @@ public class AdminDetailsService implements CommandLineRunner {
     private final SuperAdminRepository superAdminRepository;
     private final PasswordEncoder passwordEncoder;
 
+    Admin admin = new Admin();
+
+    private final AdminRepository adminRepository;
+
+    private final PersonRepository personRepository;
+
     @Value("${admin.super.email}")
     private String adminEmail;
 
     @Value("${admin.currency}")
     private String currency;
-    String password=UUID.randomUUID().toString();
+    String password = UUID.randomUUID().toString();
 
 
+    public void initAdmin() {
+
+        if (superAdminRepository.findAll().size() > 0) {
+            throw new InvalidOperationException("Operation NOT ALLOWED");
+        }
 
 
-    public void initAdmin(){
+        Person person = Person.builder()
+                .date_of_birth(new Date().toString())
+                .email(adminEmail)
+                .firstName("super")
+                .lastName("Admin")
+                .role(Role.ADMIN)
+                .gender(Gender.OTHER)
+                .isActive(true)
+                .password(passwordEncoder.encode(password))
+                .verificationStatus(true)
+                .build();
 
-            if(superAdminRepository.findAll().size()>0){
-                throw new InvalidOperationException("Operation NOT ALLOWED");
-            }
+        Wallet wallet = Wallet.builder()
+                .accountBalance(BigDecimal.ZERO)
+                .baseCurrency(BaseCurrency.valueOf(currency))
+                .build();
+        SuperAdmin superAdmin = SuperAdmin.builder()
+                .person(person)
+                .wallet(wallet)
+                .build();
 
+        SuperAdmin superAdminDB = superAdminRepository.save(superAdmin);
+        log.info("#############################################################################");
+        log.info("Super Admin Details");
 
-            Person person= Person.builder()
-                    .date_of_birth(new Date().toString())
-                    .email(adminEmail)
-                    .firstName("super")
-                    .lastName("Admin")
-                    .role(Role.SUPERADMIN)
-                    .gender(Gender.OTHER)
-                    .isActive(true)
-                    .password(passwordEncoder.encode(password))
-                    .verificationStatus(true)
-                    .build();
+        log.info("Username/Email: \t" + password);
+        log.info("Password/Passphrase: \t" + adminEmail);
 
-            Wallet wallet= Wallet.builder()
-                    .accountBalance(BigDecimal.ZERO)
-                    .baseCurrency(BaseCurrency.valueOf(currency))
-                    .build();
-            SuperAdmin superAdmin= SuperAdmin.builder()
-                    .person(person)
-                    .wallet(wallet)
-                    .build();
+        log.info("*******************   Wallet Information   *****************");
+        log.info(superAdminDB.getWallet().toString());
 
-            SuperAdmin superAdminDB=superAdminRepository.save(superAdmin);
-            log.info("#############################################################################");
-            log.info("Super Admin Details");
-
-            log.info("Username/Email: \t"+password);
-            log.info("Password/Passphrase: \t"+adminEmail);
-
-            log.info("*******************   Wallet Information   *****************");
-            log.info(superAdminDB.getWallet().toString());
-
-            log.info("#############################################################################");
+        log.info("#############################################################################");
 
 
+//        if (!personRepository.existsByEmail("bennyson1@gmail.com")) {
+//            Customer customer = new Customer();
+//
+//            Person person1 = Person.builder()
+//                    .firstName("Benson")
+//                    .lastName("Malik")
+//                    .email("bennyson1@gmail.com")
+//                    .gender(Gender.MALE)
+//                    .date_of_birth("13-08-1990")
+//                    .phone("9859595959")
+//                    .isActive(true)
+//                    .verificationStatus(true)
+////                        .password(passwordEncoder.encode("password123"))
+////                        .role(Role.CUSTOMER)
+//                    .customer(customer)
+//                    .address("No Address")
+//                    .role(Role.ADMIN)
+//                    .password(passwordEncoder.encode("password123453"))
+//                    .isActive(true)
+//
+//                    .build();
+//            personRepository.save(person);
+//
+//            //customer.setPerson(person);
+//            adminRepository.save(admin);
+//
+//
+//        }
+
+//    @Override
+//    public void run(String... args) throws Exception {
+//        initAdmin();
+//
+//    }
     }
 
     @Override
     public void run(String... args) throws Exception {
-        initAdmin();
 
     }
 }

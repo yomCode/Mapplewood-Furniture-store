@@ -1,6 +1,7 @@
 package com.decagon.OakLandv1be.entities;
 
 
+import com.decagon.OakLandv1be.enums.DeliveryStatus;
 import com.decagon.OakLandv1be.enums.ModeOfDelivery;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
@@ -30,9 +31,7 @@ public class Order extends BaseEntity{
     @Enumerated(EnumType.STRING)
     private ModeOfDelivery modeOfDelivery;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "delivery_id")
-    private Delivery delivery;
+    private DeliveryStatus deliveryStatus;
 
     private Double grandTotal;
 

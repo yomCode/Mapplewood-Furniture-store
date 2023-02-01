@@ -6,6 +6,7 @@ import com.decagon.OakLandv1be.exceptions.InsufficientBalanceInWalletException;
 import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
 import com.decagon.OakLandv1be.exceptions.UnauthorizedUserException;
 import com.decagon.OakLandv1be.exceptions.UserNotFoundException;
+import com.decagon.OakLandv1be.repositries.CustomerRepository;
 import com.decagon.OakLandv1be.repositries.PersonRepository;
 import com.decagon.OakLandv1be.repositries.TransactionRepository;
 import com.decagon.OakLandv1be.repositries.WalletRepository;
@@ -47,9 +48,7 @@ public class WalletServiceImpl implements WalletService {
 
     @Value("${admin.super.email}")
     private String superAdminEmail;
-
-
-
+    private final CustomerRepository customerRepository;
 
 
     @Override
@@ -125,8 +124,7 @@ public class WalletServiceImpl implements WalletService {
             ).getSuperAdmin().getWallet();
             // add the ground total to super admin wallet
             adminWallet.setAccountBalance(adminWallet.getAccountBalance().add(grandTotal));
-
-            // sent an email to the customer
+            // send an email to the customer
             //TODO         <=================================
             try {
 
@@ -143,8 +141,6 @@ public class WalletServiceImpl implements WalletService {
         throw new InsufficientBalanceInWalletException("Insufficient balance, Please fund your wallet.");
     }
 
-
-
     Wallet getCurrentlyLoggedInCustomerWallet(){
         return personRepository.findByEmail(UserUtil.extractEmailFromPrincipal().orElseThrow(
                 ()->new UsernameNotFoundException("Please login to continue")
@@ -152,18 +148,6 @@ public class WalletServiceImpl implements WalletService {
                 ()-> new UserNotFoundException("Please login to continue")
         ).getCustomer().getWallet();
     }
-
-    //get the currently logged in customer//
-
-//        String customerEmail= UserUtil.extractEmailFromPrincipal().orElseThrow(
-//                ()->new UsernameNotFoundException("Please login to continue")
-//        );
-//
-//        Person loggedInPerson=personRepository.findByEmail(customerEmail).orElseThrow(
-//                ()-> new UserNotFoundException("Please login to continue")
-//        );
-//
-//        Customer customer=loggedInPerson.getCustomer();
 
 
     @Override
@@ -186,7 +170,6 @@ public class WalletServiceImpl implements WalletService {
             DecimalFormatSymbols symbols = new DecimalFormatSymbols(new Locale("en", "NG"));
             symbols.setCurrencySymbol("₦");
 
-
             return WalletInfoResponseDto.builder()
                     .firstName(person.getFirstName())
                     .lastName(person.getLastName())
@@ -194,9 +177,7 @@ public class WalletServiceImpl implements WalletService {
                     .walletBalance(currencyString)
                     .baseCurrency(String.valueOf(wallet.getBaseCurrency()))
                     .build();
-
         }
-
         throw new UnauthorizedUserException("User does not have access");
     }
 
@@ -224,6 +205,20 @@ public class WalletServiceImpl implements WalletService {
         return new PageImpl<>(
                 response.subList(minimum, max), pageRequest, response.size()
         );
+
+    }
+
+    @Override
+    public Page<FundWalletResponseDto> viewCustomerWalletByPagination(Integer pageNo, Integer pageSize, String sortBy) {
+        List<FundWalletResponseDto> fundWalletResponseDtos =
+            customerRepository.findAll().stream().map(customer -> FundWalletResponseDto.builder()
+                    .fullName(customer.getPerson().getFirstName() + " " + customer.getPerson().getLastName())
+                    .depositAmount(customer.getWallet().getAccountBalance())
+                    .build()).collect(Collectors.toList());
+
+        PageRequest pageable = PageRequest.of(pageNo, pageSize, Sort.Direction.DESC, sortBy);
+        int max = Math.min(pageSize * (pageNo + 1), fundWalletResponseDtos.size());
+        return new PageImpl<> (fundWalletResponseDtos.subList(pageNo*pageSize, max), pageable, fundWalletResponseDtos.size());
 
     }
 
