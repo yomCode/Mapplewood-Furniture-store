@@ -4,6 +4,7 @@ import com.decagon.OakLandv1be.dto.OrderResponseDto;
 import com.decagon.OakLandv1be.entities.Customer;
 import com.decagon.OakLandv1be.entities.Order;
 import com.decagon.OakLandv1be.enums.DeliveryStatus;
+import com.decagon.OakLandv1be.enums.PickupStatus;
 import com.decagon.OakLandv1be.exceptions.EmptyListException;
 import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
 import com.decagon.OakLandv1be.repositries.CustomerRepository;
@@ -118,6 +119,25 @@ public class OrderServiceImpl implements OrderService {
         Pageable pageable=PageRequest.of(pageNo,pageSize);
         return orderRepository.findByDeliveryStatus(status,pageable).map(this::orderResponseMapper);
     }
+
+
+    @Override
+    public Page<OrderResponseDto> getCustomerOrderByPickupStatus(PickupStatus status, Integer pageNo, Integer pageSize) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if ((authentication instanceof AnonymousAuthenticationToken))
+            throw new ResourceNotFoundException("Please Login");
+        String email = authentication.getName();
+        Customer customer = customerRepository.findByPersonEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        pageNo=Math.max(pageNo,0);
+        pageSize=Math.max(pageSize,10);
+        Pageable pageable=PageRequest.of(pageNo,pageSize);
+        return orderRepository.findByCustomerIdAndPickupStatus(customer.getId(),status,pageable).map(this::orderResponseMapper);
+
+    }
+
     private OrderResponseDto orderResponseMapper(Order order){
         return OrderResponseDto.builder()
                 .modeOfPayment(order.getModeOfPayment())

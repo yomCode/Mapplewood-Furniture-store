@@ -5,6 +5,7 @@ import com.decagon.OakLandv1be.dto.CheckoutDto;
 import com.decagon.OakLandv1be.dto.CheckoutResponseDto;
 import com.decagon.OakLandv1be.dto.OrderResponseDto;
 import com.decagon.OakLandv1be.enums.DeliveryStatus;
+import com.decagon.OakLandv1be.enums.PickupStatus;
 import com.decagon.OakLandv1be.services.CheckoutService;
 import com.decagon.OakLandv1be.services.OrderService;
 import lombok.Data;
@@ -58,5 +59,12 @@ public class OrderController {
             @RequestParam(defaultValue = "0") Integer pageNo,
             @RequestParam(defaultValue = "10") Integer pageSize    ){
         return ResponseEntity.ok(orderService.getOrderByDeliveryStatus(status, pageNo, pageSize));
+    }
+    @GetMapping("customer/order/delivery-status")
+    public ResponseEntity<Page<OrderResponseDto>> orderByPickupStatus(
+            @RequestParam PickupStatus status,
+            @RequestParam(defaultValue = "0") Integer pageNo,
+            @RequestParam(defaultValue = "10") Integer pageSize    ){
+        return ResponseEntity.ok(orderService.getCustomerOrderByPickupStatus(status, pageNo, pageSize));
     }
 }
