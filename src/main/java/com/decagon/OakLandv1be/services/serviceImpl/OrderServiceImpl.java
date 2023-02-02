@@ -5,6 +5,7 @@ import com.decagon.OakLandv1be.dto.OrderResponseDto;
 
 import com.decagon.OakLandv1be.entities.*;
 import com.decagon.OakLandv1be.enums.PaymentPurpose;
+import com.decagon.OakLandv1be.enums.PickupStatus;
 import com.decagon.OakLandv1be.enums.TransactionStatus;
 
 import com.decagon.OakLandv1be.entities.Customer;
@@ -13,14 +14,8 @@ import com.decagon.OakLandv1be.enums.DeliveryStatus;
 
 import com.decagon.OakLandv1be.exceptions.EmptyListException;
 import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
-import com.decagon.OakLandv1be.repositries.CustomerRepository;
-import com.decagon.OakLandv1be.repositries.OrderRepository;
-import com.decagon.OakLandv1be.repositries.PickupRepository;
-import com.decagon.OakLandv1be.repositries.TransactionRepository;
-import com.decagon.OakLandv1be.services.CartService;
-import com.decagon.OakLandv1be.services.CustomerService;
-import com.decagon.OakLandv1be.services.OrderService;
-import com.decagon.OakLandv1be.services.PickupService;
+import com.decagon.OakLandv1be.repositries.*;
+import com.decagon.OakLandv1be.services.*;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +27,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -42,10 +36,11 @@ import java.util.stream.Collectors;
 public class OrderServiceImpl implements OrderService {
     private final CustomerRepository customerRepository;
     private final OrderRepository orderRepository;
-    private final CustomerService customerService;
     private final TransactionRepository transactionRepository;
     private final CartService cartService;
     private final PickupRepository pickupRepository;
+    private final WalletService walletService;
+    private final OrderItemRepository orderItemRepository;
 
     @Override
     public List<OrderResponseDto> viewOrderHistory(int pageNo, int pageSize) {
@@ -146,19 +141,18 @@ public class OrderServiceImpl implements OrderService {
                 .amount(orderRequestDto.getGrandTotal().toString())
                 .reference(UUID.randomUUID().toString())
                 .purpose(PaymentPurpose.PURCHASE)
-                .status(TransactionStatus.PENDING)
+                .status(TransactionStatus.COMPLETED)
                 .build();
 
         PickupCenter pickupCenter = pickupRepository
                 .findByEmail(orderRequestDto.getPickupCenterEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("Pickup center not found"));
 
-        BigDecimal bigDecimalValue = orderRequestDto.getGrandTotal();
-        double total = bigDecimalValue.doubleValue();
+        BigDecimal grandTotal = orderRequestDto.getGrandTotal();
+        double total = grandTotal.doubleValue();
 
         Set<Item> allCartItems = loggedInCustomer.getCart().getItems();
         Set<OrderItem> orderItems = new HashSet<>();
-
 
         allCartItems.forEach(item -> {
             OrderItem orderItem = OrderItem.builder()
@@ -170,9 +164,9 @@ public class OrderServiceImpl implements OrderService {
                     .product(item.getProduct())
                     .build();
             orderItems.add(orderItem);
-
         });
 
+        walletService.processPayment(grandTotal);
         cartService.clearCart();
 
         Order order = Order.builder()
@@ -181,23 +175,23 @@ public class OrderServiceImpl implements OrderService {
                 .transaction(transaction)
                 .customer(loggedInCustomer)
                 .items(orderItems)
+                .pickupStatus(PickupStatus.YET_TO_BE_PICKEDUP)
                 .build();
-        orderRepository.save(order);
 
         transaction.setOrder(order);
+        orderRepository.save(order);
         transactionRepository.save(transaction);
 
         return "New Order made successfully";
     }
 
-        @Override
-        public Page<OrderResponseDto> getOrderByDeliveryStatus(DeliveryStatus status, Integer pageNo, Integer pageSize){
-            pageNo=Math.max(pageNo,0);
-            pageSize=Math.max(pageSize,10);
-            Pageable pageable=PageRequest.of(pageNo,pageSize);
-            return orderRepository.findByDeliveryStatus(status,pageable).map(this::orderResponseMapper);
-        }
-
+    @Override
+    public Page<OrderResponseDto> getOrderByDeliveryStatus(DeliveryStatus status, Integer pageNo, Integer pageSize) {
+        pageNo=Math.max(pageNo,0);
+        pageSize=Math.max(pageSize,10);
+        Pageable pageable=PageRequest.of(pageNo,pageSize);
+        return orderRepository.findByDeliveryStatus(status,pageable).map(this::orderResponseMapper);
+    }
 
     private OrderResponseDto orderResponseMapper(Order order){
         return OrderResponseDto.builder()

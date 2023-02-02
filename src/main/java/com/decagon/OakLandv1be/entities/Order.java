@@ -3,6 +3,7 @@ package com.decagon.OakLandv1be.entities;
 
 import com.decagon.OakLandv1be.enums.DeliveryStatus;
 import com.decagon.OakLandv1be.enums.ModeOfDelivery;
+import com.decagon.OakLandv1be.enums.PickupStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
@@ -52,4 +53,7 @@ public class Order extends BaseEntity{
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "pickup_id")
     private PickupCenter pickupCenter;
+
+    @Enumerated(EnumType.STRING)
+    private PickupStatus pickupStatus;
 }
