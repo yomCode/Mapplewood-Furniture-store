@@ -29,6 +29,7 @@ public class Order extends BaseEntity{
 
     private Double deliveryFee;
 
+
     @Enumerated(EnumType.STRING)
     private ModeOfDelivery modeOfDelivery;
 
@@ -49,6 +50,7 @@ public class Order extends BaseEntity{
     @JsonIgnore
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
     private Transaction transaction;
+
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "pickup_id")

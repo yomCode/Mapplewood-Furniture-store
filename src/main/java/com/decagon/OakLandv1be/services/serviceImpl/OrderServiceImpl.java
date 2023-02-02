@@ -12,6 +12,7 @@ import com.decagon.OakLandv1be.entities.Customer;
 import com.decagon.OakLandv1be.entities.Order;
 import com.decagon.OakLandv1be.enums.DeliveryStatus;
 
+import com.decagon.OakLandv1be.enums.PickupStatus;
 import com.decagon.OakLandv1be.exceptions.EmptyListException;
 import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
 import com.decagon.OakLandv1be.repositries.*;
@@ -154,10 +155,25 @@ public class OrderServiceImpl implements OrderService {
         Set<Item> allCartItems = loggedInCustomer.getCart().getItems();
         Set<OrderItem> orderItems = new HashSet<>();
 
+
+        //create order entity and persist
+        //create orderItem entities and set order
+      //  persist orderItemRepository.saveAll(set)
+        //
+        walletService.processPayment(grandTotal);
+
+        Order order = Order.builder()
+                .grandTotal(total)
+                .pickupCenter(pickupCenter)
+                .transaction(transaction)
+                .customer(loggedInCustomer)
+                .pickupStatus(PickupStatus.YET_TO_BE_PICKED_UP)
+                .build();
+
         allCartItems.forEach(item -> {
             OrderItem orderItem = OrderItem.builder()
                     .orderQty(item.getOrderQty())
-                    .order(item.getOrder())
+                    .order(order)
                     .productName(item.getProductName())
                     .subTotal(item.getSubTotal())
                     .unitPrice(item.getUnitPrice())
@@ -166,22 +182,12 @@ public class OrderServiceImpl implements OrderService {
             orderItems.add(orderItem);
         });
 
-        walletService.processPayment(grandTotal);
-        cartService.clearCart();
-
-        Order order = Order.builder()
-                .grandTotal(total)
-                .pickupCenter(pickupCenter)
-                .transaction(transaction)
-                .customer(loggedInCustomer)
-                .items(orderItems)
-                .pickupStatus(PickupStatus.YET_TO_BE_PICKEDUP)
-                .build();
+        order.setItems(orderItems);
 
         transaction.setOrder(order);
         orderRepository.save(order);
         transactionRepository.save(transaction);
-
+        cartService.clearCart();
         return "New Order made successfully";
     }
 
@@ -191,6 +197,24 @@ public class OrderServiceImpl implements OrderService {
         pageSize=Math.max(pageSize,10);
         Pageable pageable=PageRequest.of(pageNo,pageSize);
         return orderRepository.findByDeliveryStatus(status,pageable).map(this::orderResponseMapper);
+    }
+
+
+    @Override
+    public Page<OrderResponseDto> getCustomerOrderByPickupStatus(PickupStatus status, Integer pageNo, Integer pageSize) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if ((authentication instanceof AnonymousAuthenticationToken))
+            throw new ResourceNotFoundException("Please Login");
+        String email = authentication.getName();
+        Customer customer = customerRepository.findByPersonEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        pageNo=Math.max(pageNo,0);
+        pageSize=Math.max(pageSize,10);
+        Pageable pageable=PageRequest.of(pageNo,pageSize);
+        return orderRepository.findByCustomerIdAndPickupStatus(customer.getId(),status,pageable).map(this::orderResponseMapper);
+
     }
 
     private OrderResponseDto orderResponseMapper(Order order){

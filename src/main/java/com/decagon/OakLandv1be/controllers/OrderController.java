@@ -56,4 +56,11 @@ public class OrderController {
             @RequestParam(defaultValue = "10") Integer pageSize    ){
         return ResponseEntity.ok(orderService.getOrderByDeliveryStatus(status, pageNo, pageSize));
     }
+    @GetMapping("customer/order/delivery-status")
+    public ResponseEntity<Page<OrderResponseDto>> orderByPickupStatus(
+            @RequestParam PickupStatus status,
+            @RequestParam(defaultValue = "0") Integer pageNo,
+            @RequestParam(defaultValue = "10") Integer pageSize    ){
+        return ResponseEntity.ok(orderService.getCustomerOrderByPickupStatus(status, pageNo, pageSize));
+    }
 }

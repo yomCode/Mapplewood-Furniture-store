@@ -17,4 +17,6 @@ public interface OrderService {
     String saveOrder(OrderRequestDto orderRequestDto);
 
     Page<OrderResponseDto> getOrderByDeliveryStatus(DeliveryStatus status, Integer pageNo, Integer pageSize);
+
+    Page<OrderResponseDto> getCustomerOrderByPickupStatus(PickupStatus status, Integer pageNo, Integer pageSize);
 }
