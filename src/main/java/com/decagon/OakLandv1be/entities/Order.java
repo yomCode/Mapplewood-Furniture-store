@@ -3,6 +3,7 @@ package com.decagon.OakLandv1be.entities;
 
 import com.decagon.OakLandv1be.enums.DeliveryStatus;
 import com.decagon.OakLandv1be.enums.ModeOfDelivery;
+import com.decagon.OakLandv1be.enums.PickupStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
@@ -28,6 +29,7 @@ public class Order extends BaseEntity{
 
     private Double deliveryFee;
 
+
     @Enumerated(EnumType.STRING)
     private ModeOfDelivery modeOfDelivery;
 
@@ -49,5 +51,6 @@ public class Order extends BaseEntity{
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
     private Transaction transaction;
 
-
+    @Enumerated(EnumType.STRING)
+    private PickupStatus pickupStatus;
 }
