@@ -25,7 +25,7 @@ public class Order extends BaseEntity{
 
     @JsonIgnore
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<Item> items;
+    private Set<OrderItem> items;
 
     private Double deliveryFee;
 
@@ -50,6 +50,11 @@ public class Order extends BaseEntity{
     @JsonIgnore
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
     private Transaction transaction;
+
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "pickup_id")
+    private PickupCenter pickupCenter;
 
     @Enumerated(EnumType.STRING)
     private PickupStatus pickupStatus;

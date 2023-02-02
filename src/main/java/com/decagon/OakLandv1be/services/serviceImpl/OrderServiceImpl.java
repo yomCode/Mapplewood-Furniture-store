@@ -1,33 +1,47 @@
 package com.decagon.OakLandv1be.services.serviceImpl;
 
+import com.decagon.OakLandv1be.dto.OrderRequestDto;
 import com.decagon.OakLandv1be.dto.OrderResponseDto;
+
+import com.decagon.OakLandv1be.entities.*;
+import com.decagon.OakLandv1be.enums.PaymentPurpose;
+import com.decagon.OakLandv1be.enums.PickupStatus;
+import com.decagon.OakLandv1be.enums.TransactionStatus;
+
 import com.decagon.OakLandv1be.entities.Customer;
 import com.decagon.OakLandv1be.entities.Order;
 import com.decagon.OakLandv1be.enums.DeliveryStatus;
+
 import com.decagon.OakLandv1be.enums.PickupStatus;
 import com.decagon.OakLandv1be.exceptions.EmptyListException;
 import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
-import com.decagon.OakLandv1be.repositries.CustomerRepository;
-import com.decagon.OakLandv1be.repositries.OrderRepository;
-import com.decagon.OakLandv1be.services.OrderService;
+import com.decagon.OakLandv1be.repositries.*;
+import com.decagon.OakLandv1be.services.*;
 import lombok.RequiredArgsConstructor;
+
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.data.domain.*;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
+
+import java.math.BigDecimal;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class OrderServiceImpl implements OrderService {
     private final CustomerRepository customerRepository;
     private final OrderRepository orderRepository;
-    private final CustomerServiceImpl customerService;
+    private final TransactionRepository transactionRepository;
+    private final CartService cartService;
+    private final PickupRepository pickupRepository;
+    private final WalletService walletService;
+    private final OrderItemRepository orderItemRepository;
 
     @Override
     public List<OrderResponseDto> viewOrderHistory(int pageNo, int pageSize) {
@@ -113,7 +127,72 @@ public class OrderServiceImpl implements OrderService {
         return new PageImpl<>(orderResponseDtos.subList(pageNo*pageSize, max), pageable, orderResponseDtos.size());
     }
 
-    @Override    public Page<OrderResponseDto> getOrderByDeliveryStatus(DeliveryStatus status, Integer pageNo, Integer pageSize) {
+
+    @Override
+    public String saveOrder(OrderRequestDto orderRequestDto) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if ((authentication instanceof AnonymousAuthenticationToken))
+            throw new ResourceNotFoundException("Please Login");
+        String email = authentication.getName();
+        Customer loggedInCustomer = customerRepository.findByPersonEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        Transaction transaction = Transaction.builder()
+                .wallet(loggedInCustomer.getWallet())
+                .amount(orderRequestDto.getGrandTotal().toString())
+                .reference(UUID.randomUUID().toString())
+                .purpose(PaymentPurpose.PURCHASE)
+                .status(TransactionStatus.COMPLETED)
+                .build();
+
+        PickupCenter pickupCenter = pickupRepository
+                .findByEmail(orderRequestDto.getPickupCenterEmail())
+                .orElseThrow(() -> new ResourceNotFoundException("Pickup center not found"));
+
+        BigDecimal grandTotal = orderRequestDto.getGrandTotal();
+        double total = grandTotal.doubleValue();
+
+        Set<Item> allCartItems = loggedInCustomer.getCart().getItems();
+        Set<OrderItem> orderItems = new HashSet<>();
+
+
+        //create order entity and persist
+        //create orderItem entities and set order
+      //  persist orderItemRepository.saveAll(set)
+        //
+        walletService.processPayment(grandTotal);
+
+        Order order = Order.builder()
+                .grandTotal(total)
+                .pickupCenter(pickupCenter)
+                .transaction(transaction)
+                .customer(loggedInCustomer)
+                .pickupStatus(PickupStatus.YET_TO_BE_PICKED_UP)
+                .build();
+
+        allCartItems.forEach(item -> {
+            OrderItem orderItem = OrderItem.builder()
+                    .orderQty(item.getOrderQty())
+                    .order(order)
+                    .productName(item.getProductName())
+                    .subTotal(item.getSubTotal())
+                    .unitPrice(item.getUnitPrice())
+                    .product(item.getProduct())
+                    .build();
+            orderItems.add(orderItem);
+        });
+
+        order.setItems(orderItems);
+
+        transaction.setOrder(order);
+        orderRepository.save(order);
+        transactionRepository.save(transaction);
+        cartService.clearCart();
+        return "New Order made successfully";
+    }
+
+    @Override
+    public Page<OrderResponseDto> getOrderByDeliveryStatus(DeliveryStatus status, Integer pageNo, Integer pageSize) {
         pageNo=Math.max(pageNo,0);
         pageSize=Math.max(pageSize,10);
         Pageable pageable=PageRequest.of(pageNo,pageSize);

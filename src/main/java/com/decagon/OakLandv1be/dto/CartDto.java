@@ -3,6 +3,7 @@ package com.decagon.OakLandv1be.dto;
 import com.decagon.OakLandv1be.entities.Item;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.Set;
 
 @Data
@@ -12,5 +13,5 @@ import java.util.Set;
 @ToString
 public class CartDto {
     private Set<Item> items;
-    private Double total;
+    private BigDecimal total;
 }

@@ -1,6 +1,8 @@
 package com.decagon.OakLandv1be.controllers;
 
+import com.decagon.OakLandv1be.dto.CategoryDto;
 import com.decagon.OakLandv1be.dto.StateRequest;
+import com.decagon.OakLandv1be.dto.StateResponse;
 import com.decagon.OakLandv1be.entities.State;
 import com.decagon.OakLandv1be.services.StatesService;
 import lombok.RequiredArgsConstructor;
@@ -34,10 +36,14 @@ public class StateController {
     public  void viewState(@PathVariable String nameOfState) { statesService.viewStateByName(nameOfState);
     }
 
+    @GetMapping("/view-all")
+    public ResponseEntity<List<StateResponse>> viewAllStates() {
+        return new ResponseEntity<>(statesService.viewAllStates(), HttpStatus.OK);
+    }
+
     @GetMapping("/view-states")
     public ResponseEntity<List<State>> getAllStates() {
         return statesService.getAllStates();
     }
-
 
 }

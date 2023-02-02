@@ -25,10 +25,16 @@ public class PickupController {
         return ResponseEntity.ok(pickupService.getAll(page,size));
     }
 
-    @GetMapping("/{name}")
-    public ResponseEntity<PickupCenterResponse> getPickupCenterByName(@PathVariable String name){
-        return ResponseEntity.ok(pickupService.getCenterByName(name));
+//    @GetMapping("/{name}")
+//    public ResponseEntity<PickupCenterResponse> getPickupCenterByName(@PathVariable String name){
+//        return ResponseEntity.ok(pickupService.getCenterByName(name));
+//    }
+
+    @GetMapping("/{email}")
+    public ResponseEntity<PickupCenterResponse> getPickupCenterByEmail(@PathVariable String email){
+        return ResponseEntity.ok(pickupService.getCenterByEmail(email));
     }
+
     @GetMapping("/state/{name}")
     public ResponseEntity<List<PickupCenterResponse>> getPickupCenterByStateName(@PathVariable String name){
         return ResponseEntity.ok(pickupService.getCenterByStateName(name));

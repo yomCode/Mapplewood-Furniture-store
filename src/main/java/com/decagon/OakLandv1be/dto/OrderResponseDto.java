@@ -15,11 +15,13 @@ import java.util.Set;
 @Data
 public class OrderResponseDto {
     private ModeOfPayment modeOfPayment;
-    private Set<Item> items;
+    private Set<OrderItem> items;
     private Double deliveryFee;
     private ModeOfDelivery modeOfDelivery;
     private DeliveryStatus deliveryStatus;
     private Double grandTotal;
     private Double discount;
     private Address address;
+    private Transaction transaction;
+    private PickupCenter pickupCenter;
 }

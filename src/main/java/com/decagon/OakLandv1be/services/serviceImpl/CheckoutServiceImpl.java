@@ -70,13 +70,13 @@ public class CheckoutServiceImpl implements CheckoutService {
                 order.setDeliveryFee(0.00);
                 order.setModeOfDelivery(this.modeOfDelivery(checkoutDto.getModeOfDelivery()));
                 order.setDeliveryStatus(DeliveryStatus.TO_ARRIVE);
-                order.setItems(cart.getItems());
+                //order.setItems(cart.getItems());
                 order.setGrandTotal(grandTotal);
                 orderRepository.save(order);
 
                 CheckoutResponseDto response = CheckoutResponseDto.builder()
                         .customer(order.getCustomer())
-                        .items(order.getItems())
+                        //.items(order.getItems())
                         .deliveryFee(order.getDeliveryFee())
                         .modeOfDelivery(order.getModeOfDelivery())
                         .deliveryStatus(order.getDeliveryStatus())
@@ -129,3 +129,4 @@ public class CheckoutServiceImpl implements CheckoutService {
     }
 
 }
+

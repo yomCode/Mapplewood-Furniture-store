@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
+import java.util.List;
+
 
 public interface StatesService {
     String createState(StateRequest stateRequest);
@@ -15,6 +17,8 @@ public interface StatesService {
     void deleteState(Long id);
 
     StateResponse viewStateByName(String name);
+
+    List<StateResponse> viewAllStates();
 
     ResponseEntity<List<State>> getAllStates();
 }
