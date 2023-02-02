@@ -2,14 +2,18 @@ package com.decagon.OakLandv1be.services.serviceImpl;
 
 import com.cloudinary.utils.ObjectUtils;
 import com.decagon.OakLandv1be.config.CloudinaryConfig;
+import com.decagon.OakLandv1be.dto.NewProductRequestDto;
 import com.decagon.OakLandv1be.dto.ProductCustResponseDto;
 import com.decagon.OakLandv1be.dto.ProductResponseDto;
 import com.decagon.OakLandv1be.entities.Product;
+import com.decagon.OakLandv1be.entities.SubCategory;
+import com.decagon.OakLandv1be.exceptions.AlreadyExistsException;
 import com.decagon.OakLandv1be.exceptions.InvalidAttributeException;
 import com.decagon.OakLandv1be.exceptions.ProductNotFoundException;
 import com.decagon.OakLandv1be.exceptions.ResourceNotFoundException;
 import com.decagon.OakLandv1be.repositries.ProductRepository;
 import com.decagon.OakLandv1be.repositries.SubCategoryRepository;
+
 import com.decagon.OakLandv1be.services.ProductService;
 import com.decagon.OakLandv1be.utils.ApiResponse;
 import com.decagon.OakLandv1be.utils.Mapper;
@@ -163,6 +167,11 @@ public class ProductServiceImpl implements ProductService {
                 .color(product.getColor())
                 .description(product.getDescription())
                 .build();
+    }
+
+    @Override
+    public String uploadProductImageFileWithoutId(MultipartFile productImage) throws IOException {
+        return uploadImage(productImage);
     }
 
 }

@@ -2,17 +2,16 @@ package com.decagon.OakLandv1be.dto;
 
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class SignupRequestDto {
+@Builder
+public class AdminRequestDto {
     @NotBlank(message = "First name is mandatory")
     private String firstName;
 
@@ -29,11 +28,8 @@ public class SignupRequestDto {
 
     //@NotBlank(message = "Phone number is mandatory")
     @Size(min = 11, max = 14, message = "Phone number must have a minimum length of 11 and maximum of 15")
-    private String phone;
+    private String phoneNumber;
 
     private String address;
 
-    @NotBlank(message = "Password is mandatory")
-    @Size(min = 8, max=25, message="Password must be equal to or greater than 8 character and less than 25 characters")
-    private String password;
 }
