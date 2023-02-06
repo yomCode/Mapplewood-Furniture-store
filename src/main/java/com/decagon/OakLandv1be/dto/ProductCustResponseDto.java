@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ProductCustResponseDto {
 
+    private Long id;
+
     private String name;
 
     private Double price;

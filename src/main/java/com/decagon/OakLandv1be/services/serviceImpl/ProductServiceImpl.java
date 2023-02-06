@@ -155,8 +155,10 @@ public class ProductServiceImpl implements ProductService {
         fos.close();
         return convFile;
     }
+
     protected ProductCustResponseDto productResponseMapper(Product product){
         return ProductCustResponseDto.builder()
+                .id(product.getId())
                 .name(product.getName())
                 .price(product.getPrice())
                 .imageUrl(product.getImageUrl())
