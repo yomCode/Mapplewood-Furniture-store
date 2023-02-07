@@ -8,11 +8,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.stereotype.Service;
+
+import javax.mail.Message;
+import javax.mail.internet.MimeMessage;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
@@ -44,6 +50,7 @@ public class JavaMailServiceImpl implements JavaMailService {
         message.setSentDate(new Date());
         message.setSubject(subject);
         message.setText(text);
+
 
         try {
             LOGGER.info("Beginning of log *********");
@@ -81,5 +88,36 @@ public class JavaMailServiceImpl implements JavaMailService {
         if( attr == null ) return( 0 );
         return( attr.size() );
     }
+
+
+    public ResponseEntity<String> sendMailAlt(String receiverEmail, String subject, String text) {
+
+        if (!isValidEmail(receiverEmail))
+        new ResponseEntity<>("Email is not valid", HttpStatus.BAD_REQUEST);
+
+        isEmailDomainValid(receiverEmail);
+
+        MimeMessagePreparator messagePreparator = mimeMessage -> {
+            MimeMessageHelper message = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+            message.setFrom("funitureoakland@gmail.com");
+            message.setTo(receiverEmail);
+            message.setSubject(subject);
+            message.setText(text, true);
+//            message.addInline("logo", new ClassPathResource("img/logo.gif"));
+//            message.addAttachment("myDocument.pdf", new ClassPathResource("uploads/document.pdf"));
+        };
+
+        try {
+            LOGGER.info("Beginning of log *********");
+            LOGGER.info(IMPORTANT, "Sending mail to: " + receiverEmail);
+            javaMailSender.send(messagePreparator);
+            return new ResponseEntity<>("Sent", HttpStatus.OK);
+        } catch (Exception e) {
+            LOGGER.error(IMPORTANT, e.getMessage());
+        }
+
+        return new ResponseEntity<>("An Error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
 }
 

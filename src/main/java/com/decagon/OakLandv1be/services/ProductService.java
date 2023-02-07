@@ -25,7 +25,7 @@ public interface ProductService {
     void deleteProductImage(String publicUrl);
 
 
-    ApiResponse<Page<Product>> getAllProducts(Integer pageNo, Integer pageSize, String sortBy, boolean isAscending);
-    ApiResponse<Page<Product>> getAllProductsBySubCategory(Long subCategoryId, Integer pageNo, Integer pageSize, String sortBy, boolean isAscending);
+    ApiResponse<Page<ProductResponseDto>> getAllProducts(Integer pageNo, Integer pageSize, String sortBy, boolean isAscending);
+    ApiResponse<Page<ProductResponseDto>> getAllProductsBySubCategory(Long subCategoryId, Integer pageNo, Integer pageSize, String sortBy, boolean isAscending);
     String uploadProductImageFileWithoutId(MultipartFile productImage) throws IOException;
 }
