@@ -155,11 +155,6 @@ public class OrderServiceImpl implements OrderService {
         Set<Item> allCartItems = loggedInCustomer.getCart().getItems();
         Set<OrderItem> orderItems = new HashSet<>();
 
-
-        //create order entity and persist
-        //create orderItem entities and set order
-      //  persist orderItemRepository.saveAll(set)
-        //
         walletService.processPayment(grandTotal);
 
         Order order = Order.builder()
@@ -211,10 +206,9 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         pageNo=Math.max(pageNo,0);
-        pageSize=Math.max(pageSize,10);
+        pageSize=Math.max(pageSize,1);
         Pageable pageable=PageRequest.of(pageNo,pageSize);
         return orderRepository.findByCustomerIdAndPickupStatus(customer.getId(),status,pageable).map(this::orderResponseMapper);
-
     }
 
     private OrderResponseDto orderResponseMapper(Order order){
@@ -227,6 +221,8 @@ public class OrderServiceImpl implements OrderService {
                 .grandTotal(order.getGrandTotal())
                 .discount(order.getDiscount())
                 .address(order.getAddress())
+                .pickupCenter(order.getPickupCenter())
+                .transaction(order.getTransaction())
                 .build();
     }
 }

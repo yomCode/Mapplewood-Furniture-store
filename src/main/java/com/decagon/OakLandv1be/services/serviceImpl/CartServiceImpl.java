@@ -49,7 +49,7 @@ public class CartServiceImpl implements CartService {
             throw new NotAvailableException("Product out of stock");
         } else if(itemRepository.findByProductId(productId) != null){
             addToItemQuantity(productId);
-            return "";
+            return "Item quantity updated successfully";
         }
 
         Item newCartItem = Item.builder()
@@ -147,10 +147,6 @@ public class CartServiceImpl implements CartService {
                 itemRepository.save(item);
                 response += item.getProductName() + " quantity updated successfully";
             }
-
-            if(item.getOrderQty() == 1) {
-                removeItem(foundItem.getId());
-            }
         };
 
         cart.setTotal(cart.getTotal() - foundItem.getUnitPrice());
@@ -164,11 +160,15 @@ public class CartServiceImpl implements CartService {
         Customer loggedInCustomer = customerService.getCurrentlyLoggedInUser();
         Cart cart = loggedInCustomer.getCart();
         Set<Item> cartItems = cart.getItems();
+
+        for(Item item : cartItems){
+            itemRepository.deleteById(item.getId());
+        }
+
         cartItems.clear();
         cart.setItems(cartItems);
         cart.setTotal(0.0);
         cartRepository.save(cart);
-        itemRepository.deleteAll();
         return "Cart cleared successfully";
     }
 
