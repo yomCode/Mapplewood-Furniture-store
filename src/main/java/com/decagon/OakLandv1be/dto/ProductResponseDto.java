@@ -9,10 +9,11 @@ import lombok.Data;
 @Data
 @Builder
 public class ProductResponseDto {
+    private Long id;
 
     private String name;
 
-    private Double price;
+    private String price;
 
     private Integer sales;
 

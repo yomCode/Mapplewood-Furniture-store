@@ -25,6 +25,7 @@ import com.decagon.OakLandv1be.services.AdminService;
 import com.decagon.OakLandv1be.services.JavaMailService;
 import com.decagon.OakLandv1be.utils.ApiResponse;
 
+import com.decagon.OakLandv1be.utils.UserUtil;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.beans.BeanUtils;
@@ -34,6 +35,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -67,8 +70,9 @@ public class AdminServiceImpl implements AdminService {
         Product product = productRepository.findById(product_id)
                 .orElseThrow(() -> new ProductNotFoundException("This product was not found"));
         return ProductResponseDto.builder()
+                .id(product.getId())
                 .name(product.getName())
-                .price(product.getPrice())
+                .price(UserUtil.formatToLocale(BigDecimal.valueOf(product.getPrice())))
                 .imageUrl(product.getImageUrl())
                 .availableQty(product.getAvailableQty())
                 .subCategory(product.getSubCategory())
@@ -93,7 +97,7 @@ public class AdminServiceImpl implements AdminService {
         Product product = Product.builder()
                 .name(newProductRequestDto.getName())
                 .price(newProductRequestDto.getPrice())
-                .imageUrl("")
+                .imageUrl(newProductRequestDto.getImageUrl())
                 .availableQty(newProductRequestDto.getAvailableQty())
                 .subCategory(subCategory)
                 .color(newProductRequestDto.getColor())
@@ -103,7 +107,7 @@ public class AdminServiceImpl implements AdminService {
         Product newProduct = productRepository.save(product);
         ProductResponseDto productResponseDto = ProductResponseDto.builder()
                 .name(newProduct.getName())
-                .price(newProduct.getPrice())
+                .price(UserUtil.formatToLocale(BigDecimal.valueOf(newProductRequestDto.getPrice())))
                 .availableQty(newProduct.getAvailableQty())
                 .subCategory(SubCategory.builder()
                         .name(subCategory.getName())
