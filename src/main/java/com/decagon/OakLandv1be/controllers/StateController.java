@@ -1,11 +1,16 @@
 package com.decagon.OakLandv1be.controllers;
 
+import com.decagon.OakLandv1be.dto.CategoryDto;
 import com.decagon.OakLandv1be.dto.StateRequest;
+import com.decagon.OakLandv1be.dto.StateResponse;
+import com.decagon.OakLandv1be.entities.State;
 import com.decagon.OakLandv1be.services.StatesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/state")
@@ -20,7 +25,7 @@ public class StateController {
         return new ResponseEntity<>(statesService.createState(stateRequest),HttpStatus.CREATED);
     }
 
-    @GetMapping("/admin/delete_state/{id}")
+    @DeleteMapping("/admin/delete_state/{id}")
     @ResponseStatus(HttpStatus.OK)
     public  void deleteState(@PathVariable Long id){
 
@@ -35,5 +40,14 @@ public class StateController {
 
     }
 
+    @GetMapping("/view-all")
+    public ResponseEntity<List<StateResponse>> viewAllStates() {
+        return new ResponseEntity<>(statesService.viewAllStates(), HttpStatus.OK);
+    }
+
+    @GetMapping("/view-states")
+    public ResponseEntity<List<State>> getAllStates() {
+        return statesService.getAllStates();
+    }
 
 }

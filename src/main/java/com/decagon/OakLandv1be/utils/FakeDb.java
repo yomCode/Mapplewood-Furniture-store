@@ -4,6 +4,7 @@ import com.decagon.OakLandv1be.entities.*;
 import com.decagon.OakLandv1be.enums.BaseCurrency;
 import com.decagon.OakLandv1be.enums.Gender;
 import com.decagon.OakLandv1be.enums.Role;
+import com.decagon.OakLandv1be.exceptions.NotAvailableException;
 import com.decagon.OakLandv1be.exceptions.ProductNotFoundException;
 import com.decagon.OakLandv1be.repositries.*;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,12 @@ import java.util.List;
 public class FakeDb {
 
     private final PasswordEncoder passwordEncoder;
+
+    private final StateRepository stateRepository;
+    private final PickupRepository pickupRepository;
+
     private final AdminRepository adminRepository;
+
 
 
     @Bean
@@ -45,17 +51,37 @@ public class FakeDb {
                         .isActive(true)
                         .admin(admin)
                         .verificationStatus(true)
+                        .admin(admin)
                         .address("No Address")
                         .role(Role.ADMIN)
                         .password(passwordEncoder.encode("password123453"))
                         .isActive(true)
+                        .build();
+
+                Person adminPerson = personRepository.save(person);
+                admin.setPerson(adminPerson);
+                Admin savedAdmin = adminRepository.save(admin);
+
+                Customer customer = new Customer();
+                Person customerPerson = Person.builder()
+                        .firstName("Joe")
+                        .lastName("Lennon")
+                        .email("bennyson2@gmail.com")
+                        .gender(Gender.MALE)
+                        .date_of_birth("1996-03-12")
+                        .phone("9859595959")
+                        .isActive(true)
+                        .verificationStatus(true)
+                        .role(Role.CUSTOMER)
+                        .customer(customer)
+                        .address("No Address")
+                        .password(passwordEncoder.encode("password123453"))
+                        .isActive(true)
 
                         .build();
-                Person savedperson = personRepository.save(person);
-
-                admin.setPerson(person);
-                adminRepository.save(admin);
-
+                Person savedPerson = personRepository.save(customerPerson);
+                customer.setPerson(savedPerson);
+                customerRepository.save(customer);
 
                 Customer customer1 = new Customer();
                 Person person1 = Person.builder()
@@ -181,9 +207,97 @@ public class FakeDb {
                 customer4.setPerson(savedperson4);
                 customer4.setWallet(wallet3);
                 customerRepository.save(customer4);
+            }
 
+            if(!stateRepository.existsById(1L)) {
+                State lagos = State.builder()
+                        .name("Lagos")
+                        .build();
+                State kwara = State.builder()
+                        .name("Kwara")
+                        .build();
+                State anambra = State.builder()
+                        .name("Anambra")
+                        .build();
+                State osun = State.builder()
+                        .name("Osun")
+                        .build();
+                State akwaibom = State.builder()
+                        .name("AkwaIbom")
+                        .build();
+                State kano = State.builder()
+                        .name("Kano")
+                        .build();
+                List<State> states = List.of(lagos, kwara, anambra, osun, akwaibom, kano);
+                stateRepository.saveAll(states);
+            }
 
+            if(!pickupRepository.existsById(1L)) {
+                State lagos = stateRepository.findById(1L).orElseThrow(() -> new NotAvailableException("State not found"));
+                State kwara = stateRepository.findById(2L).orElseThrow(() -> new NotAvailableException("State not found"));
+                State anambra = stateRepository.findById(3L).orElseThrow(() -> new NotAvailableException("State not found"));
+                State osun = stateRepository.findById(4L).orElseThrow(() -> new NotAvailableException("State not found"));
+                State akwaibom = stateRepository.findById(5L).orElseThrow(() -> new NotAvailableException("State not found"));
+                State kano = stateRepository.findById(6L).orElseThrow(() -> new NotAvailableException("State not found"));
 
+                PickupCenter lagosPickup = PickupCenter.builder()
+                        .name("Lagos Pickup Center")
+                        .state(lagos)
+                        .email("lagospickup@oakland.com")
+                        .phone("09033444123")
+                        .address("12 Ibom Street, Allen, Ikeja, Lagos")
+                        .build();
+
+                PickupCenter lagosPickup2 = PickupCenter.builder()
+                        .name("2nd Lagos Pickup Center")
+                        .state(lagos)
+                        .email("lagospickuptwo@oakland.com")
+                        .phone("09033444111")
+                        .address("1 Aka Street, Allen, Oshodi, Lagos")
+                        .build();
+
+                PickupCenter kwaraPickup = PickupCenter.builder()
+                        .name("Kwara Pickup Center")
+                        .state(kwara)
+                        .email("kwarapickup@oakland.com")
+                        .phone("08022444123")
+                        .address("13 Ibom Street, Allen, Kwara")
+                        .build();
+
+                PickupCenter anambraPickup = PickupCenter.builder()
+                        .name("Anambra Pickup Center")
+                        .state(anambra)
+                        .email("anambrapickup@oakland.com")
+                        .phone("09011444123")
+                        .address("14 Ibom Street, Allen, Nnewi, Anmabra")
+                        .build();
+
+                PickupCenter osunPickup = PickupCenter.builder()
+                        .name("Osun Pickup Center")
+                        .state(osun)
+                        .email("osunpickup@oakland.com")
+                        .phone("08000444123")
+                        .address("15 Ibom Street, Oshogbo, Osun")
+                        .build();
+
+                PickupCenter akwaIbomPickup = PickupCenter.builder()
+                        .name("AkwaIbom Pickup Center")
+                        .state(akwaibom)
+                        .email("akwaibompickup@oakland.com")
+                        .phone("09055444123")
+                        .address("16 Ibom Street, AkwaIbom")
+                        .build();
+
+                PickupCenter kanoPickup = PickupCenter.builder()
+                        .name("Kano Pickup Center")
+                        .state(kano)
+                        .email("kanopickup@oakland.com")
+                        .phone("08133444123")
+                        .address("12 Ibom Street, kano, Kano")
+                        .build();
+
+                List<PickupCenter> pickupCenters = List.of(lagosPickup, lagosPickup2, kwaraPickup, anambraPickup, osunPickup, akwaIbomPickup, kanoPickup);
+                pickupRepository.saveAll(pickupCenters);
             }
 
             if (!categoryRepository.existsById(1L)) {

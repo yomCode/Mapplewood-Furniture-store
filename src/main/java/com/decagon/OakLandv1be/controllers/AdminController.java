@@ -31,9 +31,6 @@ public class AdminController {
        return new ResponseEntity<>(adminService.updatePickupCenter(pickupCenter_id, response), HttpStatus.OK);
     }
 
-
-
-
     @GetMapping("/products/{product_id}")
     public ResponseEntity<ProductResponseDto> viewASingleProduct(@PathVariable("product_id") Long product_id){
         return new ResponseEntity<>(adminService.fetchASingleProduct(product_id), HttpStatus.OK);

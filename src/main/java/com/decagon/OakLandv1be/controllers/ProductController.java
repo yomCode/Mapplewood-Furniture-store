@@ -1,11 +1,11 @@
 package com.decagon.OakLandv1be.controllers;
 
+import com.decagon.OakLandv1be.dto.NewProductRequestDto;
 import com.decagon.OakLandv1be.dto.ProductCustResponseDto;
-import com.decagon.OakLandv1be.dto.ProductResponseDto;
 import com.decagon.OakLandv1be.entities.Product;
-import com.decagon.OakLandv1be.services.ProductService;
-import com.decagon.OakLandv1be.services.serviceImpl.ProductServiceImpl;
 
+
+import com.decagon.OakLandv1be.services.ProductService;
 import com.decagon.OakLandv1be.utils.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 
@@ -74,6 +75,11 @@ public class ProductController {
                                                                  @RequestParam(defaultValue = "id") String sortBy,
                                                                  @RequestParam(defaultValue = "false") boolean isAscending) {
         return productService.getAllProductsBySubCategory(subCategoryId, pageNo, pageSize, sortBy, isAscending);
+    }
+
+    @PostMapping("/upload-image")
+    public ResponseEntity<Object> uploadProfilePic(@RequestPart MultipartFile productImage) throws IOException {
+        return ResponseEntity.ok(productService.uploadProductImageFileWithoutId(productImage));
     }
 
 }

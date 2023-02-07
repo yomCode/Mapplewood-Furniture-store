@@ -17,7 +17,7 @@ public class SignupResponseDto {
     private String email;
     private Gender gender;
     private String date_of_birth;
-    private String phone;
+    private String phoneNumber;
     private Boolean verificationStatus;
     private String address;
 }

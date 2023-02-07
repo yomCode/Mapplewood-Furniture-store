@@ -36,11 +36,13 @@ class PickupServiceImplTest {
 
         pickupCenter1 = new PickupCenter();
         pickupCenter1.setName("Roban Stores");
+        pickupCenter1.setEmail("roban@mail.com");
         pickupCenter1.setAddress("12 Roban St");
         pickupCenter1.setState(State.builder().name("LAGOS").build());
 
         pickupCenter2 = new PickupCenter();
         pickupCenter2.setName("Zain Pharmacy");
+        pickupCenter2.setEmail("zain@mail.com");
         pickupCenter2.setAddress("3 Zain St");
         pickupCenter1.setState(State.builder().name("EDO").build());
 
@@ -63,10 +65,10 @@ class PickupServiceImplTest {
     }
 
     @Test
-    public void testGetCenterByName() {
-        when(pickupRepository.findByName("Roban Stores")).thenReturn(Optional.of(pickupCenter1));
+    public void testGetCenterByEmail() {
+        when(pickupRepository.findByEmail("roban@mail.com")).thenReturn(Optional.of(pickupCenter1));
 
-        PickupCenterResponse response = pickupCenterService.getCenterByName("Roban Stores");
+        PickupCenterResponse response = pickupCenterService.getCenterByEmail("roban@mail.com");
 
         assertEquals("Roban Stores", response.getName());
         assertEquals("12 Roban St", response.getLocation());
