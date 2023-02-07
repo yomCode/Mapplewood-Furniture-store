@@ -96,14 +96,25 @@ public class CustomerServiceImpl implements CustomerService {
         token.setPerson(person);
         tokenRepository.save(token);
 
-        javaMailService.sendMail(signupRequestDto.getEmail(),
-                "Verify your email address",
-                "Hi " + person.getFirstName() + " " + person.getLastName() +
-                        ", Thank you for your interest in joining Oakland." +
+        String subject = "Verify email address";
 
+        String message =
+
+                "<html> " +
+                    "<body>" +
+                        "<h5>Hi " + person.getFirstName() + " " + person.getLastName() +",<h5> <br>" +
+                        "<p>Thank you for your interest in joining Oakland." +
                         "To complete your registration, we need you to verify your email address \n" +
-                        "http://" + request.getServerName() + ":3000" + "/verifyRegistration?token=" +
-                        validToken);
+                        "<br><a href=[[TOKEN_URL]]>CLICK TO VERIFY</a><p>" +
+                    "</body> " +
+                "</html>";
+
+
+        String url = "http://" + request.getServerName() + ":3000" + "/verifyRegistration?token=" + validToken;
+
+        message = message.replace("[[TOKEN_URL]]", url);
+
+        javaMailService.sendMailAlt(signupRequestDto.getEmail(), subject, message);
 
         // use the user object to create UserResponseDto Object
         SignupResponseDto signupResponseDto = new SignupResponseDto();
@@ -128,12 +139,26 @@ public class CustomerServiceImpl implements CustomerService {
             token.setPerson(person);
             tokenRepository.save(token);
 
-            javaMailService.sendMail(email,
-                    "Verify your email address",
-                    "Hi " + person.getFirstName() + " " + person.getLastName() + "," +
-                            " Thank you for your interest in joining Oakland." +
-                            "To complete your registration, we need you to verify your email address \n" + "http://" + request.getServerName() + ":3000" + "/verifyRegistration?token=" +
-                            validToken);
+            String subject = "Verify email address";
+
+            String message =
+
+                    "<html> " +
+                            "<body>" +
+                            "<h5>Hi " + person.getFirstName() + " " + person.getLastName() +",<h5> <br>" +
+                            "<p>Thank you for your interest in joining Oakland." +
+                            "To complete your registration, we need you to verify your email address \n" +
+                            "<br><a href=[[TOKEN_URL]]>CLICK TO VERIFY AGAIN</a><p>" +
+                            "</body> " +
+                            "</html>";
+
+
+            String url = "http://" + request.getServerName() + ":3000" + "/verifyRegistration?token=" + validToken;
+
+            message = message.replace("[[TOKEN_URL]]", url);
+
+            javaMailService.sendMailAlt(email, subject, message);
+
         }else
             throw new AlreadyExistsException("User is already verified");
         return new ResponseEntity<>(responseManager.success("Verification token resent. Check your email"), HttpStatus.OK);

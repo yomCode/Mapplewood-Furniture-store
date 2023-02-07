@@ -50,7 +50,8 @@ class AdminControllerTest {
             product.setColor("green");
             product.setPrice(2000.00);
             product.setDescription("strong black");
-            ProductResponseDto productResponseDto = ProductResponseDto.builder().name("Tall dinning chair").price(2000.00).imageUrl("hgdhg").availableQty(3)
+            ProductResponseDto productResponseDto = ProductResponseDto.builder().name("Tall dinning chair")
+                    .price("#2000.00").imageUrl("hgdhg").availableQty(3)
                     .subCategory(subCategory).color("green").description("strong black").build();
             when(adminService.fetchASingleProduct(anyLong())).thenReturn(productResponseDto);
             mockMvc.perform(get("/api/v1/admin/products/{product_id}", 2L)
