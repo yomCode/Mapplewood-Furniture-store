@@ -161,14 +161,11 @@ public class WalletServiceImpl implements WalletService {
                     .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
             Wallet wallet = person.getCustomer().getWallet();
 
-            NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("en", "NG"));
-            DecimalFormat df = (DecimalFormat) nf;
-            df.applyPattern("¤###,###.00");
-
-            String currencyString = df.format(wallet.getAccountBalance());
+            String currencyString = UserUtil.formatToLocale(wallet.getAccountBalance());
 
             DecimalFormatSymbols symbols = new DecimalFormatSymbols(new Locale("en", "NG"));
             symbols.setCurrencySymbol("₦");
+
 
             return WalletInfoResponseDto.builder()
                     .firstName(person.getFirstName())

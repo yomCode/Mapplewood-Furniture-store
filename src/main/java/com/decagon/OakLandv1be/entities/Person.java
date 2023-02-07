@@ -18,11 +18,11 @@ import javax.validation.constraints.Size;
 @Table(name = "person_tbl")
 public class Person extends BaseEntity{
 
-    @NotNull(message = "Name cannot be missing or empty")
+    @NotNull(message = "First name cannot be missing or empty")
     @Column(nullable = false, length = 50)
     private String firstName;
 
-    @NotNull(message = "Name cannot be missing or empty")
+    @NotNull(message = "Last name cannot be missing or empty")
     @Column(nullable = false, length = 50)
     private String lastName;
 

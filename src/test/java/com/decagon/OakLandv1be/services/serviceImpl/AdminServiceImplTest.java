@@ -73,7 +73,7 @@ class AdminServiceImplTest {
                 .description("strong black").build();
         productResponseDto = ProductResponseDto.builder()
                 .name("Tall dinning chair")
-                .price(2000.00)
+                .price("#2000.00")
                 .imageUrl("hgdhg")
                 .availableQty(3)
                 .subCategory(subCategory)

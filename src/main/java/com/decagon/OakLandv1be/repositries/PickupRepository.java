@@ -8,7 +8,9 @@ import java.util.Optional;
 
 @Repository
 public interface PickupRepository extends JpaRepository<PickupCenter, Long> {
-    Optional<PickupCenter> findByName(String name);
+//    Optional<PickupCenter> findByName(String name);
+
+    Optional<PickupCenter> findByEmail(String email);
 
     boolean existsByName(String name);
 }

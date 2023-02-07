@@ -29,5 +29,5 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     Product findByItem(Item item);
     Product findByItemProductName(String itemName);
     @Query(value="SELECT * FROM product_tbl WHERE sub_category_id=?", nativeQuery = true)
-    Page<Product> findAllBySubCategoryId(Long subCategoryId, PageRequest of);
+    List<Product> findAllBySubCategoryId(Long subCategoryId);
 }
