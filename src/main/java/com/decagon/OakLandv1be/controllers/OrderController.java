@@ -36,7 +36,7 @@ public class OrderController {
     }
 
     @GetMapping("admin/orders")
-    public ResponseEntity<Page<OrderResponseDto>> viewAllOrdersPaginated(
+    public ResponseEntity<Page<AdminOrderResponseDto>> viewAllOrdersPaginated(
                         @RequestParam(defaultValue = "0") Integer pageNo,
                         @RequestParam(defaultValue = "16") Integer pageSize,
                         @RequestParam(defaultValue = "id") String sortBy,
@@ -56,11 +56,13 @@ public class OrderController {
             @RequestParam(defaultValue = "10") Integer pageSize    ){
         return ResponseEntity.ok(orderService.getOrderByDeliveryStatus(status, pageNo, pageSize));
     }
-    @GetMapping("customer/order/delivery-status")
+
+    @GetMapping("customer/order/pickup-status")
     public ResponseEntity<Page<OrderResponseDto>> orderByPickupStatus(
             @RequestParam PickupStatus status,
             @RequestParam(defaultValue = "0") Integer pageNo,
-            @RequestParam(defaultValue = "10") Integer pageSize    ){
+            @RequestParam(defaultValue = "1") Integer pageSize,
+            @RequestParam(defaultValue = "id") String sortBy ){
         return ResponseEntity.ok(orderService.getCustomerOrderByPickupStatus(status, pageNo, pageSize));
     }
 }

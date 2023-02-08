@@ -36,7 +36,7 @@ public class SubCategoryServiceImpl implements SubCategoryService {
         if (subCategoryRepository.existsByName(subCategoryDto.getName()))
             throw new AlreadyExistsException("Kindly create another subCategory with a different name");
         SubCategory subCategory = SubCategory.builder()
-                .name(subCategoryDto.getName())
+                .name(subCategoryDto.getName().toUpperCase())
                 .category(category)
                 .imageUrl(subCategoryDto.getImageUrl())
                 .build();

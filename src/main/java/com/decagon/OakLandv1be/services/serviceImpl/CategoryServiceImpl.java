@@ -30,7 +30,7 @@ public class CategoryServiceImpl implements CategoryService {
         if (categoryRepository.existsByName(categoryDto.getName()))
             throw new AlreadyExistsException("Please create another category with a different name");
         Category category = Category.builder()
-                .name(categoryDto.getName())
+                .name(categoryDto.getName().toUpperCase())
                 .imageUrl(categoryDto.getImageUrl())
                 .build();
         categoryRepository.save(category);

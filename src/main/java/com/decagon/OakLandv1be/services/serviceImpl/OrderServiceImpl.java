@@ -1,5 +1,6 @@
 package com.decagon.OakLandv1be.services.serviceImpl;
 
+import com.decagon.OakLandv1be.dto.AdminOrderResponseDto;
 import com.decagon.OakLandv1be.dto.OrderRequestDto;
 import com.decagon.OakLandv1be.dto.OrderResponseDto;
 
@@ -104,22 +105,22 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Page<OrderResponseDto> viewAllOrdersPaginated(Integer pageNo, Integer pageSize, String sortBy, boolean isAscending) {
+    public Page<AdminOrderResponseDto> viewAllOrdersPaginated(Integer pageNo, Integer pageSize, String sortBy, boolean isAscending) {
         List<Order> orders = orderRepository.findAll();
         if(orders.isEmpty()){
             throw new EmptyListException("Sorry there are no Customer orders yet");
         }
-        List<OrderResponseDto> orderResponseDtos =
+        List<AdminOrderResponseDto> orderResponseDtos =
                 orders.stream()
-                        .map(order -> OrderResponseDto.builder()
-                                .modeOfPayment(order.getModeOfPayment())
-                                .items(order.getItems())
-                                .deliveryFee(order.getDeliveryFee())
-                                .modeOfDelivery(order.getModeOfDelivery())
-                                .deliveryStatus(DeliveryStatus.TO_ARRIVE)
+                        .map(order -> AdminOrderResponseDto.builder()
+                                .firstName(order.getCustomer().getPerson().getFirstName())
+                                .lastName(order.getCustomer().getPerson().getLastName())
+                                .phone(order.getCustomer().getPerson().getPhone())
                                 .grandTotal(order.getGrandTotal())
-                                .discount(order.getDiscount())
-                                .address(order.getAddress())
+                                .status(order.getTransaction().getStatus().name())
+                                .pickupCenterName(order.getPickupCenter().getName())
+                                .pickupCenterAddress(order.getPickupCenter().getAddress())
+                                .pickupStatus(order.getPickupStatus().name())
                 .build()).collect(Collectors.toList());
 
         PageRequest pageable = PageRequest.of(pageNo, pageSize, Sort.Direction.DESC, sortBy);
@@ -155,11 +156,6 @@ public class OrderServiceImpl implements OrderService {
         Set<Item> allCartItems = loggedInCustomer.getCart().getItems();
         Set<OrderItem> orderItems = new HashSet<>();
 
-
-        //create order entity and persist
-        //create orderItem entities and set order
-      //  persist orderItemRepository.saveAll(set)
-        //
         walletService.processPayment(grandTotal);
 
         Order order = Order.builder()
@@ -211,10 +207,9 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         pageNo=Math.max(pageNo,0);
-        pageSize=Math.max(pageSize,10);
+        pageSize=Math.max(pageSize,1);
         Pageable pageable=PageRequest.of(pageNo,pageSize);
         return orderRepository.findByCustomerIdAndPickupStatus(customer.getId(),status,pageable).map(this::orderResponseMapper);
-
     }
 
     private OrderResponseDto orderResponseMapper(Order order){
@@ -227,6 +222,8 @@ public class OrderServiceImpl implements OrderService {
                 .grandTotal(order.getGrandTotal())
                 .discount(order.getDiscount())
                 .address(order.getAddress())
+                .pickupCenter(order.getPickupCenter())
+                .transaction(order.getTransaction())
                 .build();
     }
 }

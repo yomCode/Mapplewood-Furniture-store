@@ -83,6 +83,14 @@ public class FakeDb {
                 customer.setPerson(savedPerson);
                 customerRepository.save(customer);
 
+                Wallet wallet1 = Wallet.builder()
+                        .baseCurrency(BaseCurrency.NAIRA)
+                        .accountBalance(BigDecimal.valueOf(400000))
+                        .build();
+
+                customer.setWallet(wallet1);
+                customerRepository.save(customer);
+
                 Customer customer1 = new Customer();
                 Person person1 = Person.builder()
                         .firstName("Alex")
@@ -135,13 +143,13 @@ public class FakeDb {
 
                 customer1.setPerson(person2);
 
-                Wallet wallet1 = Wallet.builder()
+                Wallet wallet0 = Wallet.builder()
                         .baseCurrency(BaseCurrency.NAIRA)
-                        .accountBalance(BigDecimal.valueOf(400000))
+                        .accountBalance(BigDecimal.valueOf(0))
                         .build();
 
                 customer2.setPerson(savedperson2);
-                customer2.setWallet(wallet1);
+                customer2.setWallet(wallet0);
                 customerRepository.save(customer2);
 
 
@@ -174,8 +182,6 @@ public class FakeDb {
                 customer3.setPerson(savedperson3);
                 customer3.setWallet(wallet2);
                 customerRepository.save(customer3);
-
-
 
 
                 Customer customer4 = new Customer();
@@ -211,22 +217,22 @@ public class FakeDb {
 
             if(!stateRepository.existsById(1L)) {
                 State lagos = State.builder()
-                        .name("Lagos")
+                        .name("Lagos".toUpperCase())
                         .build();
                 State kwara = State.builder()
-                        .name("Kwara")
+                        .name("Kwara".toUpperCase())
                         .build();
                 State anambra = State.builder()
-                        .name("Anambra")
+                        .name("Anambra".toUpperCase())
                         .build();
                 State osun = State.builder()
-                        .name("Osun")
+                        .name("Osun".toUpperCase())
                         .build();
                 State akwaibom = State.builder()
-                        .name("AkwaIbom")
+                        .name("AkwaIbom".toUpperCase())
                         .build();
                 State kano = State.builder()
-                        .name("Kano")
+                        .name("Kano".toUpperCase())
                         .build();
                 List<State> states = List.of(lagos, kwara, anambra, osun, akwaibom, kano);
                 stateRepository.saveAll(states);
@@ -246,6 +252,7 @@ public class FakeDb {
                         .email("lagospickup@oakland.com")
                         .phone("09033444123")
                         .address("12 Ibom Street, Allen, Ikeja, Lagos")
+                        .delivery(5000D)
                         .build();
 
                 PickupCenter lagosPickup2 = PickupCenter.builder()
@@ -254,6 +261,7 @@ public class FakeDb {
                         .email("lagospickuptwo@oakland.com")
                         .phone("09033444111")
                         .address("1 Aka Street, Allen, Oshodi, Lagos")
+                        .delivery(4500D)
                         .build();
 
                 PickupCenter kwaraPickup = PickupCenter.builder()
@@ -262,6 +270,7 @@ public class FakeDb {
                         .email("kwarapickup@oakland.com")
                         .phone("08022444123")
                         .address("13 Ibom Street, Allen, Kwara")
+                        .delivery(8500D)
                         .build();
 
                 PickupCenter anambraPickup = PickupCenter.builder()
@@ -270,6 +279,7 @@ public class FakeDb {
                         .email("anambrapickup@oakland.com")
                         .phone("09011444123")
                         .address("14 Ibom Street, Allen, Nnewi, Anmabra")
+                        .delivery(5000D)
                         .build();
 
                 PickupCenter osunPickup = PickupCenter.builder()
@@ -278,6 +288,7 @@ public class FakeDb {
                         .email("osunpickup@oakland.com")
                         .phone("08000444123")
                         .address("15 Ibom Street, Oshogbo, Osun")
+                        .delivery(4500D)
                         .build();
 
                 PickupCenter akwaIbomPickup = PickupCenter.builder()
@@ -286,6 +297,7 @@ public class FakeDb {
                         .email("akwaibompickup@oakland.com")
                         .phone("09055444123")
                         .address("16 Ibom Street, AkwaIbom")
+                        .delivery(5500D)
                         .build();
 
                 PickupCenter kanoPickup = PickupCenter.builder()
@@ -294,6 +306,7 @@ public class FakeDb {
                         .email("kanopickup@oakland.com")
                         .phone("08133444123")
                         .address("12 Ibom Street, kano, Kano")
+                        .delivery(8000D)
                         .build();
 
                 List<PickupCenter> pickupCenters = List.of(lagosPickup, lagosPickup2, kwaraPickup, anambraPickup, osunPickup, akwaIbomPickup, kanoPickup);
@@ -303,28 +316,36 @@ public class FakeDb {
             if (!categoryRepository.existsById(1L)) {
 
                 Category table = Category.builder()
-                        .name("Table")
+                        .name("Table".toUpperCase())
+                        .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/RBSJBF@2x-300x300.jpg")
                         .build();
                 Category chair = Category.builder()
-                        .name("Chair")
+                        .name("Chair".toUpperCase())
+                        .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-WAX664T@2x-300x300.jpg")
                         .build();
                 Category cupboard = Category.builder()
-                        .name("Cupboard")
+                        .name("Cupboard".toUpperCase())
+                        .imageUrl("https://th.bing.com/th/id/R.283fb4960158a3608b8b2fbb553d10ab?rik=74UYA0mjX3VG1g&pid=ImgRaw&r=0")
                         .build();
                 Category sofa = Category.builder()
-                        .name("Sofa")
+                        .name("Sofa".toUpperCase())
+                        .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/4PHLD2@2x-300x300.jpg")
                         .build();
                 Category dresser = Category.builder()
-                        .name("Dresser")
+                        .name("Dresser".toUpperCase())
+                        .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/YMN7ZV@2x-300x300.jpg")
                         .build();
                 Category modern = Category.builder()
-                        .name("Modern")
+                        .name("Modern".toUpperCase())
+                        .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Group-1@2x-300x300.jpg")
                         .build();
                 Category lamps = Category.builder()
-                        .name("Lamps")
+                        .name("Lamps".toUpperCase())
+                        .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/NAM2CS@2x-300x300.jpg")
                         .build();
                 Category wooden = Category.builder()
-                        .name("Wooden")
+                        .name("Wooden".toUpperCase().toUpperCase())
+                        .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/92DNEPD@2x-300x300.jpg")
                         .build();
                 List<Category> categories = List.of(table, sofa, cupboard, chair, dresser, modern, lamps, wooden);
                 categoryRepository.saveAll(categories);
@@ -341,115 +362,110 @@ public class FakeDb {
                 Category wooden = categoryRepository.findById(8L).orElseThrow(() -> new ProductNotFoundException("Not found!"));
 
                 SubCategory lamp2 = SubCategory.builder()
-                        .name("Coffee Lamp")
+                        .name("Deco Lamp".toUpperCase())
+                        .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/XFSNSK@2x-300x300.jpg")
                         .category(lamps)
                         .build();
                 SubCategory lamp1 = SubCategory.builder()
-                        .name("Nighty Lamp")
-                        .category(lamps)
-                        .build();
-                SubCategory lamp3 = SubCategory.builder()
-                        .name("Work Lamp")
+                        .name("Table Lamp".toUpperCase())
+                        .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
                         .category(lamps)
                         .build();
 
                 SubCategory table4 = SubCategory.builder()
-                        .name("Oak Table")
+                        .name("Coffee Table".toUpperCase())
+                        .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/J7ZW2XK@2x-300x300.jpg")
                         .category(table)
                         .build();
                 SubCategory table3 = SubCategory.builder()
-                        .name("Dining Table")
+                        .name("End Table".toUpperCase())
+                        .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-RBSJBF@2x-300x300.jpg")
                         .category(table)
                         .build();
                 SubCategory table2 = SubCategory.builder()
-                        .name("Work Table")
+                        .name("Modern Table".toUpperCase())
+                        .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Group-1@2x-300x300.jpg")
                         .category(table)
                         .build();
                 SubCategory table1 = SubCategory.builder()
-                        .name("Chief Table")
+                        .name("Table Wood".toUpperCase())
+                        .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/3N8FQJ@2x-300x300.jpg")
                         .category(table)
                         .build();
                 SubCategory chair2 = SubCategory.builder()
-                        .name("Work Chair")
+                        .name("Recliner Chair".toUpperCase())
+                        .imageUrl("https://th.bing.com/th/id/R.5bdd3851db3752d798d5d9debb46a9a7?rik=FqdmQr%2b8UzxR2g&pid=ImgRaw&r=0")
                         .category(chair)
                         .build();
                 SubCategory chair1 = SubCategory.builder()
-                        .name("Sofa Chair")
+                        .name("Arm Chair".toUpperCase())
+                        .imageUrl("https://th.bing.com/th/id/OIP.yYV6XzWVGdCVZI2h2uXlGAHaDt?pid=ImgDet&rs=1")
                         .category(chair)
                         .build();
                 SubCategory wooden2 = SubCategory.builder()
-                        .name("Sheriff Wood")
+                        .name("Shelves Wood".toUpperCase())
+                        .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-U5BW8PS@2x-300x300.jpg")
                         .category(wooden)
                         .build();
                 SubCategory wooden3 = SubCategory.builder()
-                        .name("Table Wood")
+                        .name("Table Wood".toUpperCase())
+                        .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/3N8FQJ@2x-300x300.jpg")
                         .category(wooden)
                         .build();
                 SubCategory wooden1 = SubCategory.builder()
-                        .name("Wooden Rack")
+                        .name("Wooden Rack".toUpperCase())
+                        .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-92DNEPD@2x-300x300.jpg")
                         .category(wooden)
                         .build();
                 SubCategory modern2 = SubCategory.builder()
-                        .name("Upperside Chair")
+                        .name("New Age Chair".toUpperCase())
+                        .imageUrl("https://th.bing.com/th/id/OIP.IK6LM7F-kXcngeThmlB5KgAAAA?pid=ImgDet&w=300&h=300&rs=1")
                         .category(modern)
                         .build();
                 SubCategory modern1 = SubCategory.builder()
-                        .name("Minty Fresh Chair")
+                        .name("Modern Chair".toUpperCase())
+                        .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-WAX664T@2x-300x300.jpg")
                         .category(modern)
                         .build();
                 SubCategory modern4 = SubCategory.builder()
-                        .name("Top Table")
+                        .name("Modern Table".toUpperCase())
+                        .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Group-1@2x-300x300.jpg")
                         .category(modern)
-                        .build();
-                SubCategory modern3 = SubCategory.builder()
-                        .name("High Lifting Cupboard")
-                        .category(modern)
-                        .build();
-                SubCategory sofa3 = SubCategory.builder()
-                        .name("Home Sofa")
-                        .category(sofa)
                         .build();
                 SubCategory sofa2 = SubCategory.builder()
-                        .name("Work Sofa")
+                        .name("Lounge Sofa".toUpperCase())
+                        .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/JD46ETY@2x-300x300.jpg")
                         .category(sofa)
                         .build();
                 SubCategory sofa1 = SubCategory.builder()
-                        .name("Living Room Sofa")
+                        .name("Luxury Sofa".toUpperCase())
+                        .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/4PHLD2@2x-300x300.jpg")
                         .category(sofa)
                         .build();
                 SubCategory cupboard1 = SubCategory.builder()
-                        .name("Dresser")
+                        .name("Arc Cupboard".toUpperCase())
+                        .imageUrl("https://th.bing.com/th/id/OIP.PoITRe2lfX9fz-U35ixkggAAAA?pid=ImgDet&rs=1")
                         .category(cupboard)
                         .build();
                 SubCategory cupboard2 = SubCategory.builder()
-                        .name("6ft Cupboard")
+                        .name("Kitchen Cupboard".toUpperCase())
+                        .imageUrl("https://th.bing.com/th/id/OIP.uf0BRnMEJEOxk3tx2mHGMgHaHa?pid=ImgDet&w=500&h=500&rs=1")
                         .category(cupboard)
                         .build();
-                SubCategory dresser4 = SubCategory.builder()
-                        .name("BK Dresser")
-                        .category(dresser)
-                        .build();
-                SubCategory dresser3 = SubCategory.builder()
-                        .name("Upperside Dresser")
-                        .category(dresser)
-                        .build();
-                SubCategory dresser2 = SubCategory.builder()
-                        .name("Minty Fresh Dresser")
-                        .category(dresser)
-                        .build();
                 SubCategory dresser1 = SubCategory.builder()
-                        .name("Top Dresser")
+                        .name("Scandinavia Dresser".toUpperCase())
+                        .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/YMN7ZV@2x-300x300.jpg")
                         .category(dresser)
                         .build();
                 List<SubCategory> subCategories = List.of(
                         table1, table2, table3, table4,
                         wooden2, wooden1, wooden3,
-                        sofa1, sofa2, sofa3,
+                        sofa1, sofa2,
                         cupboard1, cupboard2,
                         chair1, chair2,
-                        modern1, modern2, modern3, modern4,
-                        dresser1, dresser2, dresser3, dresser4,
-                        lamp1, lamp2, lamp3
+                        modern1, modern2, modern4,
+                        dresser1,
+                        lamp1, lamp2
                 );
 
 
@@ -463,481 +479,360 @@ public class FakeDb {
                 SubCategory table1 = subCategoryRepository.findById(1L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
                 SubCategory table2 = subCategoryRepository.findById(2L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
                 SubCategory table3 = subCategoryRepository.findById(3L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
-                SubCategory table4 = subCategoryRepository.findById(4L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
-                SubCategory wooden2 = subCategoryRepository.findById(5L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
-                SubCategory wooden1 = subCategoryRepository.findById(6L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
+                SubCategory wooden2 = subCategoryRepository.findById(4L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
+                SubCategory wooden1 = subCategoryRepository.findById(5L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
 
-                SubCategory wooden3 = subCategoryRepository.findById(7L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
-                SubCategory sofa1 = subCategoryRepository.findById(8L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
+                SubCategory wooden3 = subCategoryRepository.findById(6L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
+                SubCategory sofa1 = subCategoryRepository.findById(7L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
+                SubCategory sofa2 = subCategoryRepository.findById(8L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
+                SubCategory sofa3 = subCategoryRepository.findById(9L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
+                SubCategory cupboard1 = subCategoryRepository.findById(10L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
 
-                SubCategory sofa2 = subCategoryRepository.findById(9L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
-                SubCategory sofa3 = subCategoryRepository.findById(10L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
-                SubCategory cupboard1 = subCategoryRepository.findById(11L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
+                SubCategory cupboard2 = subCategoryRepository.findById(11L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
+                SubCategory chair1 = subCategoryRepository.findById(12L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
+                SubCategory chair2 = subCategoryRepository.findById(13L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
+                SubCategory modern1 = subCategoryRepository.findById(14L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
 
-                SubCategory cupboard2 = subCategoryRepository.findById(12L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
-                SubCategory chair1 = subCategoryRepository.findById(13L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
-
-                SubCategory chair2 = subCategoryRepository.findById(14L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
-                SubCategory modern1 = subCategoryRepository.findById(15L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
-
-                SubCategory modern2 = subCategoryRepository.findById(16L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
-
-                SubCategory modern3 = subCategoryRepository.findById(17L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
-                SubCategory modern4 = subCategoryRepository.findById(18L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
-                SubCategory dresser1 = subCategoryRepository.findById(19L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
-                SubCategory dresser2 = subCategoryRepository.findById(20L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
-
-                SubCategory dresser3 = subCategoryRepository.findById(21L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
-                SubCategory dresser4 = subCategoryRepository.findById(22L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
-                SubCategory lamp1 = subCategoryRepository.findById(23L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
-                SubCategory lamp2 = subCategoryRepository.findById(24L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
-                SubCategory lamp3 = subCategoryRepository.findById(25L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
+                SubCategory modern2 = subCategoryRepository.findById(15L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
+                SubCategory modern3 = subCategoryRepository.findById(16L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
+                SubCategory dresser3 = subCategoryRepository.findById(17L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
+                SubCategory lamp1 = subCategoryRepository.findById(18L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
+                SubCategory lamp2 = subCategoryRepository.findById(19L).orElseThrow(() -> new ProductNotFoundException("Category not found!"));
 
 
                 List<Product> products = List.of(
                         Product.builder()
-                                .name("Oppola")
-                                .price(40000.00)
-                                .availableQty(400)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
-                                .color("yellow")
-                                .subCategory(lamp1)
-                                .description("lovely fur")
-                                .build(),
-
-
-                        Product.builder()
-                                .name("Table")
-                                .price(10000.00)
-                                .availableQty(20)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
-                                .color("brown")
-                                .subCategory(lamp2)
-                                .description("lovely furnished Lorem Ipsum")
-                                .build(),
-                        Product.builder()
-                                .name("Coffee Lamp")
-                                .price(50000.00)
-                                .availableQty(100)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
-                                .color("sunset yellow")
-                                .subCategory(lamp3)
-                                .description("lovely fur")
-                                .build(),
-                        Product.builder()
-                                .name("Jummy")
-                                .price(20000.00)
-                                .availableQty(440)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
-                                .color("gray")
-                                .subCategory(modern1)
-                                .description("lovely fur")
-                                .build(),
-                        Product.builder()
-                                .name("Cupboard")
-                                .price(40000.00)
-                                .availableQty(400)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
-                                .color("yellow")
-                                .subCategory(modern2)
-                                .description("lovely fur")
-                                .build(),
-                        Product.builder()
-                                .name("Oppola15")
-                                .price(41000.00)
-                                .availableQty(400)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
-                                .color("yellow")
-                                .subCategory(modern3)
-                                .description("lovely fur")
-                                .build(),
-                        Product.builder()
-                                .name("Oppola16")
-                                .price(42000.00)
-                                .availableQty(400)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
-                                .color("yellow")
-                                .subCategory(chair1)
-                                .description("lovely fur")
-                                .build(),
-                        Product.builder()
-                                .name("Oppola17")
+                                .name("TRYSIL WARDROBE")
                                 .price(43000.00)
                                 .availableQty(400)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
-                                .color("yellow")
-                                .subCategory(chair2)
-                                .description("lovely fur")
-                                .build(),
-                        Product.builder()
-                                .name("Oppola18")
-                                .price(44000.00)
-                                .availableQty(400)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
-                                .color("yellow")
-                                .subCategory(dresser4)
-                                .description("lovely fur")
-                                .build(),
-                        Product.builder()
-                                .name("Oppola19")
-                                .price(45000.00)
-                                .availableQty(400)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
-                                .color("yellow")
-                                .subCategory(table4)
-                                .description("lovely fur")
-                                .build(),
-                        Product.builder()
-                                .name("Oppola20")
-                                .price(46000.00)
-                                .availableQty(400)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
-                                .color("yellow")
-                                .subCategory(table3)
-                                .description("lovely fur")
-                                .build(),
-                        Product.builder()
-                                .name("Oppola21")
-                                .price(47000.00)
-                                .availableQty(400)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
-                                .color("yellow")
-                                .subCategory(modern1)
-                                .description("lovely fur")
-                                .build(),
-                        Product.builder()
-                                .name("Oppola22")
-                                .price(48000.00)
-                                .availableQty(400)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
-                                .color("yellow")
-                                .subCategory(sofa1)
-                                .description("lovely fur")
-                                .build(),
-                        Product.builder()
-                                .name("Oppola23")
-                                .price(49000.00)
-                                .availableQty(400)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
-                                .color("yellow")
-                                .subCategory(sofa2)
-                                .description("lovely fur")
-                                .build(),
-                        Product.builder()
-                                .name("Oppola24")
-                                .price(50000.00)
-                                .availableQty(400)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
-                                .color("yellow")
-                                .subCategory(sofa3)
-                                .description("lovely fur")
-                                .build(),
-                        Product.builder()
-                                .name("Oppola25")
-                                .price(51000.00)
-                                .availableQty(400)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
+                                .imageUrl("https://cdn.shopify.com/s/files/1/1185/9434/products/trysil-wardrobe-with-sliding-doors-14244301511_300x.jpg?v=1586962362")
                                 .color("yellow")
                                 .subCategory(cupboard1)
                                 .description("lovely fur")
                                 .build(),
                         Product.builder()
-                                .name("Oppola26")
-                                .price(52000.00)
-                                .availableQty(400)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
-                                .color("yellow")
-                                .subCategory(cupboard2)
-                                .description("lovely fur")
-                                .build(),
-                        Product.builder()
-                                .name("Oppola27")
-                                .price(53000.00)
-                                .availableQty(400)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
-                                .color("yellow")
-                                .subCategory(dresser2)
-                                .description("lovely fur")
-                                .build(),
-                        Product.builder()
-                                .name("Oppola28")
-                                .price(54000.00)
-                                .availableQty(400)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
-                                .color("yellow")
-                                .subCategory(dresser3)
-                                .description("lovely fur")
-                                .build(),
-                        Product.builder()
-                                .name("Oppola29")
+                                .name("CAPE BED SET")
                                 .price(55000.00)
                                 .availableQty(400)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
-                                .color("yellow")
-                                .subCategory(modern4)
-                                .description("lovely fur")
-                                .build(),
-                        Product.builder()
-                                .name("Oppola30")
-                                .price(56000.00)
-                                .availableQty(400)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
-                                .color("yellow")
-                                .subCategory(modern1)
-                                .description("lovely fur")
-                                .build(),
-
-                        Product.builder()
-                                .name("Oppola31")
-                                .price(43000.00)
-                                .availableQty(400)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
-                                .color("yellow")
-                                .subCategory(modern1)
-                                .description("lovely fur")
-                                .build(),
-                        Product.builder()
-                                .name("Oppola32")
-                                .price(44000.00)
-                                .availableQty(400)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
-                                .color("yellow")
-                                .subCategory(sofa1)
-                                .description("lovely fur")
-                                .build(),
-                        Product.builder()
-                                .name("Oppola33")
-                                .price(45000.00)
-                                .availableQty(400)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
-                                .color("yellow")
-                                .subCategory(chair1)
-                                .description("lovely fur")
-                                .build(),
-                        Product.builder()
-                                .name("Oppola34")
-                                .price(46000.00)
-                                .availableQty(400)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
-                                .color("yellow")
-                                .subCategory(chair2)
-                                .description("lovely fur")
-                                .build(),
-                        Product.builder()
-                                .name("Oppola35")
-                                .price(47000.00)
-                                .availableQty(400)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
-                                .color("yellow")
-                                .subCategory(cupboard2)
-                                .description("lovely fur")
-                                .build(),
-                        Product.builder()
-                                .name("Oppola36")
-                                .price(48000.00)
-                                .availableQty(400)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
-                                .color("yellow")
-                                .subCategory(cupboard1)
-                                .description("lovely fur")
-                                .build(),
-                        Product.builder()
-                                .name("Oppola38")
-                                .price(49000.00)
-                                .availableQty(400)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
-                                .color("yellow")
-                                .subCategory(table4)
-                                .description("lovely fur")
-                                .build(),
-                        Product.builder()
-                                .name("Oppola39")
-                                .price(50000.00)
-                                .availableQty(400)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
-                                .color("yellow")
-                                .subCategory(modern4)
-                                .description("lovely fur")
-                                .build(),
-                        Product.builder()
-                                .name("Oppola40")
-                                .price(51000.00)
-                                .availableQty(400)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
-                                .color("yellow")
-                                .subCategory(modern3)
-                                .description("lovely fur")
-                                .build(),
-                        Product.builder()
-                                .name("Oppola41")
-                                .price(52000.00)
-                                .availableQty(400)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
-                                .color("yellow")
-                                .subCategory(modern2)
-                                .description("lovely fur")
-                                .build(),
-                        Product.builder()
-                                .name("Oppola42")
-                                .price(53000.00)
-                                .availableQty(400)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
-                                .color("yellow")
-                                .subCategory(modern1)
-                                .description("lovely fur")
-                                .build(),
-                        Product.builder()
-                                .name("Oppola43")
-                                .price(54000.00)
-                                .availableQty(400)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
-                                .color("yellow")
-                                .subCategory(wooden3)
-                                .description("lovely fur")
-                                .build(),
-                        Product.builder()
-                                .name("Oppola44")
-                                .price(55000.00)
-                                .availableQty(400)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
-                                .color("yellow")
-                                .subCategory(wooden2)
-                                .description("lovely fur")
-                                .build(),
-                        Product.builder()
-                                .name("Oppola45")
-                                .price(56000.00)
-                                .availableQty(400)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
-                                .color("yellow")
-                                .subCategory(wooden1)
-                                .description("lovely fur")
-                                .build(),
-
-                        Product.builder()
-                                .name("Oppola46")
-                                .price(43000.00)
-                                .availableQty(400)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
+                                .imageUrl("https://baffihomeng.com/cape-bed-single-bed-1289-20-K.jpg")
                                 .color("yellow")
                                 .subCategory(sofa3)
                                 .description("lovely fur")
                                 .build(),
                         Product.builder()
-                                .name("Oppola47")
+                                .name("DIVA BED")
+                                .price(56000.00)
+                                .availableQty(400)
+                                .imageUrl("https://baffihomeng.com/diva-bed-single-bed-1291-20-K.jpg")
+                                .color("yellow")
+                                .subCategory(modern1)
+                                .description("lovely fur")
+                                .build(),
+                        Product.builder()
+                                .name("CABINET")
                                 .price(44000.00)
                                 .availableQty(400)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
-                                .color("yellow")
-                                .subCategory(sofa3)
-                                .description("lovely fur")
-                                .build(),
-                        Product.builder()
-                                .name("Oppola48")
-                                .price(45000.00)
-                                .availableQty(400)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
-                                .color("yellow")
-                                .subCategory(sofa2)
-                                .description("lovely fur")
-                                .build(),
-                        Product.builder()
-                                .name("Oppola49")
-                                .price(46000.00)
-                                .availableQty(400)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
+                                .imageUrl("https://baffihomeng.com/throw-pillow-duvet-mattress-1581-28-K.jpg")
                                 .color("yellow")
                                 .subCategory(sofa1)
                                 .description("lovely fur")
                                 .build(),
                         Product.builder()
-                                .name("Oppola50")
-                                .price(47000.00)
+                                .name("MILANO CENTER TABLE")
+                                .price(45000.00)
                                 .availableQty(400)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
-                                .color("yellow")
-                                .subCategory(chair2)
-                                .description("lovely fur")
-                                .build(),
-                        Product.builder()
-                                .name("Oppola51")
-                                .price(48000.00)
-                                .availableQty(400)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
-                                .color("yellow")
-                                .subCategory(chair1)
-                                .description("lovely fur")
-                                .build(),
-                        Product.builder()
-                                .name("Oppola52")
-                                .price(49000.00)
-                                .availableQty(400)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
-                                .color("yellow")
-                                .subCategory(table4)
-                                .description("lovely fur")
-                                .build(),
-                        Product.builder()
-                                .name("Oppola53")
-                                .price(50000.00)
-                                .availableQty(400)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
+                                .imageUrl("https://baffihomeng.com/milano-4-1-center-table-center-table-1974-37-K.jpg")
                                 .color("yellow")
                                 .subCategory(table3)
                                 .description("lovely fur")
                                 .build(),
                         Product.builder()
-                                .name("Oppola54")
-                                .price(51000.00)
+                                .name("OFFICE DESK")
+                                .price(46000.00)
                                 .availableQty(400)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
+                                .imageUrl("https://cdn.shopify.com/s/files/1/1185/9434/products/1-2-metre-wood-office-desk-white-15445592801377_300x.jpg?v=1592585341")
                                 .color("yellow")
                                 .subCategory(table2)
                                 .description("lovely fur")
                                 .build(),
                         Product.builder()
-                                .name("Oppola55")
+                                .name("ACCENT CHAIR")
+                                .price(47000.00)
+                                .availableQty(400)
+                                .imageUrl("https://cdn.shopify.com/s/files/1/1185/9434/products/accent-chair-and-ottoman-37623578886387_500x.jpg?v=1655993763")
+                                .color("yellow")
+                                .subCategory(chair2)
+                                .description("lovely fur")
+                                .build(),
+                        Product.builder()
+                                .name("RACK")
+                                .price(48000.00)
+                                .availableQty(400)
+                                .imageUrl("https://cdn.shopify.com/s/files/1/1185/9434/products/multi-functional-table-23029700264128_dd69cf9c-b76d-45e2-adf8-6562b647575c_500x.jpg?v=1663265006")
+                                .color("yellow")
+                                .subCategory(cupboard1)
+                                .description("lovely fur")
+                                .build(),
+                        Product.builder()
+                                .name("COFFFE CHAIR")
+                                .price(49000.00)
+                                .availableQty(400)
+                                .imageUrl("https://cdn.shopify.com/s/files/1/1185/9434/products/white-cafe-bar-chair_300x.jpg?v=1667641898")
+                                .color("yellow")
+                                .subCategory(chair1)
+                                .description("lovely fur")
+                                .build(),
+                        Product.builder()
+                                .name("COFFEE TABLE")
+                                .price(50000.00)
+                                .availableQty(400)
+                                .imageUrl("https://cdn.shopify.com/s/files/1/1185/9434/products/compact-3tier-coffee-table-brown-white-center-table-28967970734272_300x.jpg?v=1625440559")
+                                .color("yellow")
+                                .subCategory(modern2)
+                                .description("lovely fur")
+                                .build(),
+                        Product.builder()
+                                .name("GLASS TABLE")
+                                .price(51000.00)
+                                .availableQty(400)
+                                .imageUrl("https://cdn.shopify.com/s/files/1/1185/9434/products/gloss-glass-coffee-table-white-14875512504417_300x.jpg?v=1587505261")
+                                .color("yellow")
+                                .subCategory(modern3)
+                                .description("lovely fur")
+                                .build(),
+                        Product.builder()
+                                .name("HEXAGON TABLE")
                                 .price(52000.00)
                                 .availableQty(400)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
+                                .imageUrl("https://cdn.shopify.com/s/files/1/1185/9434/products/hexagon-coffee-table-30999063724224_300x.jpg?v=1633025760")
+                                .color("yellow")
+                                .subCategory(modern2)
+                                .description("lovely fur")
+                                .build(),
+                        Product.builder()
+                                .name("ROUND MIRROR")
+                                .price(53000.00)
+                                .availableQty(400)
+                                .imageUrl("https://cdn.shopify.com/s/files/1/1185/9434/products/console-with-round-mirror-23289712279744_396x_2135b392-a46d-4081-960e-6d05443fd183_396x.jpg?v=1665228228")
+                                .color("yellow")
+                                .subCategory(modern1)
+                                .description("lovely fur")
+                                .build(),
+                        Product.builder()
+                                .name("TV DECK 1")
+                                .price(54000.00)
+                                .availableQty(400)
+                                .imageUrl("https://cdn.shopify.com/s/files/1/1185/9434/products/tv-unite-white-brown-37279583011059_400x.jpg?v=1651183795")
+                                .color("yellow")
+                                .subCategory(wooden3)
+                                .description("lovely fur")
+                                .build(),
+                        Product.builder()
+                                .name("TV DECK")
+                                .price(55000.00)
+                                .availableQty(400)
+                                .imageUrl("https://cdn.shopify.com/s/files/1/1185/9434/products/tv-unit-40x140-cm-37279519277299_300x.jpg?v=1651182714")
+                                .color("yellow")
+                                .subCategory(wooden2)
+                                .description("lovely fur")
+                                .build(),
+                        Product.builder()
+                                .name("WARDROBE")
+                                .price(56000.00)
+                                .availableQty(400)
+                                .imageUrl("https://cdn.shopify.com/s/files/1/1185/9434/products/laminate-board-wardrobe-30163285311680_500x.jpg?v=1628169186")
+                                .color("yellow")
+                                .subCategory(cupboard2)
+                                .description("lovely fur")
+                                .build(),
+                        Product.builder()
+                                .name("VANITY CHAIR")
+                                .price(44000.00)
+                                .availableQty(400)
+                                .imageUrl("https://cdn.shopify.com/s/files/1/1185/9434/products/vanity-chair-wood-legs-grey-15598760198241_500x.jpg?v=1594193453")
+                                .color("yellow")
+                                .subCategory(chair1)
+                                .description("lovely fur")
+                                .build(),
+                        Product.builder()
+                                .name("VANITY TABLE")
+                                .price(45000.00)
+                                .availableQty(400)
+                                .imageUrl("https://th.bing.com/th/id/R.993b84b44c557357ee919ffc3c822f20?rik=e4QUakT0Jh9bSA&pid=ImgRaw&r=0")
                                 .color("yellow")
                                 .subCategory(table1)
                                 .description("lovely fur")
                                 .build(),
                         Product.builder()
-                                .name("Oppola56")
+                                .name("KALE BED SET")
+                                .price(50000.00)
+                                .availableQty(400)
+                                .imageUrl("https://baffihomeng.com/kale-bed-set-bed-set-1699-11-K.jpg")
+                                .color("yellow")
+                                .subCategory(sofa3)
+                                .description("lovely fur")
+                                .build(),
+                        Product.builder()
+                                .name("END WARDROBE")
+                                .price(51000.00)
+                                .availableQty(400)
+                                .imageUrl("https://img2.cgtrader.com/items/195840/a04afa424e/large/bathroom-shower-enclosed-stall-3d-model-max-obj-3ds-fbx-stl-dae.jpg")
+                                .color("yellow")
+                                .subCategory(sofa2)
+                                .description("lovely fur")
+                                .build(),
+                        Product.builder()
+                                .name("DRESSING TABLE")
+                                .price(46000.00)
+                                .availableQty(10)
+                                .imageUrl("https://cdn.shopify.com/s/files/1/1185/9434/products/blue-and-white-pine-wood-dressing-mirror-with-leather-stool-3628232310853_300x.jpg?v=1587023096")
+                                .color("yellow")
+                                .subCategory(cupboard1)
+                                .description("lovely fur")
+                                .build(),
+                        Product.builder()
+                                .name("WARDROBE DOOR")
+                                .price(47000.00)
+                                .availableQty(400)
+                                .imageUrl("https://cdn.shopify.com/s/files/1/1185/9434/products/laminate-board-wardrobe-30163285344448_500x.jpg?v=1628169186")
+                                .color("yellow")
+                                .subCategory(cupboard1)
+                                .description("lovely fur")
+                                .build(),
+
+                        Product.builder()
+                                .name("SHELVES WOOD")
+                                .price(40000.00)
+                                .availableQty(400)
+                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-U5BW8PS@2x-300x300.jpg")
+                                .color("Gray")
+                                .subCategory(wooden1)
+                                .description("lovely fur")
+                                .build(),
+                        Product.builder()
+                                .name("WOODEN RACK")
+                                .price(50000.00)
+                                .availableQty(100)
+                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-92DNEPD@2x-300x300.jpg")
+                                .color("Sunset Yellow")
+                                .subCategory(wooden1)
+                                .description("lovely furnished rack with inspiration from last summer's Rack")
+                                .build(),
+                        Product.builder()
+                                .name("COFFEE TABLE")
+                                .price(20000.00)
+                                .availableQty(440)
+                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/J7ZW2XK@2x-300x300.jpg")
+                                .color("Gray")
+                                .subCategory(modern1)
+                                .description("lovely furniture")
+                                .build(),
+                        Product.builder()
+                                .name("END TABLE")
+                                .price(40000.00)
+                                .availableQty(400)
+                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-RBSJBF@2x-300x300.jpg")
+                                .color("Gray")
+                                .subCategory(table2)
+                                .description("lovely fur")
+                                .build(),
+                        Product.builder()
+                                .name("TABLE WOOD")
+                                .price(42000.00)
+                                .availableQty(400)
+                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/3N8FQJ@2x-300x300.jpg")
+                                .color("Sunset Yellow")
+                                .subCategory(table3)
+                                .description("lovely fur")
+                                .build(),
+                        Product.builder()
+                                .name("LOUNGE SOFA")
+                                .price(43000.00)
+                                .availableQty(400)
+                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/JD46ETY@2x-300x300.jpg")
+                                .color("Beige")
+                                .subCategory(sofa1)
+                                .description("lovely fur")
+                                .build(),
+                        Product.builder()
+                                .name("LUXURY SOFA")
+                                .price(44000.00)
+                                .availableQty(400)
+                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/4PHLD2@2x-300x300.jpg")
+                                .color("Off White")
+                                .subCategory(sofa3)
+                                .description("lovely furniture")
+                                .build(),
+                        Product.builder()
+                                .name("MODERN CHAIR")
+                                .price(45000.00)
+                                .availableQty(400)
+                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-WAX664T@2x-300x300.jpg")
+                                .color("yellow")
+                                .subCategory(chair1)
+                                .description("lovely fur")
+                                .build(),
+                        Product.builder()
+                                .name("MODERN TABLE")
+                                .price(46000.00)
+                                .availableQty(400)
+                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Group-1@2x-300x300.jpg")
+                                .color("yellow")
+                                .subCategory(table3)
+                                .description("lovely fur")
+                                .build(),
+                        Product.builder()
+                                .name("ARM CHAIR")
+                                .price(52000.00)
+                                .availableQty(400)
+                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Armc.png")
+                                .color("yellow")
+                                .subCategory(chair1)
+                                .description("lovely fur")
+                                .build(),
+                        Product.builder()
+                                .name("SILVER WARDROBE")
                                 .price(53000.00)
                                 .availableQty(400)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
+                                .imageUrl("https://th.bing.com/th/id/OIP.mPfATCzk4nEXhbG2DWWyfgHaHa?pid=ImgDet&w=700&h=700&rs=1")
                                 .color("yellow")
-                                .subCategory(dresser1)
+                                .subCategory(lamp2)
                                 .description("lovely fur")
                                 .build(),
                         Product.builder()
-                                .name("Oppola57")
+                                .name("TALL LAMP 2")
                                 .price(54000.00)
                                 .availableQty(400)
+                                .imageUrl("https://th.bing.com/th/id/OIP.TFrnJVWYb0pdZgJWG2GnlgHaHa?pid=ImgDet&rs=1")
+                                .color("yellow")
+                                .subCategory(sofa2)
+                                .description("lovely fur")
+                                .build(),
+                        Product.builder()
+                                .name("DECO LAMP")
+                                .price(47000.00)
+                                .availableQty(400)
+                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/XFSNSK@2x-300x300.jpg")
+                                .color("yellow")
+                                .subCategory(lamp1)
+                                .description("lovely fur")
+                                .build(),
+                        Product.builder()
+                                .name("TABLE LAMP")
+                                .price(48000.00)
+                                .availableQty(400)
                                 .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
+                                .color("yellow")
+                                .subCategory(lamp2)
+                                .description("lovely fur")
+                                .build(),
+                        Product.builder()
+                                .name("DRESSER")
+                                .price(49000.00)
+                                .availableQty(400)
+                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/YMN7ZV@2x-300x300.jpg")
                                 .color("yellow")
                                 .subCategory(dresser3)
-                                .description("lovely fur")
-                                .build(),
-                        Product.builder()
-                                .name("Oppola58")
-                                .price(55000.00)
-                                .availableQty(400)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
-                                .color("yellow")
-                                .subCategory(dresser2)
-                                .description("lovely fur")
-                                .build(),
-                        Product.builder()
-                                .name("Oppola59")
-                                .price(56000.00)
-                                .availableQty(400)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
-                                .color("yellow")
-                                .subCategory(dresser1)
                                 .description("lovely fur")
                                 .build()
                 );
