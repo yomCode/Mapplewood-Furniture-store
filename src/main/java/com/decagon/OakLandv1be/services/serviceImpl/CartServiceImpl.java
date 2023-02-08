@@ -95,10 +95,10 @@ public class CartServiceImpl implements CartService {
             // for (Item item : itemsInCart) {
             //if (item.getId() == itemToRemoveId) {
             if (itemsInCart.contains(item))
-       itemRepository.save(item);
+                //itemRepository.save(item);
+
                 itemRepository.delete(item);
             return "item removed successfully";
-
         }
         throw new UnauthorizedUserException("User does not exist");
     }
