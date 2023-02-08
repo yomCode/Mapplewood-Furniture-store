@@ -83,6 +83,14 @@ public class FakeDb {
                 customer.setPerson(savedPerson);
                 customerRepository.save(customer);
 
+                Wallet wallet1 = Wallet.builder()
+                        .baseCurrency(BaseCurrency.NAIRA)
+                        .accountBalance(BigDecimal.valueOf(400000))
+                        .build();
+
+                customer.setWallet(wallet1);
+                customerRepository.save(customer);
+
                 Customer customer1 = new Customer();
                 Person person1 = Person.builder()
                         .firstName("Alex")
@@ -135,13 +143,13 @@ public class FakeDb {
 
                 customer1.setPerson(person2);
 
-                Wallet wallet1 = Wallet.builder()
+                Wallet wallet0 = Wallet.builder()
                         .baseCurrency(BaseCurrency.NAIRA)
-                        .accountBalance(BigDecimal.valueOf(400000))
+                        .accountBalance(BigDecimal.valueOf(0))
                         .build();
 
                 customer2.setPerson(savedperson2);
-                customer2.setWallet(wallet1);
+                customer2.setWallet(wallet0);
                 customerRepository.save(customer2);
 
 
@@ -496,6 +504,15 @@ public class FakeDb {
 
                 List<Product> products = List.of(
                         Product.builder()
+                                .name("TRYSIL WARDROBE")
+                                .price(43000.00)
+                                .availableQty(400)
+                                .imageUrl("https://cdn.shopify.com/s/files/1/1185/9434/products/trysil-wardrobe-with-sliding-doors-14244301511_300x.jpg?v=1586962362")
+                                .color("yellow")
+                                .subCategory(cupboard1)
+                                .description("lovely fur")
+                                .build(),
+                        Product.builder()
                                 .name("CAPE BED SET")
                                 .price(55000.00)
                                 .availableQty(400)
@@ -622,22 +639,12 @@ public class FakeDb {
                                 .description("lovely fur")
                                 .build(),
                         Product.builder()
-                                .name("WARDOBE")
+                                .name("WARDROBE")
                                 .price(56000.00)
                                 .availableQty(400)
                                 .imageUrl("https://cdn.shopify.com/s/files/1/1185/9434/products/laminate-board-wardrobe-30163285311680_500x.jpg?v=1628169186")
                                 .color("yellow")
                                 .subCategory(cupboard2)
-                                .description("lovely fur")
-                                .build(),
-
-                        Product.builder()
-                                .name("TRYSIL WARDROBE")
-                                .price(43000.00)
-                                .availableQty(400)
-                                .imageUrl("https://cdn.shopify.com/s/files/1/1185/9434/products/trysil-wardrobe-with-sliding-doors-14244301511_300x.jpg?v=1586962362")
-                                .color("yellow")
-                                .subCategory(cupboard1)
                                 .description("lovely fur")
                                 .build(),
                         Product.builder()
@@ -653,7 +660,7 @@ public class FakeDb {
                                 .name("VANITY TABLE")
                                 .price(45000.00)
                                 .availableQty(400)
-                                .imageUrl("https://cdn.shopify.com/s/files/1/1185/9434/products/andrea-series-vanity-table-black-or-white-684409683988_400x.jpg?v=1587030645")
+                                .imageUrl("https://th.bing.com/th/id/R.993b84b44c557357ee919ffc3c822f20?rik=e4QUakT0Jh9bSA&pid=ImgRaw&r=0")
                                 .color("yellow")
                                 .subCategory(table1)
                                 .description("lovely fur")
@@ -668,10 +675,10 @@ public class FakeDb {
                                 .description("lovely fur")
                                 .build(),
                         Product.builder()
-                                .name("ODESSA BED SET")
+                                .name("END WARDROBE")
                                 .price(51000.00)
                                 .availableQty(400)
-                                .imageUrl("https://baffihomeng.com/odessa-bed-set-with-wardrobe-bed-set-2035-39-K.jpg")
+                                .imageUrl("https://img2.cgtrader.com/items/195840/a04afa424e/large/bathroom-shower-enclosed-stall-3d-model-max-obj-3ds-fbx-stl-dae.jpg")
                                 .color("yellow")
                                 .subCategory(sofa2)
                                 .description("lovely fur")
@@ -686,21 +693,12 @@ public class FakeDb {
                                 .description("lovely fur")
                                 .build(),
                         Product.builder()
-                                .name("WARDROBE 2 DOOR")
+                                .name("WARDROBE DOOR")
                                 .price(47000.00)
                                 .availableQty(400)
                                 .imageUrl("https://cdn.shopify.com/s/files/1/1185/9434/products/laminate-board-wardrobe-30163285344448_500x.jpg?v=1628169186")
                                 .color("yellow")
                                 .subCategory(cupboard1)
-                                .description("lovely fur")
-                                .build(),
-                        Product.builder()
-                                .name("FLOOR LAMP")
-                                .price(430000.00)
-                                .availableQty(400)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/couch-against-wall-with-molding-e1606471727616.jpg")
-                                .color("yellow")
-                                .subCategory(modern1)
                                 .description("lovely fur")
                                 .build(),
 
@@ -712,16 +710,6 @@ public class FakeDb {
                                 .color("Gray")
                                 .subCategory(wooden1)
                                 .description("lovely fur")
-                                .build(),
-
-                        Product.builder()
-                                .name("TABLE WOOD")
-                                .price(10000.00)
-                                .availableQty(20)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/3N8FQJ@2x-300x300.jpg")
-                                .color("Brown")
-                                .subCategory(table1)
-                                .description("lovely furnished Lorem Ipsum")
                                 .build(),
                         Product.builder()
                                 .name("WOODEN RACK")
@@ -748,15 +736,6 @@ public class FakeDb {
                                 .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-RBSJBF@2x-300x300.jpg")
                                 .color("Gray")
                                 .subCategory(table2)
-                                .description("lovely fur")
-                                .build(),
-                        Product.builder()
-                                .name("MODERN TABLE")
-                                .price(41000.00)
-                                .availableQty(400)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Group-1@2x-300x300.jpg")
-                                .color("yellow")
-                                .subCategory(modern3)
                                 .description("lovely fur")
                                 .build(),
                         Product.builder()
@@ -805,6 +784,33 @@ public class FakeDb {
                                 .description("lovely fur")
                                 .build(),
                         Product.builder()
+                                .name("ARM CHAIR")
+                                .price(52000.00)
+                                .availableQty(400)
+                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Armc.png")
+                                .color("yellow")
+                                .subCategory(chair1)
+                                .description("lovely fur")
+                                .build(),
+                        Product.builder()
+                                .name("SILVER WARDROBE")
+                                .price(53000.00)
+                                .availableQty(400)
+                                .imageUrl("https://th.bing.com/th/id/OIP.mPfATCzk4nEXhbG2DWWyfgHaHa?pid=ImgDet&w=700&h=700&rs=1")
+                                .color("yellow")
+                                .subCategory(lamp2)
+                                .description("lovely fur")
+                                .build(),
+                        Product.builder()
+                                .name("TALL LAMP 2")
+                                .price(54000.00)
+                                .availableQty(400)
+                                .imageUrl("https://th.bing.com/th/id/OIP.TFrnJVWYb0pdZgJWG2GnlgHaHa?pid=ImgDet&rs=1")
+                                .color("yellow")
+                                .subCategory(sofa2)
+                                .description("lovely fur")
+                                .build(),
+                        Product.builder()
                                 .name("DECO LAMP")
                                 .price(47000.00)
                                 .availableQty(400)
@@ -830,116 +836,7 @@ public class FakeDb {
                                 .color("yellow")
                                 .subCategory(dresser3)
                                 .description("lovely fur")
-                                .build(),
-                        Product.builder()
-                                .name("ARM CHAIR")
-                                .price(52000.00)
-                                .availableQty(400)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Armc.png")
-                                .color("yellow")
-                                .subCategory(chair1)
-                                .description("lovely fur")
-                                .build(),
-                        Product.builder()
-                                .name("TALL LAMP")
-                                .price(53000.00)
-                                .availableQty(400)
-                                .imageUrl("https://th.bing.com/th/id/R.1ed46d2b466f4eb744a0e31a93117e6d?rik=Be%2bLYU5uL8eBlQ&pid=ImgRaw&r=0")
-                                .color("yellow")
-                                .subCategory(lamp2)
-                                .description("lovely fur")
-                                .build(),
-                        Product.builder()
-                                .name("MODERN SOFA SET")
-                                .price(54000.00)
-                                .availableQty(400)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/interior-of-modern-living-room-with-sofa-3-d-rendering-e1606471745983.jpg")
-                                .color("yellow")
-                                .subCategory(sofa2)
-                                .description("lovely fur")
                                 .build()
-
-//                        Product.builder()
-//                                .name("Oppola51")
-//                                .price(48000.00)
-//                                .availableQty(400)
-//                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
-//                                .color("yellow")
-//                                .subCategory(chair1)
-//                                .description("lovely fur")
-//                                .build(),
-//                        Product.builder()
-//                                .name("Oppola52")
-//                                .price(49000.00)
-//                                .availableQty(400)
-//                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
-//                                .color("yellow")
-//                                .subCategory(table4)
-//                                .description("lovely fur")
-//                                .build(),
-//                        Product.builder()
-//                                .name("Oppola53")
-//                                .price(50000.00)
-//                                .availableQty(400)
-//                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
-//                                .color("yellow")
-//                                .subCategory(table3)
-//                                .description("lovely fur")
-//                                .build(),
-//                        Product.builder()
-//                                .name("Oppola54")
-//                                .price(51000.00)
-//                                .availableQty(400)
-//                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
-//                                .color("yellow")
-//                                .subCategory(table2)
-//                                .description("lovely fur")
-//                                .build(),
-//                        Product.builder()
-//                                .name("Oppola55")
-//                                .price(52000.00)
-//                                .availableQty(400)
-//                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
-//                                .color("yellow")
-//                                .subCategory(table1)
-//                                .description("lovely fur")
-//                                .build(),
-//                        Product.builder()
-//                                .name("Oppola56")
-//                                .price(53000.00)
-//                                .availableQty(400)
-//                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
-//                                .color("yellow")
-//                                .subCategory(dresser1)
-//                                .description("lovely fur")
-//                                .build(),
-//                        Product.builder()
-//                                .name("Oppola57")
-//                                .price(54000.00)
-//                                .availableQty(400)
-//                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
-//                                .color("yellow")
-//                                .subCategory(dresser3)
-//                                .description("lovely fur")
-//                                .build(),
-//                        Product.builder()
-//                                .name("Oppola58")
-//                                .price(55000.00)
-//                                .availableQty(400)
-//                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
-//                                .color("yellow")
-//                                .subCategory(dresser2)
-//                                .description("lovely fur")
-//                                .build(),
-//                        Product.builder()
-//                                .name("Oppola59")
-//                                .price(56000.00)
-//                                .availableQty(400)
-//                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
-//                                .color("yellow")
-//                                .subCategory(dresser1)
-//                                .description("lovely fur")
-//                                .build()
                 );
 
 

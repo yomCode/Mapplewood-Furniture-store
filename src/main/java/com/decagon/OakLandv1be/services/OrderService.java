@@ -1,6 +1,7 @@
 package com.decagon.OakLandv1be.services;
 
 
+import com.decagon.OakLandv1be.dto.AdminOrderResponseDto;
 import com.decagon.OakLandv1be.dto.OrderRequestDto;
 import com.decagon.OakLandv1be.dto.OrderResponseDto;
 import com.decagon.OakLandv1be.enums.DeliveryStatus;
@@ -12,7 +13,7 @@ import java.util.List;
 public interface OrderService {
     List<OrderResponseDto> viewOrderHistory(int pageNo, int pageSize);
     OrderResponseDto viewAParticularOrder(Long orderId);
-    Page<OrderResponseDto> viewAllOrdersPaginated(Integer pageNo, Integer pageSize, String sortBy, boolean isAscending);
+    Page<AdminOrderResponseDto> viewAllOrdersPaginated(Integer pageNo, Integer pageSize, String sortBy, boolean isAscending);
 
     String saveOrder(OrderRequestDto orderRequestDto);
 
