@@ -184,8 +184,6 @@ public class FakeDb {
                 customerRepository.save(customer3);
 
 
-
-
                 Customer customer4 = new Customer();
                 Person person4 = Person.builder()
                         .firstName("King")

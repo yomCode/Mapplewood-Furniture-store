@@ -94,9 +94,13 @@ public class CartServiceImpl implements CartService {
             Set<Item> itemsInCart = cart.getItems();
             // for (Item item : itemsInCart) {
             //if (item.getId() == itemToRemoveId) {
-            if (itemsInCart.contains(item))
-//       itemRepository.save(item);
+
+            if (itemsInCart.contains(item)) {
+                cart.setTotal(cart.getTotal() - (item.getOrderQty() * item.getUnitPrice()));
+                cartRepository.save(cart);
                 itemRepository.delete(item);
+            }
+
             return "item removed successfully";
 
         }
@@ -158,11 +162,15 @@ public class CartServiceImpl implements CartService {
         Customer loggedInCustomer = customerService.getCurrentlyLoggedInUser();
         Cart cart = loggedInCustomer.getCart();
         Set<Item> cartItems = cart.getItems();
+
+        for(Item item : cartItems){
+            itemRepository.deleteById(item.getId());
+        }
+
         cartItems.clear();
         cart.setItems(cartItems);
         cart.setTotal(0.0);
         cartRepository.save(cart);
-        itemRepository.deleteAll();
         return "Cart cleared successfully";
     }
 

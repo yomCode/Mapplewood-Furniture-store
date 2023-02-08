@@ -21,7 +21,7 @@ public class OrderItem extends BaseEntity{
     private Double unitPrice;
     private Double subTotal;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private Order order;
 
