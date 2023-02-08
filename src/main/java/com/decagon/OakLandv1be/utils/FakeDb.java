@@ -176,8 +176,6 @@ public class FakeDb {
                 customerRepository.save(customer3);
 
 
-
-
                 Customer customer4 = new Customer();
                 Person person4 = Person.builder()
                         .firstName("King")
@@ -496,57 +494,55 @@ public class FakeDb {
 
                 List<Product> products = List.of(
                         Product.builder()
-                                .name("Oppola")
+                                .name("Wooden")
                                 .price(40000.00)
                                 .availableQty(400)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
+                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/92DNEPD@2x.jpg")
                                 .color("yellow")
                                 .subCategory(lamp1)
                                 .description("lovely fur")
                                 .build(),
-
-
                         Product.builder()
                                 .name("Table")
                                 .price(10000.00)
                                 .availableQty(20)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
+                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/RBSJBF@2x.jpg")
                                 .color("brown")
                                 .subCategory(lamp2)
                                 .description("lovely furnished Lorem Ipsum")
                                 .build(),
                         Product.builder()
-                                .name("Coffee Lamp")
+                                .name("Sofa")
                                 .price(50000.00)
                                 .availableQty(100)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
+                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/4PHLD2@2x.jpg")
                                 .color("sunset yellow")
                                 .subCategory(lamp3)
                                 .description("lovely fur")
                                 .build(),
                         Product.builder()
-                                .name("Jummy")
+                                .name("Modern")
                                 .price(20000.00)
                                 .availableQty(440)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
+                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Group-1@2x-300x300.jpg")
                                 .color("gray")
                                 .subCategory(modern1)
                                 .description("lovely fur")
                                 .build(),
                         Product.builder()
-                                .name("Cupboard")
+                                .name("Lamps")
                                 .price(40000.00)
                                 .availableQty(400)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
+                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/NAM2CS@2x.jpg")
                                 .color("yellow")
                                 .subCategory(modern2)
                                 .description("lovely fur")
                                 .build(),
                         Product.builder()
-                                .name("Oppola15")
+                                .name("Dresser")
                                 .price(41000.00)
                                 .availableQty(400)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
+                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/YMN7ZV@2x-300x300.jpg")
                                 .color("yellow")
                                 .subCategory(modern3)
                                 .description("lovely fur")
