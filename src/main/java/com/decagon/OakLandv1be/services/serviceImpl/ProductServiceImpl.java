@@ -33,9 +33,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -103,6 +101,7 @@ public class ProductServiceImpl implements ProductService {
                             .build()
             );
         });
+        Collections.sort(productCustResponseDtos, Comparator.comparing(ProductResponseDto::getId, Comparator.reverseOrder()));
         PageRequest pageable = PageRequest.of(pageNo, pageSize, Sort.Direction.DESC, sortBy);
 
         int minimum = pageNo*pageSize;
@@ -175,6 +174,7 @@ public class ProductServiceImpl implements ProductService {
                             .build()
             );
         });
+        Collections.sort(subcategoryProductDtos, Comparator.comparing(ProductResponseDto::getId, Comparator.reverseOrder()));
         PageRequest pageable = PageRequest.of(pageNo, pageSize, Sort.Direction.DESC, sortBy);
 
         int minimum = pageNo*pageSize;
