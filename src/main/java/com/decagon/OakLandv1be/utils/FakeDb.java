@@ -211,22 +211,22 @@ public class FakeDb {
 
             if(!stateRepository.existsById(1L)) {
                 State lagos = State.builder()
-                        .name("Lagos")
+                        .name("Lagos".toUpperCase())
                         .build();
                 State kwara = State.builder()
-                        .name("Kwara")
+                        .name("Kwara".toUpperCase())
                         .build();
                 State anambra = State.builder()
-                        .name("Anambra")
+                        .name("Anambra".toUpperCase())
                         .build();
                 State osun = State.builder()
-                        .name("Osun")
+                        .name("Osun".toUpperCase())
                         .build();
                 State akwaibom = State.builder()
-                        .name("AkwaIbom")
+                        .name("AkwaIbom".toUpperCase())
                         .build();
                 State kano = State.builder()
-                        .name("Kano")
+                        .name("Kano".toUpperCase())
                         .build();
                 List<State> states = List.of(lagos, kwara, anambra, osun, akwaibom, kano);
                 stateRepository.saveAll(states);
@@ -304,27 +304,35 @@ public class FakeDb {
 
                 Category table = Category.builder()
                         .name("Table")
+                        .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/RBSJBF@2x-300x300.jpg")
                         .build();
                 Category chair = Category.builder()
                         .name("Chair")
+                        .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-WAX664T@2x-300x300.jpg")
                         .build();
                 Category cupboard = Category.builder()
                         .name("Cupboard")
+                        .imageUrl("https://th.bing.com/th/id/R.309800b9a251e7f8d14b8b468cbe60c4?rik=b2DGwVd%2ff1xqUQ&pid=ImgRaw&r=0")
                         .build();
                 Category sofa = Category.builder()
                         .name("Sofa")
+                        .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/4PHLD2@2x-300x300.jpg")
                         .build();
                 Category dresser = Category.builder()
                         .name("Dresser")
+                        .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/YMN7ZV@2x-300x300.jpg")
                         .build();
                 Category modern = Category.builder()
                         .name("Modern")
+                        .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Group-1@2x-300x300.jpg")
                         .build();
                 Category lamps = Category.builder()
                         .name("Lamps")
+                        .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/NAM2CS@2x-300x300.jpg")
                         .build();
                 Category wooden = Category.builder()
                         .name("Wooden")
+                        .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/92DNEPD@2x-300x300.jpg")
                         .build();
                 List<Category> categories = List.of(table, sofa, cupboard, chair, dresser, modern, lamps, wooden);
                 categoryRepository.saveAll(categories);
@@ -341,115 +349,110 @@ public class FakeDb {
                 Category wooden = categoryRepository.findById(8L).orElseThrow(() -> new ProductNotFoundException("Not found!"));
 
                 SubCategory lamp2 = SubCategory.builder()
-                        .name("Coffee Lamp")
+                        .name("Deco Lamp")
+                        .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/XFSNSK@2x-300x300.jpg")
                         .category(lamps)
                         .build();
                 SubCategory lamp1 = SubCategory.builder()
-                        .name("Nighty Lamp")
-                        .category(lamps)
-                        .build();
-                SubCategory lamp3 = SubCategory.builder()
-                        .name("Work Lamp")
+                        .name("Table Lamp")
+                        .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-NAM2CS@2x-300x300.jpg")
                         .category(lamps)
                         .build();
 
                 SubCategory table4 = SubCategory.builder()
-                        .name("Oak Table")
+                        .name("Coffee Table")
+                        .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/J7ZW2XK@2x-300x300.jpg")
                         .category(table)
                         .build();
                 SubCategory table3 = SubCategory.builder()
-                        .name("Dining Table")
+                        .name("End Table")
+                        .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-RBSJBF@2x-300x300.jpg")
                         .category(table)
                         .build();
                 SubCategory table2 = SubCategory.builder()
-                        .name("Work Table")
+                        .name("Modern Table")
+                        .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Group-1@2x-300x300.jpg")
                         .category(table)
                         .build();
                 SubCategory table1 = SubCategory.builder()
-                        .name("Chief Table")
+                        .name("Table Wood")
+                        .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/3N8FQJ@2x-300x300.jpg")
                         .category(table)
                         .build();
                 SubCategory chair2 = SubCategory.builder()
-                        .name("Work Chair")
+                        .name("Recliner Chair")
+                        .imageUrl("https://th.bing.com/th/id/R.5bdd3851db3752d798d5d9debb46a9a7?rik=FqdmQr%2b8UzxR2g&pid=ImgRaw&r=0")
                         .category(chair)
                         .build();
                 SubCategory chair1 = SubCategory.builder()
-                        .name("Sofa Chair")
+                        .name("Arm Chair")
+                        .imageUrl("https://th.bing.com/th/id/OIP.yYV6XzWVGdCVZI2h2uXlGAHaDt?pid=ImgDet&rs=1")
                         .category(chair)
                         .build();
                 SubCategory wooden2 = SubCategory.builder()
-                        .name("Sheriff Wood")
+                        .name("Shelves Wood")
+                        .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-U5BW8PS@2x-300x300.jpg")
                         .category(wooden)
                         .build();
                 SubCategory wooden3 = SubCategory.builder()
                         .name("Table Wood")
+                        .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/3N8FQJ@2x-300x300.jpg")
                         .category(wooden)
                         .build();
                 SubCategory wooden1 = SubCategory.builder()
                         .name("Wooden Rack")
+                        .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-92DNEPD@2x-300x300.jpg")
                         .category(wooden)
                         .build();
                 SubCategory modern2 = SubCategory.builder()
-                        .name("Upperside Chair")
+                        .name("New Age Chair")
+                        .imageUrl("https://th.bing.com/th/id/OIP.IK6LM7F-kXcngeThmlB5KgAAAA?pid=ImgDet&w=300&h=300&rs=1")
                         .category(modern)
                         .build();
                 SubCategory modern1 = SubCategory.builder()
-                        .name("Minty Fresh Chair")
+                        .name("Modern Chair")
+                        .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Image-WAX664T@2x-300x300.jpg")
                         .category(modern)
                         .build();
                 SubCategory modern4 = SubCategory.builder()
-                        .name("Top Table")
+                        .name("Modern Table")
+                        .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/Group-1@2x-300x300.jpg")
                         .category(modern)
-                        .build();
-                SubCategory modern3 = SubCategory.builder()
-                        .name("High Lifting Cupboard")
-                        .category(modern)
-                        .build();
-                SubCategory sofa3 = SubCategory.builder()
-                        .name("Home Sofa")
-                        .category(sofa)
                         .build();
                 SubCategory sofa2 = SubCategory.builder()
-                        .name("Work Sofa")
+                        .name("Lounge Sofa")
+                        .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/JD46ETY@2x-300x300.jpg")
                         .category(sofa)
                         .build();
                 SubCategory sofa1 = SubCategory.builder()
-                        .name("Living Room Sofa")
+                        .name("Luxury Sofa")
+                        .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/4PHLD2@2x-300x300.jpg")
                         .category(sofa)
                         .build();
                 SubCategory cupboard1 = SubCategory.builder()
-                        .name("Dresser")
+                        .name("Arc Cupboard")
+                        .imageUrl("https://th.bing.com/th/id/OIP.PoITRe2lfX9fz-U35ixkggAAAA?pid=ImgDet&rs=1")
                         .category(cupboard)
                         .build();
                 SubCategory cupboard2 = SubCategory.builder()
-                        .name("6ft Cupboard")
+                        .name("Kitchen Cupboard")
+                        .imageUrl("https://th.bing.com/th/id/OIP.uf0BRnMEJEOxk3tx2mHGMgHaHa?pid=ImgDet&w=500&h=500&rs=1")
                         .category(cupboard)
                         .build();
-                SubCategory dresser4 = SubCategory.builder()
-                        .name("BK Dresser")
-                        .category(dresser)
-                        .build();
-                SubCategory dresser3 = SubCategory.builder()
-                        .name("Upperside Dresser")
-                        .category(dresser)
-                        .build();
-                SubCategory dresser2 = SubCategory.builder()
-                        .name("Minty Fresh Dresser")
-                        .category(dresser)
-                        .build();
                 SubCategory dresser1 = SubCategory.builder()
-                        .name("Top Dresser")
+                        .name("Scandinavia Dresser")
+                        .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/YMN7ZV@2x-300x300.jpg")
                         .category(dresser)
                         .build();
                 List<SubCategory> subCategories = List.of(
                         table1, table2, table3, table4,
                         wooden2, wooden1, wooden3,
-                        sofa1, sofa2, sofa3,
+                        sofa1, sofa2,
                         cupboard1, cupboard2,
                         chair1, chair2,
-                        modern1, modern2, modern3, modern4,
-                        dresser1, dresser2, dresser3, dresser4,
-                        lamp1, lamp2, lamp3
+                        modern1, modern2, modern4,
+                        dresser1,
+                        lamp1, lamp2
                 );
 
 
