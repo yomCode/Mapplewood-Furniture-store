@@ -16,4 +16,5 @@ public class PickupCenterResponse {
     private String state;
     private String email;
     private String phone;
+    private double delivery;
 }

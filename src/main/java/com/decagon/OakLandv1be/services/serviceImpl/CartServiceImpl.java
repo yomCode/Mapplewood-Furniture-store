@@ -94,6 +94,7 @@ public class CartServiceImpl implements CartService {
             Set<Item> itemsInCart = cart.getItems();
             // for (Item item : itemsInCart) {
             //if (item.getId() == itemToRemoveId) {
+
             if (itemsInCart.contains(item)) {
                 cart.setTotal(cart.getTotal() - (item.getOrderQty() * item.getUnitPrice()));
                 cartRepository.save(cart);

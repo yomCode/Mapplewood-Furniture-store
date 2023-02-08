@@ -1,5 +1,6 @@
 package com.decagon.OakLandv1be.services.serviceImpl;
 
+import com.decagon.OakLandv1be.dto.AdminOrderResponseDto;
 import com.decagon.OakLandv1be.dto.OrderRequestDto;
 import com.decagon.OakLandv1be.dto.OrderResponseDto;
 
@@ -104,22 +105,22 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Page<OrderResponseDto> viewAllOrdersPaginated(Integer pageNo, Integer pageSize, String sortBy, boolean isAscending) {
+    public Page<AdminOrderResponseDto> viewAllOrdersPaginated(Integer pageNo, Integer pageSize, String sortBy, boolean isAscending) {
         List<Order> orders = orderRepository.findAll();
         if(orders.isEmpty()){
             throw new EmptyListException("Sorry there are no Customer orders yet");
         }
-        List<OrderResponseDto> orderResponseDtos =
+        List<AdminOrderResponseDto> orderResponseDtos =
                 orders.stream()
-                        .map(order -> OrderResponseDto.builder()
-                                .modeOfPayment(order.getModeOfPayment())
-                                .items(order.getItems())
-                                .deliveryFee(order.getDeliveryFee())
-                                .modeOfDelivery(order.getModeOfDelivery())
-                                .deliveryStatus(DeliveryStatus.TO_ARRIVE)
+                        .map(order -> AdminOrderResponseDto.builder()
+                                .firstName(order.getCustomer().getPerson().getFirstName())
+                                .lastName(order.getCustomer().getPerson().getLastName())
+                                .phone(order.getCustomer().getPerson().getPhone())
                                 .grandTotal(order.getGrandTotal())
-                                .discount(order.getDiscount())
-                                .address(order.getAddress())
+                                .status(order.getTransaction().getStatus().name())
+                                .pickupCenterName(order.getPickupCenter().getName())
+                                .pickupCenterAddress(order.getPickupCenter().getAddress())
+                                .pickupStatus(order.getPickupStatus().name())
                 .build()).collect(Collectors.toList());
 
         PageRequest pageable = PageRequest.of(pageNo, pageSize, Sort.Direction.DESC, sortBy);

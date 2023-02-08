@@ -114,6 +114,7 @@ public class PickupServiceImpl implements PickupService {
                 .state(pickup.getState().getName())
                 .email(pickup.getEmail())
                 .phone(pickup.getPhone())
+                .delivery(pickup.getDelivery())
                 .build();
     }
 
