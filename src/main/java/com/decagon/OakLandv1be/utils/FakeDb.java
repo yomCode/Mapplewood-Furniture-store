@@ -176,8 +176,6 @@ public class FakeDb {
                 customerRepository.save(customer3);
 
 
-
-
                 Customer customer4 = new Customer();
                 Person person4 = Person.builder()
                         .firstName("King")
@@ -504,12 +502,11 @@ public class FakeDb {
                                 .subCategory(lamp1)
                                 .description("lovely fur")
                                 .build(),
-
                         Product.builder()
                                 .name("TABLE WOOD")
                                 .price(10000.00)
                                 .availableQty(20)
-                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/3N8FQJ@2x-300x300.jpg")
+                                .imageUrl("https://templatekit.jegtheme.com/funiture/wp-content/uploads/sites/18/2020/11/RBSJBF@2x.jpg")
                                 .color("brown")
                                 .subCategory(lamp2)
                                 .description("lovely furnished Lorem Ipsum")
