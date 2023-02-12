@@ -502,15 +502,6 @@ public class FakeDb {
 
                 List<Product> products = List.of(
                         Product.builder()
-                                .name("TRYSIL WARDROBE")
-                                .price(43000.00)
-                                .availableQty(400)
-                                .imageUrl("https://cdn.shopify.com/s/files/1/1185/9434/products/trysil-wardrobe-with-sliding-doors-14244301511_300x.jpg?v=1586962362")
-                                .color("yellow")
-                                .subCategory(cupboard1)
-                                .description("lovely fur")
-                                .build(),
-                        Product.builder()
                                 .name("CAPE BED SET")
                                 .price(55000.00)
                                 .availableQty(400)
